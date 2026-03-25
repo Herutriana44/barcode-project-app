@@ -6,20 +6,22 @@ use App\Models\Company;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
+use App\Support\BarcodeQrCodes;
 use Illuminate\Http\Request;
-use Picqer\Barcode\BarcodeGeneratorSVG;
 
 class ItemBarcodeController extends Controller
 {
     public function index()
     {
         $itemBarcodes = ItemBarcode::with(['item.company', 'itemReceiving'])->latest()->paginate(15);
+
         return view('item-barcodes.index', compact('itemBarcodes'));
     }
 
     public function create()
     {
         $companies = Company::with('items')->get();
+
         return view('item-barcodes.create', compact('companies'));
     }
 
@@ -77,7 +79,7 @@ class ItemBarcodeController extends Controller
             'jumlah_box' => $validated['jumlah_box'] ?? 0,
         ]);
 
-        $barcodeId = 'IB-' . $item->id . '-' . $receiving->id;
+        $barcodeId = 'IB-'.$item->id.'-'.$receiving->id;
         $itemBarcode = ItemBarcode::create([
             'item_id' => $item->id,
             'item_receiving_id' => $receiving->id,
@@ -91,13 +93,10 @@ class ItemBarcodeController extends Controller
     public function show(ItemBarcode $itemBarcode)
     {
         $itemBarcode->load(['item.company', 'itemReceiving']);
-        $generator = new BarcodeGeneratorSVG();
-        $barcodeSvg = $generator->getBarcode(
-            $itemBarcode->barcode_id,
-            $generator::TYPE_CODE_128,
-            2,
-            50
-        );
-        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg'));
+        $payload = $itemBarcode->barcode_id;
+        $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
+        $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);
+
+        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg'));
     }
 }

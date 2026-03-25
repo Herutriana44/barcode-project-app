@@ -6,15 +6,16 @@ use App\Models\Company;
 use App\Models\CompanyBarcode;
 use App\Models\CompanyItem;
 use App\Models\Item;
+use App\Support\BarcodeQrCodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Picqer\Barcode\BarcodeGeneratorSVG;
 
 class CompanyBarcodeController extends Controller
 {
     public function index()
     {
         $companyBarcodes = CompanyBarcode::with('company.companyItems.item')->latest()->paginate(15);
+
         return view('company-barcodes.index', compact('companyBarcodes'));
     }
 
@@ -47,7 +48,7 @@ class CompanyBarcodeController extends Controller
                 $qty = (int) $row['qty'];
                 $code = isset($row['code']) && $row['code'] !== '' ? $row['code'] : null;
                 if ($code === null) {
-                    $code = 'CB-' . $company->id . '-' . uniqid();
+                    $code = 'CB-'.$company->id.'-'.uniqid();
                 }
 
                 $item = Item::create([
@@ -68,7 +69,7 @@ class CompanyBarcodeController extends Controller
 
             $companyBarcode = CompanyBarcode::create([
                 'company_id' => $company->id,
-                'barcode_id' => 'CB-' . $company->id . '-' . uniqid(),
+                'barcode_id' => 'CB-'.$company->id.'-'.uniqid(),
             ]);
 
             return redirect()->route('company-barcodes.show', $companyBarcode)
@@ -79,13 +80,10 @@ class CompanyBarcodeController extends Controller
     public function show(CompanyBarcode $companyBarcode)
     {
         $companyBarcode->load('company.companyItems.item');
-        $generator = new BarcodeGeneratorSVG();
-        $barcodeSvg = $generator->getBarcode(
-            $companyBarcode->barcode_id,
-            $generator::TYPE_CODE_128,
-            2,
-            50
-        );
-        return view('company-barcodes.show', compact('companyBarcode', 'barcodeSvg'));
+        $payload = $companyBarcode->barcode_id;
+        $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
+        $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);
+
+        return view('company-barcodes.show', compact('companyBarcode', 'barcodeSvg', 'qrCodeSvg'));
     }
 }
