@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Sistem manajemen barcode barang dan perusahaan.">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <x-favicon />
+        <title>{{ config('app.name') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
@@ -16,8 +17,8 @@
         <header class="border-b border-egg-200 bg-white/95 backdrop-blur-sm shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3 min-w-0">
-                    <x-application-logo class="h-9 w-auto shrink-0 fill-current text-egg-800" />
-                    <span class="font-semibold text-egg-900 truncate">{{ config('app.name', 'Laravel') }}</span>
+                    <x-application-logo class="h-9 w-auto" />
+                    <span class="font-semibold text-egg-900 truncate">{{ config('app.name') }}</span>
                 </div>
                 <nav class="flex items-center gap-2 sm:gap-3 shrink-0">
                     <a href="{{ route('login') }}" class="text-sm sm:text-base font-medium text-egg-800 hover:text-egg-900 px-2 py-2 rounded-md hover:bg-egg-50 transition-colors">
@@ -95,7 +96,7 @@
 
         <footer class="border-t border-egg-200 bg-white py-8 mt-auto">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-egg-700">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. Seluruh fitur memerlukan akun.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Seluruh fitur memerlukan akun.</p>
             </div>
         </footer>
     </body>
