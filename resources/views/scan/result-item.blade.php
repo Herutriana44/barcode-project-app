@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-egg-900 leading-tight">
             {{ __('Hasil Scan - Barcode Barang') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg p-6">
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div><span class="font-medium">Customer:</span> {{ $itemBarcode->item->customer ?? '-' }}</div>
                     <div><span class="font-medium">Part Name:</span> {{ $itemBarcode->item->part_name ?? '-' }}</div>
@@ -27,7 +27,7 @@
                     <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div>
                 </div>
                 <div class="mt-6">
-                    <a href="{{ route('scan.index') }}" class="text-blue-600 hover:underline">← Scan lagi</a>
+                    <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>
                 </div>
             </div>
         </div>

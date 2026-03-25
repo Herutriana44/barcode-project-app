@@ -1,106 +1,187 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-egg-900 leading-tight">
             {{ __('Buat Barcode Perusahaan') }}
         </h2>
     </x-slot>
 
+    @php
+        $itemRows = old('items', [
+            ['part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => ''],
+            ['part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => ''],
+        ]);
+    @endphp
+
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <form action="{{ route('company-barcodes.store') }}" method="POST" class="p-6 space-y-6" id="companyBarcodeForm">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg">
+                <form action="{{ route('company-barcodes.store') }}" method="POST" class="p-6 space-y-8" id="companyBarcodeForm">
                     @csrf
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Perusahaan *</label>
-                        <select name="company_id" id="company_id" required class="mt-1 block w-full rounded-md border-gray-300">
-                            <option value="">-- Pilih Perusahaan --</option>
-                            @foreach($companies as $c)
-                                <option value="{{ $c->id }}" {{ old('company_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('company_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <label for="company_name" class="block text-sm font-medium text-egg-800">Nama perusahaan *</label>
+                        <input
+                            type="text"
+                            name="company_name"
+                            id="company_name"
+                            value="{{ old('company_name') }}"
+                            required
+                            maxlength="255"
+                            placeholder="Contoh: PT Contoh Indonesia"
+                            class="mt-1 block w-full rounded-md border-egg-300 shadow-sm focus:border-egg-500 focus:ring-egg-500"
+                        />
+                        @error('company_name')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Pilih Barang</h3>
-                        <p class="text-sm text-gray-500 mb-4">Centang barang dan isi qty, posisi rak, tingkat untuk barang yang akan dimasukkan ke barcode perusahaan.</p>
+                        <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+                            <div>
+                                <h3 class="text-lg font-medium text-egg-900">Barang</h3>
+                                <p class="text-sm text-egg-700 mt-1">Isi data barang secara manual. Kode boleh kosong (akan digenerate otomatis). Minimal satu baris dengan qty &gt; 0.</p>
+                            </div>
+                            <button type="button" id="add-item-row" class="btn-egg-secondary text-sm py-2 px-4 lg:min-h-0">
+                                + Tambah baris
+                            </button>
+                        </div>
 
-                        <div id="items-container" class="space-y-4">
-                            @php
-                                $selectedCompanyId = old('company_id', $companies->first()?->id);
-                                $selectedCompany = $companies->firstWhere('id', (int)$selectedCompanyId) ?? $companies->first();
-                                $items = $selectedCompany ? $selectedCompany->items : collect();
-                            @endphp
-                            @forelse($items as $item)
-                                <div class="flex items-center gap-4 p-4 border rounded-lg item-row" data-company-id="{{ $selectedCompany->id }}">
-                                    <input type="checkbox" name="item_include[{{ $item->id }}]" value="1" class="item-checkbox">
-                                    <div class="flex-1">
-                                        <span class="font-medium">{{ $item->part_name ?? $item->part_number ?? 'Item #'.$item->id }}</span>
-                                        <span class="text-gray-500 text-sm">({{ $item->code }})</span>
-                                    </div>
-                                    <div class="w-24">
-                                        <input type="number" name="item_qty[{{ $item->id }}]" value="0" min="0" class="rounded-md border-gray-300 item-qty" placeholder="Qty">
-                                    </div>
-                                    <div class="w-24">
-                                        <input type="text" name="item_posisi[{{ $item->id }}]" class="rounded-md border-gray-300" placeholder="Rak">
-                                    </div>
-                                    <div class="w-24">
-                                        <input type="text" name="item_tingkat[{{ $item->id }}]" class="rounded-md border-gray-300" placeholder="Tingkat">
-                                    </div>
-                                </div>
-                            @empty
-                                <p class="text-gray-500" id="no-items-msg">Pilih perusahaan untuk melihat daftar barang. Pastikan perusahaan memiliki barang.</p>
-                            @endforelse
+                        @error('items')
+                            <p class="text-red-600 text-sm mb-4">{{ $message }}</p>
+                        @enderror
+
+                        <div class="overflow-x-auto border border-egg-200 rounded-lg">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-egg-50 text-egg-800">
+                                    <tr>
+                                        <th class="text-left py-3 px-3 font-semibold">Nama barang</th>
+                                        <th class="text-left py-3 px-3 font-semibold w-36">Kode</th>
+                                        <th class="text-left py-3 px-3 font-semibold w-24">Qty *</th>
+                                        <th class="text-left py-3 px-3 font-semibold w-28">Rak</th>
+                                        <th class="text-left py-3 px-3 font-semibold w-28">Tingkat</th>
+                                        <th class="w-12 py-3 px-2"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items-rows" class="divide-y divide-egg-200">
+                                    @foreach($itemRows as $idx => $row)
+                                        <tr class="item-row" data-row-index="{{ $idx }}">
+                                            <td class="py-3 px-3 align-top">
+                                                <input
+                                                    type="text"
+                                                    name="items[{{ $idx }}][part_name]"
+                                                    value="{{ $row['part_name'] ?? '' }}"
+                                                    placeholder="Part name / nama"
+                                                    class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500"
+                                                />
+                                            </td>
+                                            <td class="py-3 px-3 align-top">
+                                                <input
+                                                    type="text"
+                                                    name="items[{{ $idx }}][code]"
+                                                    value="{{ $row['code'] ?? '' }}"
+                                                    placeholder="Opsional"
+                                                    class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500"
+                                                />
+                                            </td>
+                                            <td class="py-3 px-3 align-top">
+                                                <input
+                                                    type="number"
+                                                    name="items[{{ $idx }}][qty]"
+                                                    value="{{ $row['qty'] ?? '' }}"
+                                                    min="0"
+                                                    placeholder="0"
+                                                    class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty"
+                                                />
+                                            </td>
+                                            <td class="py-3 px-3 align-top">
+                                                <input
+                                                    type="text"
+                                                    name="items[{{ $idx }}][posisi_rak]"
+                                                    value="{{ $row['posisi_rak'] ?? '' }}"
+                                                    placeholder="Rak"
+                                                    class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500"
+                                                />
+                                            </td>
+                                            <td class="py-3 px-3 align-top">
+                                                <input
+                                                    type="text"
+                                                    name="items[{{ $idx }}][tingkat]"
+                                                    value="{{ $row['tingkat'] ?? '' }}"
+                                                    placeholder="Tingkat"
+                                                    class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500"
+                                                />
+                                            </td>
+                                            <td class="py-3 px-2 align-top text-center">
+                                                <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-1" title="Hapus baris" aria-label="Hapus baris">&times;</button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <div class="flex gap-4">
-                        <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">Generate Barcode</button>
-                        <a href="{{ route('company-barcodes.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</a>
+                    <div class="flex flex-wrap gap-4">
+                        <button type="submit" class="btn-egg-primary">Generate Barcode</button>
+                        <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary">Batal</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <template id="item-row-template">
+        <tr class="item-row">
+            <td class="py-3 px-3 align-top">
+                <input type="text" name="items[__I__][part_name]" value="" placeholder="Part name / nama" class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+            </td>
+            <td class="py-3 px-3 align-top">
+                <input type="text" name="items[__I__][code]" value="" placeholder="Opsional" class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+            </td>
+            <td class="py-3 px-3 align-top">
+                <input type="number" name="items[__I__][qty]" value="" min="0" placeholder="0" class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty" />
+            </td>
+            <td class="py-3 px-3 align-top">
+                <input type="text" name="items[__I__][posisi_rak]" value="" placeholder="Rak" class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+            </td>
+            <td class="py-3 px-3 align-top">
+                <input type="text" name="items[__I__][tingkat]" value="" placeholder="Tingkat" class="w-full rounded-md border-egg-300 text-sm shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+            </td>
+            <td class="py-3 px-2 align-top text-center">
+                <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-1" title="Hapus baris" aria-label="Hapus baris">&times;</button>
+            </td>
+        </tr>
+    </template>
+
     <script>
-        const companiesData = @json($companiesJson);
+        (function () {
+            const tbody = document.getElementById('items-rows');
+            const tpl = document.getElementById('item-row-template');
+            let nextIndex = {{ count($itemRows) }};
 
-        document.getElementById('company_id').addEventListener('change', function() {
-            const companyId = parseInt(this.value);
-            const container = document.getElementById('items-container');
-            const noItemsMsg = document.getElementById('no-items-msg');
+            document.getElementById('add-item-row').addEventListener('click', function () {
+                const row = tpl.content.firstElementChild.cloneNode(true);
+                row.querySelectorAll('[name*="__I__"]').forEach(function (el) {
+                    el.name = el.name.replace('__I__', String(nextIndex));
+                });
+                nextIndex++;
+                tbody.appendChild(row);
+                bindRemove(row.querySelector('.remove-item-row'));
+            });
 
-            const company = companiesData.find(c => c.id === companyId);
-            if (!company || !company.items || company.items.length === 0) {
-                container.innerHTML = '<p class="text-gray-500" id="no-items-msg">Tidak ada barang di perusahaan ini.</p>';
-                return;
+            function bindRemove(btn) {
+                if (!btn) return;
+                btn.addEventListener('click', function () {
+                    const rows = tbody.querySelectorAll('.item-row');
+                    if (rows.length <= 1) {
+                        rows[0].querySelectorAll('input').forEach(function (el) { el.value = ''; });
+                        return;
+                    }
+                    btn.closest('tr').remove();
+                });
             }
 
-            let html = '';
-            company.items.forEach((item) => {
-                html += `
-                    <div class="flex items-center gap-4 p-4 border rounded-lg item-row" data-company-id="${company.id}">
-                        <input type="checkbox" name="item_include[${item.id}]" value="1" class="item-checkbox">
-                        <div class="flex-1">
-                            <span class="font-medium">${item.part_name || item.part_number || 'Item #'+item.id}</span>
-                            <span class="text-gray-500 text-sm">(${item.code || ''})</span>
-                        </div>
-                        <div class="w-24">
-                            <input type="number" name="item_qty[${item.id}]" value="0" min="0" class="rounded-md border-gray-300 item-qty" placeholder="Qty">
-                        </div>
-                        <div class="w-24">
-                            <input type="text" name="item_posisi[${item.id}]" class="rounded-md border-gray-300" placeholder="Rak">
-                        </div>
-                        <div class="w-24">
-                            <input type="text" name="item_tingkat[${item.id}]" class="rounded-md border-gray-300" placeholder="Tingkat">
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        });
-
+            tbody.querySelectorAll('.remove-item-row').forEach(bindRemove);
+        })();
     </script>
 </x-app-layout>

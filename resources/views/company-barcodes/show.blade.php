@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+            <h2 class="font-semibold text-xl text-egg-900 leading-tight">
                 {{ __('Detail Barcode Perusahaan') }}
             </h2>
-            <div class="flex gap-2">
-                <button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Print</button>
-                <a href="{{ route('company-barcodes.create') }}" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">Buat Baru</a>
-                <a href="{{ route('company-barcodes.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Kembali</a>
+            <div class="flex flex-wrap gap-2 justify-end">
+                <button type="button" onclick="window.print()" class="btn-egg-primary">Print</button>
+                <a href="{{ route('company-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
+                <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary">Kembali</a>
             </div>
         </div>
     </x-slot>
@@ -15,7 +15,7 @@
     <div class="py-12">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 print:shadow-none">
-                <div class="border-2 border-gray-200 p-6 rounded-lg">
+                <div class="border-2 border-egg-200 p-6 rounded-lg">
                     <div class="flex justify-center mb-4">
                         <div class="barcode-container">
                             {!! $barcodeSvg !!}
