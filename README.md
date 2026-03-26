@@ -1,5 +1,27 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+## Instalasi (termasuk Windows 10/11)
+
+Folder `vendor/` **tidak** ikut dalam arsip Git / unduhan ZIP (diabaikan oleh `.gitignore`). Tanpa `vendor`, PHP akan gagal di `artisan` / `public/index.php` karena `vendor/autoload.php` belum ada. Itu **bukan** bug Windows; dependensi harus di-install dengan Composer.
+
+1. **PHP 8.1+** dan **Composer** harus terpasang. Di [Laragon](https://laragon.org/), biasanya sudah ada PHP; Composer bisa diunduh dari [getcomposer.org](https://getcomposer.org/) atau `composer.phar`.
+2. Buka **Command Prompt** atau **PowerShell**, `cd` ke folder proyek, misalnya:
+   `cd C:\Users\Thinkbook\Downloads\barcode-project-app-main`
+3. Jalankan:
+   ```bash
+   composer install
+   ```
+4. Salin environment dan generate key (jika belum):
+   ```bash
+   copy .env.example .env
+   php artisan key:generate
+   ```
+5. Sesuaikan `.env` (database, dll.), lalu migrasi jika perlu: `php artisan migrate`.
+
+Setelah `composer install` selesai, `php artisan` dan akses web ke `public/` akan berjalan normal.
+
+---
+
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>

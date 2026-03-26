@@ -31,7 +31,15 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+$autoload = __DIR__.'/../vendor/autoload.php';
+if (! is_file($autoload)) {
+    http_response_code(503);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "Composer dependencies are missing. From the project root, run: composer install\n";
+    exit(1);
+}
+
+require $autoload;
 
 /*
 |--------------------------------------------------------------------------
