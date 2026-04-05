@@ -1,44 +1,44 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-egg-900 leading-tight">
+        <h2 class="font-bold text-3xl text-egg-900 leading-tight">
             {{ __('Scan Barcode') }}
         </h2>
     </x-slot>
 
-    <div class="py-3">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-8 w-full">
+        <div class="max-w-6xl mx-auto w-full">
             @if (session('error'))
                 <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                     {{ session('error') }}
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg p-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <!-- Camera Scan -->
                     <div>
-                        <h3 class="text-lg font-medium text-egg-900 mb-4">Scan dengan Kamera</h3>
-                        <div id="reader" class="w-full border-2 border-egg-200 rounded-lg overflow-hidden" style="min-height: 300px;"></div>
-                        <p class="text-sm text-egg-700 mt-2">Arahkan kamera ke barcode garis (Code 128) atau ke kode QR pada label.</p>
+                        <h3 class="text-xl font-bold text-egg-900 mb-4">Scan dengan Kamera</h3>
+                        <div id="reader" class="w-full border-2 border-egg-200 rounded-xl overflow-hidden" style="min-height: 360px;"></div>
+                        <p class="text-base text-egg-700 mt-3">Arahkan kamera ke barcode garis (Code 128) atau ke kode QR pada label.</p>
                     </div>
 
                     <!-- Manual Input -->
                     <div>
-                        <h3 class="text-lg font-medium text-egg-900 mb-4">Input Manual</h3>
+                        <h3 class="text-xl font-bold text-egg-900 mb-4">Input Manual</h3>
                         <form id="manualScanForm">
                             <div class="flex flex-col sm:flex-row gap-2 sm:items-stretch">
-                                <input type="text" id="barcode_input" placeholder="ID barcode / QR (IB-… atau CB-…)" class="flex-1 rounded-md border-egg-300 shadow-sm focus:border-egg-500 focus:ring-egg-500 min-h-[2.5rem]">
+                                <input type="text" id="barcode_input" placeholder="ID barcode / QR (IB-… atau CB-…)" class="flex-1 rounded-lg border-egg-300 py-3 px-4 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 min-h-[3rem]">
                                 <button type="submit" class="btn-egg-primary shrink-0">Cari</button>
                             </div>
                         </form>
-                        <p class="text-sm text-egg-700 mt-2">Ketik ID yang sama dengan pada label (barcode atau QR) lalu klik Cari.</p>
+                        <p class="text-base text-egg-700 mt-3">Ketik ID yang sama dengan pada label (barcode atau QR) lalu klik Cari.</p>
                     </div>
                 </div>
 
                 <!-- Result -->
-                <div id="scan-result" class="mt-6 hidden">
-                    <h3 class="text-lg font-medium text-egg-900 mb-4">Hasil Scan</h3>
-                    <div id="result-content" class="p-4 bg-egg-50 border border-egg-200 rounded-lg"></div>
+                <div id="scan-result" class="mt-8 hidden">
+                    <h3 class="text-xl font-bold text-egg-900 mb-4">Hasil Scan</h3>
+                    <div id="result-content" class="p-6 bg-egg-50 border border-egg-200 rounded-xl text-base"></div>
                 </div>
             </div>
         </div>

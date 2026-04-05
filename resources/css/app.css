@@ -2,19 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Skala dasar lebih besar agar UI terasa memenuhi layar */
+@layer base {
+    html {
+        font-size: 112.5%;
+    }
+}
+
 @layer components {
     .btn-egg-primary {
-        @apply inline-flex items-center justify-center px-2 py-1.5 text-xs font-semibold rounded text-white bg-egg-500 shadow-sm
-            hover:bg-egg-600 active:bg-egg-700 transition-colors sm:text-sm;
+        @apply inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold rounded-lg text-white bg-egg-500 shadow-md
+            hover:bg-egg-600 active:bg-egg-700 transition-colors;
     }
 
     .btn-egg-secondary {
-        @apply inline-flex items-center justify-center px-2 py-1.5 text-xs font-semibold rounded
+        @apply inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold rounded-lg
             bg-egg-100 text-egg-900 border border-egg-200
-            hover:bg-egg-200 active:bg-egg-300 transition-colors sm:text-sm;
+            hover:bg-egg-200 active:bg-egg-300 transition-colors;
     }
 
     .link-egg {
-        @apply text-egg-700 hover:text-egg-800 hover:underline;
+        @apply text-egg-700 hover:text-egg-800 hover:underline text-base;
     }
 }

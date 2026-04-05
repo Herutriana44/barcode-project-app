@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-egg-900 leading-tight">
+        <h2 class="font-bold text-3xl text-egg-900 leading-tight">
             {{ __('Buat Barcode Perusahaan') }}
         </h2>
     </x-slot>
@@ -12,10 +12,10 @@
         ]);
     @endphp
 
-    <div class="py-3">
-        <div class="max-w-[100rem] mx-auto px-2 sm:px-4">
-            <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg">
-                <form action="{{ route('company-barcodes.store') }}" method="POST" class="p-3 space-y-4" id="companyBarcodeForm">
+    <div class="py-8 w-full">
+        <div class="max-w-[100rem] mx-auto w-full">
+            <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl">
+                <form action="{{ route('company-barcodes.store') }}" method="POST" class="p-6 md:p-8 space-y-6 text-base" id="companyBarcodeForm">
                     @csrf
 
                     <div>
@@ -74,7 +74,7 @@
                                                     name="items[{{ $idx }}][part_name]"
                                                     value="{{ $row['part_name'] ?? '' }}"
                                                     placeholder="Part name / nama"
-                                                    class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
@@ -83,7 +83,7 @@
                                                     name="items[{{ $idx }}][code]"
                                                     value="{{ $row['code'] ?? '' }}"
                                                     placeholder="Opsional"
-                                                    class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
@@ -93,7 +93,7 @@
                                                     value="{{ $row['qty'] ?? '' }}"
                                                     min="0"
                                                     placeholder="0"
-                                                    class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty py-1"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty py-1"
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
@@ -102,7 +102,7 @@
                                                     name="items[{{ $idx }}][posisi_rak]"
                                                     value="{{ $row['posisi_rak'] ?? '' }}"
                                                     placeholder="Rak"
-                                                    class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
@@ -111,11 +111,11 @@
                                                     name="items[{{ $idx }}][tingkat]"
                                                     value="{{ $row['tingkat'] ?? '' }}"
                                                     placeholder="Tingkat"
-                                                    class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][operator_mobil_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                                                <select name="items[{{ $idx }}][operator_mobil_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                                                     <option value="">—</option>
                                                     @foreach($employees as $e)
                                                         <option value="{{ $e->id }}" @selected((string)($row['operator_mobil_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
@@ -123,7 +123,7 @@
                                                 </select>
                                             </td>
                                             <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][pengirim_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                                                <select name="items[{{ $idx }}][pengirim_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                                                     <option value="">—</option>
                                                     @foreach($employees as $e)
                                                         <option value="{{ $e->id }}" @selected((string)($row['pengirim_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
@@ -131,7 +131,7 @@
                                                 </select>
                                             </td>
                                             <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][operator_forklift_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                                                <select name="items[{{ $idx }}][operator_forklift_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                                                     <option value="">—</option>
                                                     @foreach($employees as $e)
                                                         <option value="{{ $e->id }}" @selected((string)($row['operator_forklift_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
@@ -160,22 +160,22 @@
     <template id="item-row-template">
         <tr class="item-row">
             <td class="py-1 px-2 align-top">
-                <input type="text" name="items[__I__][part_name]" value="" placeholder="Part name / nama" class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
+                <input type="text" name="items[__I__][part_name]" value="" placeholder="Part name / nama" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <input type="text" name="items[__I__][code]" value="" placeholder="Opsional" class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
+                <input type="text" name="items[__I__][code]" value="" placeholder="Opsional" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <input type="number" name="items[__I__][qty]" value="" min="0" placeholder="0" class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty py-1" />
+                <input type="number" name="items[__I__][qty]" value="" min="0" placeholder="0" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <input type="text" name="items[__I__][posisi_rak]" value="" placeholder="Rak" class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
+                <input type="text" name="items[__I__][posisi_rak]" value="" placeholder="Rak" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <input type="text" name="items[__I__][tingkat]" value="" placeholder="Tingkat" class="w-full rounded border-egg-300 text-xs shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
+                <input type="text" name="items[__I__][tingkat]" value="" placeholder="Tingkat" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <select name="items[__I__][operator_mobil_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                <select name="items[__I__][operator_mobil_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                     <option value="">—</option>
                     @foreach($employees as $e)
                         <option value="{{ $e->id }}">{{ $e->name }}</option>
@@ -183,7 +183,7 @@
                 </select>
             </td>
             <td class="py-1 px-2 align-top">
-                <select name="items[__I__][pengirim_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                <select name="items[__I__][pengirim_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                     <option value="">—</option>
                     @foreach($employees as $e)
                         <option value="{{ $e->id }}">{{ $e->name }}</option>
@@ -191,7 +191,7 @@
                 </select>
             </td>
             <td class="py-1 px-2 align-top">
-                <select name="items[__I__][operator_forklift_id]" class="w-full rounded border-egg-300 text-xs shadow-sm py-1">
+                <select name="items[__I__][operator_forklift_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
                     <option value="">—</option>
                     @foreach($employees as $e)
                         <option value="{{ $e->id }}">{{ $e->name }}</option>

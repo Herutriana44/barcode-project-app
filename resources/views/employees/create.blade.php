@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-lg text-egg-900 leading-tight">Tambah karyawan</h2>
+        <h2 class="font-bold text-3xl text-egg-900 leading-tight">Tambah karyawan</h2>
     </x-slot>
 
-    <div class="py-3">
-        <div class="max-w-lg mx-auto px-2 sm:px-4">
-            <div class="bg-white border border-egg-200 rounded p-3">
-                <form method="POST" action="{{ route('employees.store') }}" class="space-y-3 text-sm">
+    <div class="py-8 w-full">
+        <div class="max-w-xl mx-auto w-full">
+            <div class="bg-white border border-egg-200 rounded-xl p-6 md:p-8 shadow-md">
+                <form method="POST" action="{{ route('employees.store') }}" class="space-y-5 text-base">
                     @csrf
                     @include('employees.partials.form', ['employee' => null])
                     <div class="flex gap-2 pt-1">

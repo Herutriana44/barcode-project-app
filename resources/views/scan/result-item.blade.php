@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-egg-900 leading-tight">
+        <h2 class="font-bold text-3xl text-egg-900 leading-tight">
             {{ __('Hasil Scan - Barcode Barang') }}
         </h2>
     </x-slot>
 
-    <div class="py-3">
-        <div class="max-w-2xl mx-auto px-2 sm:px-4">
-            <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg p-3">
-                <div class="grid grid-cols-2 gap-2 gap-y-1 text-xs">
+    <div class="py-8 w-full">
+        <div class="max-w-4xl mx-auto w-full">
+            <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
+                <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
                     <div><span class="font-medium">Customer:</span> {{ $itemBarcode->item->customer ?? '-' }}</div>
                     <div><span class="font-medium">Part Name:</span> {{ $itemBarcode->item->part_name ?? '-' }}</div>
                     <div><span class="font-medium">Part Number:</span> {{ $itemBarcode->item->part_number ?? '-' }}</div>

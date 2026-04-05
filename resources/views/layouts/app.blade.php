@@ -15,23 +15,23 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased text-egg-900">
-        <div class="min-h-screen bg-egg-50">
-            <div class="print:hidden">
+    <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed">
+        <div class="min-h-screen bg-egg-50 flex flex-col">
+            <div class="print:hidden shrink-0">
                 @include('layouts.navigation')
             </div>
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow-sm border-b border-egg-200 print:hidden">
-                    <div class="max-w-7xl mx-auto py-2 px-2 sm:px-4 lg:px-6">
+                <header class="bg-white shadow-sm border-b border-egg-200 print:hidden shrink-0">
+                    <div class="w-full max-w-[1920px] mx-auto py-4 px-4 sm:px-8 lg:px-12">
                         {{ $header }}
                     </div>
                 </header>
             @endif
 
             <!-- Page Content -->
-            <main class="print:p-0">
+            <main class="print:p-0 flex-1 w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12">
                 {{ $slot }}
             </main>
         </div>

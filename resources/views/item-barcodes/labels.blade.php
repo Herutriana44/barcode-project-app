@@ -13,7 +13,7 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased text-egg-900 bg-egg-50 text-[11px] leading-tight">
+<body class="font-sans antialiased text-egg-900 bg-egg-50 text-base leading-snug">
     <div class="no-print sticky top-0 z-10 flex flex-wrap gap-2 p-2 bg-egg-100 border-b border-egg-200">
         <button type="button" onclick="window.print()" class="btn-egg-primary py-1 px-3 text-xs min-h-0">Cetak</button>
         <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary py-1 px-3 text-xs min-h-0">Kembali</a>

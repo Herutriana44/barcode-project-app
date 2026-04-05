@@ -1,22 +1,22 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-egg-200">
+<nav x-data="{ open: false }" class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
-        <div class="flex justify-between h-12">
-            <div class="flex">
+    <div class="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12">
+        <div class="flex justify-between items-center min-h-[4.25rem] sm:min-h-[4.5rem]">
+            <div class="flex items-center gap-4 lg:gap-8 min-w-0">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center gap-3 min-w-0">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 min-w-0">
-                        <x-application-logo class="block h-9 w-auto shrink-0" />
-                        <span class="sm:hidden font-semibold text-egg-900 text-sm truncate">{{ config('app.name') }}</span>
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 min-w-0 group">
+                        <x-application-logo class="block h-11 w-auto shrink-0 rounded-md ring-2 ring-white/25 shadow-md" />
+                        <span class="sm:hidden font-semibold text-white text-base truncate drop-shadow-sm">{{ config('app.name') }}</span>
                         <div class="hidden sm:flex flex-col leading-tight min-w-0">
-                            <span class="font-semibold text-egg-900 truncate text-sm lg:text-base">{{ config('app.name') }}</span>
-                            <span class="text-xs text-egg-600 truncate max-w-[12rem] lg:max-w-xs">{{ config('app.tagline') }}</span>
+                            <span class="font-semibold text-white truncate text-base lg:text-lg drop-shadow-sm">{{ config('app.name') }}</span>
+                            <span class="text-sm text-egg-100/95 truncate max-w-[14rem] lg:max-w-md">{{ config('app.tagline') }}</span>
                         </div>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden flex-wrap gap-x-1 lg:gap-x-2 xl:gap-x-3 sm:-my-px sm:ms-4 lg:ms-8 sm:flex items-end">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -39,14 +39,14 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-4 shrink-0">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-2 py-1 border border-transparent text-xs leading-4 font-medium rounded text-egg-800 bg-white hover:text-egg-900 hover:bg-egg-50 focus:outline-none transition ease-in-out duration-150 sm:text-sm">
+                        <button class="inline-flex items-center px-4 py-2.5 border border-white/25 text-base leading-5 font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 shadow-sm">
                             <div>{{ Auth::user()->name }}</div>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <div class="ms-2">
+                                <svg class="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -73,9 +73,9 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-egg-600 hover:text-egg-800 hover:bg-egg-100 focus:outline-none focus:bg-egg-100 focus:text-egg-800 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <div class="-me-2 flex items-center sm:hidden shrink-0">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-3 rounded-lg text-white hover:bg-white/15 focus:outline-none focus:bg-white/15 transition duration-150 ease-in-out">
+                    <svg class="h-7 w-7" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -85,8 +85,8 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-white/15 bg-egg-900/35 backdrop-blur-sm">
+        <div class="pt-2 pb-3 space-y-0.5 px-2">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
@@ -108,13 +108,13 @@
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-egg-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-egg-900">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-egg-700">{{ Auth::user()->email }}</div>
+        <div class="pt-4 pb-3 border-t border-white/15 px-4">
+            <div class="px-1">
+                <div class="font-semibold text-lg text-white">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-egg-100">{{ Auth::user()->email }}</div>
             </div>
 
-            <div class="mt-3 space-y-1">
+            <div class="mt-3 space-y-0.5">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>

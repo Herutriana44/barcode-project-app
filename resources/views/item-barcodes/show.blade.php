@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-wrap justify-between items-center gap-3">
-            <h2 class="font-semibold text-xl text-egg-900 leading-tight">
+            <h2 class="font-bold text-3xl text-egg-900 leading-tight">
                 {{ __('Detail Barcode Barang') }}
             </h2>
             <div class="flex flex-wrap gap-2 justify-end">
@@ -12,27 +12,27 @@
         </div>
     </x-slot>
 
-    <div class="py-3">
-        <div class="max-w-2xl mx-auto px-2 sm:px-4">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2 print:shadow-none">
-                <div class="border border-egg-200 p-2 rounded-lg">
-                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-4 mb-3 print:flex-row print:gap-4">
+    <div class="py-8 w-full">
+        <div class="max-w-4xl mx-auto w-full">
+            <div class="bg-white overflow-hidden shadow-md sm:rounded-xl p-6 print:shadow-none">
+                <div class="border border-egg-200 p-6 rounded-xl">
+                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6 print:flex-row print:gap-6">
                         <div class="flex flex-col items-center w-full sm:w-auto">
-                            <span class="text-xs font-medium text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
+                            <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
                             <div class="barcode-container overflow-x-auto max-w-full">
                                 {!! $barcodeSvg !!}
                             </div>
                         </div>
                         <div class="flex flex-col items-center w-full sm:w-auto">
-                            <span class="text-xs font-medium text-egg-700 mb-2 uppercase tracking-wide">Kode QR</span>
-                            <div class="qr-container w-[180px] max-w-full flex justify-center [&_svg]:max-w-full [&_svg]:h-auto">
+                            <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Kode QR</span>
+                            <div class="qr-container w-[220px] max-w-full flex justify-center [&_svg]:max-w-full [&_svg]:h-auto">
                                 {!! $qrCodeSvg !!}
                             </div>
                         </div>
                     </div>
-                    <p class="text-center text-sm font-mono mb-3 font-medium text-egg-900">{{ $itemBarcode->barcode_id }}</p>
+                    <p class="text-center text-lg font-mono mb-6 font-medium text-egg-900">{{ $itemBarcode->barcode_id }}</p>
 
-                    <div class="grid grid-cols-2 gap-2 gap-y-1 text-xs">
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-base">
                         <div><span class="font-medium">Customer:</span> {{ $itemBarcode->item->customer ?? '-' }}</div>
                         <div><span class="font-medium">Part Name:</span> {{ $itemBarcode->item->part_name ?? '-' }}</div>
                         <div><span class="font-medium">Part Number:</span> {{ $itemBarcode->item->part_number ?? '-' }}</div>
