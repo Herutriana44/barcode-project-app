@@ -12,18 +12,18 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Hijau telur asin / green gauze: sage–jade lembut, krim kehijauan
+                // Biru–lavender (palet: #6367FF, #8494FF, #C9BEFF, #FFDBFD)
                 egg: {
-                    50: '#f2f7f4',
-                    100: '#e2ebe5',
-                    200: '#c5d6cc',
-                    300: '#9bb8a7',
-                    400: '#6f957f',
-                    500: '#4e7a62',
-                    600: '#3d614f',
-                    700: '#334f42',
-                    800: '#2b4137',
-                    900: '#24362e',
+                    50: '#FFDBFD',
+                    100: '#EDE8FF',
+                    200: '#C9BEFF',
+                    300: '#A8B4FF',
+                    400: '#8494FF',
+                    500: '#6367FF',
+                    600: '#5558E6',
+                    700: '#4547C4',
+                    800: '#3839A0',
+                    900: '#242560',
                 },
             },
             fontFamily: {

@@ -5,10 +5,10 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-3">
+        <div class="max-w-4xl mx-auto px-2 sm:px-4">
             <div class="bg-white overflow-hidden shadow-sm border border-egg-200 sm:rounded-lg">
-                <form action="{{ route('item-barcodes.store') }}" method="POST" class="p-6 space-y-6">
+                <form action="{{ route('item-barcodes.store') }}" method="POST" class="p-3 space-y-4 text-sm">
                     @csrf
 
                     <div class="border-b pb-4">
@@ -100,6 +100,39 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Tanggal Terima Material</label>
                                 <input type="date" name="tanggal_terima_material" value="{{ old('tanggal_terima_material') }}" class="mt-1 block w-full rounded-md border-egg-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-3">
+                        <h3 class="text-base font-medium text-egg-900 mb-2">Karyawan (opsional)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-xs font-medium text-egg-800">Operator mobil</label>
+                                <select name="operator_mobil_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
+                                    <option value="">—</option>
+                                    @foreach($employees as $e)
+                                        <option value="{{ $e->id }}" @selected(old('operator_mobil_id') == $e->id)>{{ $e->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-egg-800">Pengirim</label>
+                                <select name="pengirim_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
+                                    <option value="">—</option>
+                                    @foreach($employees as $e)
+                                        <option value="{{ $e->id }}" @selected(old('pengirim_id') == $e->id)>{{ $e->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-egg-800">Operator forklift</label>
+                                <select name="operator_forklift_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
+                                    <option value="">—</option>
+                                    @foreach($employees as $e)
+                                        <option value="{{ $e->id }}" @selected(old('operator_forklift_id') == $e->id)>{{ $e->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

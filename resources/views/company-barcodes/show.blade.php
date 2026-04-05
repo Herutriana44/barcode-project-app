@@ -12,11 +12,11 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 print:shadow-none">
-                <div class="border-2 border-egg-200 p-6 rounded-lg">
-                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-10 mb-6 print:flex-row print:gap-8">
+    <div class="py-3">
+        <div class="max-w-4xl mx-auto px-2 sm:px-4">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2 print:shadow-none">
+                <div class="border border-egg-200 p-2 rounded-lg">
+                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-4 mb-3 print:flex-row print:gap-4">
                         <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-xs font-medium text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
                             <div class="barcode-container overflow-x-auto max-w-full">
@@ -30,30 +30,38 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-center text-base font-mono mb-6 font-medium text-egg-900">{{ $companyBarcode->barcode_id }}</p>
+                    <p class="text-center text-sm font-mono mb-3 font-medium text-egg-900">{{ $companyBarcode->barcode_id }}</p>
 
-                    <h3 class="font-semibold text-lg mb-4">{{ $companyBarcode->company->name }}</h3>
+                    <h3 class="font-semibold text-base mb-2">{{ $companyBarcode->company->name }}</h3>
 
-                    <table class="min-w-full text-sm">
+                    <div class="overflow-x-auto">
+                    <table class="min-w-full text-xs">
                         <thead>
-                            <tr class="border-b">
-                                <th class="text-left py-2">Nama Barang</th>
-                                <th class="text-left py-2">Qty</th>
-                                <th class="text-left py-2">Posisi Rak</th>
-                                <th class="text-left py-2">Tingkat</th>
+                            <tr class="border-b border-egg-200">
+                                <th class="text-left py-1 px-1">Nama</th>
+                                <th class="text-left py-1 px-1">Qty</th>
+                                <th class="text-left py-1 px-1">Rak</th>
+                                <th class="text-left py-1 px-1">Tingkat</th>
+                                <th class="text-left py-1 px-1">Op. mobil</th>
+                                <th class="text-left py-1 px-1">Pengirim</th>
+                                <th class="text-left py-1 px-1">Op. forklift</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($companyBarcode->company->companyItems as $ci)
-                                <tr class="border-b">
-                                    <td class="py-2">{{ $ci->item->part_name ?? $ci->item->part_number ?? 'Item #'.$ci->item->id }}</td>
-                                    <td class="py-2">{{ $ci->qty }}</td>
-                                    <td class="py-2">{{ $ci->posisi_rak ?? '-' }}</td>
-                                    <td class="py-2">{{ $ci->tingkat ?? '-' }}</td>
+                                <tr class="border-b border-egg-100">
+                                    <td class="py-1 px-1">{{ $ci->item->part_name ?? $ci->item->part_number ?? 'Item #'.$ci->item->id }}</td>
+                                    <td class="py-1 px-1">{{ $ci->qty }}</td>
+                                    <td class="py-1 px-1">{{ $ci->posisi_rak ?? '-' }}</td>
+                                    <td class="py-1 px-1">{{ $ci->tingkat ?? '-' }}</td>
+                                    <td class="py-1 px-1">{{ $ci->item->operatorMobil->name ?? '-' }}</td>
+                                    <td class="py-1 px-1">{{ $ci->item->pengirim->name ?? '-' }}</td>
+                                    <td class="py-1 px-1">{{ $ci->item->operatorForklift->name ?? '-' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>

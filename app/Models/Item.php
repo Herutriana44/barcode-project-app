@@ -11,6 +11,9 @@ class Item extends Model
 
     protected $fillable = [
         'company_id',
+        'operator_mobil_id',
+        'pengirim_id',
+        'operator_forklift_id',
         'customer',
         'part_name',
         'part_number',
@@ -40,6 +43,21 @@ class Item extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function operatorMobil()
+    {
+        return $this->belongsTo(Employee::class, 'operator_mobil_id');
+    }
+
+    public function pengirim()
+    {
+        return $this->belongsTo(Employee::class, 'pengirim_id');
+    }
+
+    public function operatorForklift()
+    {
+        return $this->belongsTo(Employee::class, 'operator_forklift_id');
     }
 
     public function itemReceivings()

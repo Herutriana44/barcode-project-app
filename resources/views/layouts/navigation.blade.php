@@ -1,12 +1,17 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-egg-200">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+        <div class="flex justify-between h-12">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto" />
+                <div class="shrink-0 flex items-center gap-3 min-w-0">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 min-w-0">
+                        <x-application-logo class="block h-9 w-auto shrink-0" />
+                        <span class="sm:hidden font-semibold text-egg-900 text-sm truncate">{{ config('app.name') }}</span>
+                        <div class="hidden sm:flex flex-col leading-tight min-w-0">
+                            <span class="font-semibold text-egg-900 truncate text-sm lg:text-base">{{ config('app.name') }}</span>
+                            <span class="text-xs text-egg-600 truncate max-w-[12rem] lg:max-w-xs">{{ config('app.tagline') }}</span>
+                        </div>
                     </a>
                 </div>
 
@@ -24,6 +29,12 @@
                     <x-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*')">
                         {{ __('Scan') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
+                        {{ __('Karyawan') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
+                        {{ __('FIFO Keluar') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -31,7 +42,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-egg-800 bg-white hover:text-egg-900 hover:bg-egg-50 focus:outline-none transition ease-in-out duration-150 lg:px-4 lg:py-2.5 lg:text-base">
+                        <button class="inline-flex items-center px-2 py-1 border border-transparent text-xs leading-4 font-medium rounded text-egg-800 bg-white hover:text-egg-900 hover:bg-egg-50 focus:outline-none transition ease-in-out duration-150 sm:text-sm">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -87,6 +98,12 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*')">
                 {{ __('Scan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
+                {{ __('Karyawan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
+                {{ __('FIFO Keluar') }}
             </x-responsive-nav-link>
         </div>
 

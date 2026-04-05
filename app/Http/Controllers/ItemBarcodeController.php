@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Employee;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
@@ -13,16 +14,56 @@ class ItemBarcodeController extends Controller
 {
     public function index()
     {
-        $itemBarcodes = ItemBarcode::with(['item.company', 'itemReceiving'])->latest()->paginate(15);
+        $itemBarcodes = ItemBarcode::query()
+            ->with(['item.company', 'itemReceiving'])
+            ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
+            ->orderByRaw('COALESCE(item_receivings.tanggal_terima_fg, DATE(item_receivings.created_at)) ASC')
+            ->orderBy('item_receivings.id')
+            ->orderBy('item_barcodes.id')
+            ->select('item_barcodes.*')
+            ->paginate(15);
 
         return view('item-barcodes.index', compact('itemBarcodes'));
     }
 
+    /**
+     * Label cetak: semua barcode barang + data + QR (tampilan seperti kertas).
+     */
+    public function labels()
+    {
+        $itemBarcodes = ItemBarcode::with([
+            'item.company',
+            'item.operatorMobil',
+            'item.pengirim',
+            'item.operatorForklift',
+            'itemReceiving',
+        ])
+            ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
+            ->orderByRaw('COALESCE(item_receivings.tanggal_terima_fg, DATE(item_receivings.created_at)) ASC')
+            ->orderBy('item_receivings.id')
+            ->orderBy('item_barcodes.id')
+            ->select('item_barcodes.*')
+            ->get();
+
+        $rows = $itemBarcodes->map(function (ItemBarcode $ib) {
+            $payload = $ib->barcode_id;
+
+            return [
+                'itemBarcode' => $ib,
+                'barcodeSvg' => BarcodeQrCodes::code128Svg($payload, 2, 44),
+                'qrSvg' => BarcodeQrCodes::qrSvg($payload, 140, 4),
+            ];
+        });
+
+        return view('item-barcodes.labels', compact('rows'));
+    }
+
     public function create()
     {
-        $companies = Company::with('items')->get();
+        $companies = Company::with('items')->orderBy('name')->get();
+        $employees = Employee::orderBy('name')->get();
 
-        return view('item-barcodes.create', compact('companies'));
+        return view('item-barcodes.create', compact('companies', 'employees'));
     }
 
     public function store(Request $request)
@@ -49,10 +90,16 @@ class ItemBarcodeController extends Controller
             'transfer_slip_no' => 'nullable|string',
             'tanggal_terima_fg' => 'nullable|date',
             'jumlah_box' => 'nullable|integer|min:0',
+            'operator_mobil_id' => 'nullable|exists:employees,id',
+            'pengirim_id' => 'nullable|exists:employees,id',
+            'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
         $item = Item::create([
             'company_id' => $validated['company_id'],
+            'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
+            'pengirim_id' => $validated['pengirim_id'] ?? null,
+            'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
             'customer' => $validated['customer'] ?? null,
             'part_name' => $validated['part_name'] ?? null,
             'part_number' => $validated['part_number'] ?? null,
@@ -92,7 +139,13 @@ class ItemBarcodeController extends Controller
 
     public function show(ItemBarcode $itemBarcode)
     {
-        $itemBarcode->load(['item.company', 'itemReceiving']);
+        $itemBarcode->load([
+            'item.company',
+            'item.operatorMobil',
+            'item.pengirim',
+            'item.operatorForklift',
+            'itemReceiving',
+        ]);
         $payload = $itemBarcode->barcode_id;
         $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
         $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);

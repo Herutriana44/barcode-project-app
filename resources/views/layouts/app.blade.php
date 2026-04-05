@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <x-favicon />
-        <title>{{ config('app.name') }}</title>
+        <title>{{ config('app.name') }} — {{ config('app.tagline') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,19 +17,21 @@
     </head>
     <body class="font-sans antialiased text-egg-900">
         <div class="min-h-screen bg-egg-50">
-            @include('layouts.navigation')
+            <div class="print:hidden">
+                @include('layouts.navigation')
+            </div>
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow-sm border-b border-egg-200">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <header class="bg-white shadow-sm border-b border-egg-200 print:hidden">
+                    <div class="max-w-7xl mx-auto py-2 px-2 sm:px-4 lg:px-6">
                         {{ $header }}
                     </div>
                 </header>
             @endif
 
             <!-- Page Content -->
-            <main>
+            <main class="print:p-0">
                 {{ $slot }}
             </main>
         </div>

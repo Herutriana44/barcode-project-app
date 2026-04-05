@@ -4,16 +4,14 @@
 
 @layer components {
     .btn-egg-primary {
-        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-md text-white bg-egg-500 shadow-sm
-            hover:bg-egg-600 active:bg-egg-700 transition-colors
-            lg:px-8 lg:py-3.5 lg:text-base lg:rounded-lg lg:min-h-[3rem];
+        @apply inline-flex items-center justify-center px-2 py-1.5 text-xs font-semibold rounded text-white bg-egg-500 shadow-sm
+            hover:bg-egg-600 active:bg-egg-700 transition-colors sm:text-sm;
     }
 
     .btn-egg-secondary {
-        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-md
+        @apply inline-flex items-center justify-center px-2 py-1.5 text-xs font-semibold rounded
             bg-egg-100 text-egg-900 border border-egg-200
-            hover:bg-egg-200 active:bg-egg-300 transition-colors
-            lg:px-8 lg:py-3.5 lg:text-base lg:rounded-lg lg:min-h-[3rem];
+            hover:bg-egg-200 active:bg-egg-300 transition-colors sm:text-sm;
     }
 
     .link-egg {

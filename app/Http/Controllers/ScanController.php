@@ -16,14 +16,21 @@ class ScanController extends Controller
     public function show(Request $request, string $barcodeId)
     {
         if (str_starts_with($barcodeId, 'IB-')) {
-            $itemBarcode = ItemBarcode::with(['item.company', 'itemReceiving'])
+            $itemBarcode = ItemBarcode::with([
+                'item.company',
+                'item.operatorMobil',
+                'item.pengirim',
+                'item.operatorForklift',
+                'itemReceiving',
+            ])
                 ->where('barcode_id', $barcodeId)
                 ->first();
 
-            if (!$itemBarcode) {
+            if (! $itemBarcode) {
                 if ($request->expectsJson()) {
                     return response()->json(['error' => 'Barcode tidak ditemukan'], 404);
                 }
+
                 return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
             }
 
@@ -42,14 +49,19 @@ class ScanController extends Controller
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {
-            $companyBarcode = CompanyBarcode::with('company.companyItems.item')
+            $companyBarcode = CompanyBarcode::with([
+                'company.companyItems.item.operatorMobil',
+                'company.companyItems.item.pengirim',
+                'company.companyItems.item.operatorForklift',
+            ])
                 ->where('barcode_id', $barcodeId)
                 ->first();
 
-            if (!$companyBarcode) {
+            if (! $companyBarcode) {
                 if ($request->expectsJson()) {
                     return response()->json(['error' => 'Barcode tidak ditemukan'], 404);
                 }
+
                 return redirect()->route('scan.index')->with('error', 'Barcode perusahaan tidak ditemukan.');
             }
 
@@ -69,6 +81,7 @@ class ScanController extends Controller
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Format barcode tidak valid'], 400);
         }
+
         return redirect()->route('scan.index')->with('error', 'Format barcode tidak valid.');
     }
 }

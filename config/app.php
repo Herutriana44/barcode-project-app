@@ -16,7 +16,21 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Sistem Barcode Gudang'),
+    'name' => env('APP_NAME', 'TASM MIS'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Tagline & Description
+    |--------------------------------------------------------------------------
+    |
+    | Shown in page titles, meta tags, and marketing copy. Description is the
+    | Indonesian explanation of what the MIS covers (employees, reports, goods).
+    |
+    */
+
+    'tagline' => env('APP_TAGLINE', 'Management Information System'),
+
+    'description' => env('APP_DESCRIPTION', 'Sistem informasi manajemen perusahaan yang berisi data karyawan, laporan, dan data barang.'),
 
     /*
     |--------------------------------------------------------------------------
