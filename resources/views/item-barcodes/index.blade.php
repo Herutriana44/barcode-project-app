@@ -5,7 +5,7 @@
                 {{ __('Barcode Barang') }}
             </h2>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('item-barcodes.labels') }}" class="btn-egg-secondary" target="_blank" rel="noopener">Label cetak</a>
+                <a href="{{ route('item-barcodes.labels') }}" class="btn-egg-secondary" target="_blank" rel="noopener">Cetak semua label (PDF)</a>
                 <a href="{{ route('item-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
             </div>
         </div>

@@ -51,7 +51,8 @@ class ItemBarcodeController extends Controller
             return [
                 'itemBarcode' => $ib,
                 'barcodeSvg' => BarcodeQrCodes::code128Svg($payload, 2, 44),
-                'qrSvg' => BarcodeQrCodes::qrSvg($payload, 140, 4),
+                /** Ukuran kecil untuk slot QR pada label cetak. */
+                'qrSvg' => BarcodeQrCodes::qrSvg($payload, 88, 2),
             ];
         });
 
