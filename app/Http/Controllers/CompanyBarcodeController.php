@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
+use App\Support\InventorySpreadsheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -90,6 +91,36 @@ class CompanyBarcodeController extends Controller
             return redirect()->route('company-barcodes.show', $companyBarcode)
                 ->with('success', 'Barcode perusahaan berhasil dibuat.');
         });
+    }
+
+    public function importForm()
+    {
+        return view('company-barcodes.import');
+    }
+
+    public function importTemplate()
+    {
+        return InventorySpreadsheet::downloadCompanyTemplate();
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx|max:10240',
+        ], [
+            'file.required' => 'Pilih berkas Excel (.xlsx).',
+            'file.mimes' => 'Hanya format .xlsx yang didukung.',
+        ]);
+
+        $matrix = InventorySpreadsheet::readFirstSheet($request->file('file'));
+        $result = InventorySpreadsheet::importCompanyFromMatrix($matrix);
+
+        if (count($result['errors']) > 0) {
+            return back()->with('import_errors', $result['errors']);
+        }
+
+        return redirect()->route('company-barcodes.index')
+            ->with('success', $result['message'] ?? 'Import selesai.');
     }
 
     public function show(CompanyBarcode $companyBarcode)

@@ -4,9 +4,10 @@
             <h2 class="font-bold text-3xl text-egg-900 leading-tight">
                 {{ __('Barcode Perusahaan') }}
             </h2>
-            <a href="{{ route('company-barcodes.create') }}" class="btn-egg-primary">
-                Buat Baru
-            </a>
+            <div class="flex flex-wrap gap-2 justify-end">
+                <a href="{{ route('company-barcodes.import') }}" class="btn-egg-secondary">Import Excel</a>
+                <a href="{{ route('company-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
+            </div>
         </div>
     </x-slot>
 

@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
+use App\Support\InventorySpreadsheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -234,6 +235,36 @@ class ItemBarcodeController extends Controller
 
         return redirect()->route('item-barcodes.index')
             ->with('success', 'Barcode barang dihapus.');
+    }
+
+    public function importForm()
+    {
+        return view('item-barcodes.import');
+    }
+
+    public function importTemplate()
+    {
+        return InventorySpreadsheet::downloadFgTemplate();
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx|max:10240',
+        ], [
+            'file.required' => 'Pilih berkas Excel (.xlsx).',
+            'file.mimes' => 'Hanya format .xlsx yang didukung.',
+        ]);
+
+        $matrix = InventorySpreadsheet::readFirstSheet($request->file('file'));
+        $result = InventorySpreadsheet::importFgItemsFromMatrix($matrix);
+
+        if (count($result['errors']) > 0) {
+            return back()->with('import_errors', $result['errors']);
+        }
+
+        return redirect()->route('item-barcodes.index')
+            ->with('success', $result['message'] ?? 'Import selesai.');
     }
 
     public function show(ItemBarcode $itemBarcode)

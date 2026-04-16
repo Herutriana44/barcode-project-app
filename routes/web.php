@@ -30,6 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Item Barcodes (Modul 1 - Barcode Barang)
+    Route::get('item-barcodes/import/template', [ItemBarcodeController::class, 'importTemplate'])->name('item-barcodes.import.template');
+    Route::get('item-barcodes/import', [ItemBarcodeController::class, 'importForm'])->name('item-barcodes.import');
+    Route::post('item-barcodes/import', [ItemBarcodeController::class, 'importStore'])->name('item-barcodes.import.store');
     Route::get('item-barcodes/labels', [ItemBarcodeController::class, 'labels'])->name('item-barcodes.labels');
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
@@ -41,6 +44,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('stock-out', [StockOutController::class, 'store'])->name('stock-out.store');
 
     // Company Barcodes (Modul 2 - Barcode Perusahaan)
+    Route::get('company-barcodes/import/template', [CompanyBarcodeController::class, 'importTemplate'])->name('company-barcodes.import.template');
+    Route::get('company-barcodes/import', [CompanyBarcodeController::class, 'importForm'])->name('company-barcodes.import');
+    Route::post('company-barcodes/import', [CompanyBarcodeController::class, 'importStore'])->name('company-barcodes.import.store');
     Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Scan

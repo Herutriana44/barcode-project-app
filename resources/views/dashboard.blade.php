@@ -76,6 +76,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-lg">
                     <a href="{{ route('item-barcodes.index') }}" class="font-medium text-egg-700 hover:text-egg-900 hover:underline">Barcode Barang (urut FIFO)</a>
                     <a href="{{ route('company-barcodes.index') }}" class="font-medium text-egg-700 hover:text-egg-900 hover:underline">Barcode Perusahaan (urut FIFO)</a>
+                    <a href="{{ route('item-barcodes.import') }}" class="font-medium text-egg-700 hover:text-egg-900 hover:underline">Import Excel — Barang (FG)</a>
+                    <a href="{{ route('company-barcodes.import') }}" class="font-medium text-egg-700 hover:text-egg-900 hover:underline">Import Excel — Perusahaan</a>
                 </div>
             </div>
         </div>
