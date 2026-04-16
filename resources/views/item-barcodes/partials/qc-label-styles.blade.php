@@ -89,23 +89,17 @@
     .label-logo-cell {
         text-align: center;
         vertical-align: middle;
+        padding: 0.5mm !important;
     }
 
-    .logo-tasm {
-        font-weight: 800;
-        font-size: 8pt;
-        letter-spacing: -0.02em;
-        line-height: 1;
-    }
-
-    .logo-tasm .r { color: #c00; }
-    .logo-tasm .b { color: #039; }
-
-    .logo-sub {
-        font-size: 4pt;
-        color: #333;
-        margin-top: 0.5mm;
-        line-height: 1.1;
+    .label-logo-img {
+        display: block;
+        margin: 0 auto;
+        max-width: 14mm;
+        max-height: 13mm;
+        width: auto;
+        height: auto;
+        object-fit: contain;
     }
 
     .label-company {
@@ -261,6 +255,11 @@
             width: 100% !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
+        }
+
+        .label-logo-img {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
     }
 

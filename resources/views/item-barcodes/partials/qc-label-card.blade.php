@@ -13,8 +13,7 @@
         </colgroup>
         <tr>
             <td class="label-logo-cell">
-                <div class="logo-tasm"><span class="r">T</span><span class="b">ASM</span></div>
-                <div class="logo-sub">a Noguchi, Ltd. Group</div>
+                <img src="{{ asset('icon.png') }}" alt="" class="label-logo-img" />
             </td>
             <td class="label-company" colspan="2">{{ $companyName }}</td>
         </tr>
