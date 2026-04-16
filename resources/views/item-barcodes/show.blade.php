@@ -1,3 +1,7 @@
+@push('styles')
+    @include('item-barcodes.partials.qc-label-styles')
+@endpush
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-wrap justify-between items-center gap-3">
@@ -12,11 +16,22 @@
         </div>
     </x-slot>
 
-    <div class="py-8 w-full">
-        <div class="max-w-4xl mx-auto w-full">
-            <div class="bg-white overflow-hidden shadow-md sm:rounded-xl p-6 print:shadow-none">
+    <div class="py-8 w-full qc-label-detail-outer max-w-4xl mx-auto print:max-w-none">
+        <div class="space-y-8 w-full">
+            <section class="qc-label-font-root" aria-label="Label cetak QC">
+                <h3 class="text-base font-semibold text-egg-800 mb-2 no-print">Label cetak</h3>
+                <p class="text-sm text-egg-600 mb-3 no-print">Tampilan ini sama dengan label pada <strong>Cetak semua label (PDF)</strong>. Saat Print, hanya bagian label yang dicetak.</p>
+                <div class="qc-label-detail-wrap">
+                    @include('item-barcodes.partials.qc-label-card', [
+                        'itemBarcode' => $itemBarcode,
+                        'qrSvg' => $qcLabelQrSvg,
+                    ])
+                </div>
+            </section>
+
+            <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">
                 <div class="border border-egg-200 p-6 rounded-xl">
-                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6 print:flex-row print:gap-6">
+                    <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6">
                         <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
                             <div class="barcode-container overflow-x-auto max-w-full">

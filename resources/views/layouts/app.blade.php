@@ -14,6 +14,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        @stack('styles')
     </head>
     <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed">
         <div class="min-h-screen bg-egg-50 flex flex-col">

@@ -150,7 +150,8 @@ class ItemBarcodeController extends Controller
         $payload = $itemBarcode->barcode_id;
         $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
         $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);
+        $qcLabelQrSvg = BarcodeQrCodes::qrSvg($payload, 88, 2);
 
-        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg'));
+        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg'));
     }
 }
