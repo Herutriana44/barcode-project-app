@@ -9,6 +9,7 @@ use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ItemBarcodeController extends Controller
 {
@@ -136,6 +137,103 @@ class ItemBarcodeController extends Controller
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Barcode barang berhasil dibuat.');
+    }
+
+    public function edit(ItemBarcode $itemBarcode)
+    {
+        $itemBarcode->load(['item', 'itemReceiving']);
+        $companies = Company::orderBy('name')->get();
+        $employees = Employee::orderBy('name')->get();
+
+        return view('item-barcodes.edit', compact('itemBarcode', 'companies', 'employees'));
+    }
+
+    public function update(Request $request, ItemBarcode $itemBarcode)
+    {
+        $itemBarcode->load(['item', 'itemReceiving']);
+
+        $validated = $request->validate([
+            'company_id' => 'required|exists:companies,id',
+            'customer' => 'nullable|string',
+            'part_name' => 'nullable|string',
+            'part_number' => 'nullable|string',
+            'model' => 'nullable|string',
+            'berat' => 'nullable|numeric',
+            'qty' => 'required|integer|min:0',
+            'inspector_name' => 'nullable|string',
+            'tgl_produksi' => 'nullable|date',
+            'tgl_expired' => 'nullable|date',
+            'code' => 'required|string',
+            'posisi_rak' => 'nullable|string',
+            'tingkat' => 'nullable|string',
+            'ukuran_material' => 'nullable|string',
+            'jenis_bahan' => 'nullable|in:SPCC,SESE',
+            'quantity_material' => 'nullable|integer|min:0',
+            'no_surat_jalan_material' => 'nullable|string',
+            'tanggal_terima_material' => 'nullable|date',
+            'transfer_slip_no' => 'nullable|string',
+            'tanggal_terima_fg' => 'nullable|date',
+            'jumlah_box' => 'nullable|integer|min:0',
+            'operator_mobil_id' => 'nullable|exists:employees,id',
+            'pengirim_id' => 'nullable|exists:employees,id',
+            'operator_forklift_id' => 'nullable|exists:employees,id',
+        ]);
+
+        DB::transaction(function () use ($itemBarcode, $validated) {
+            $itemBarcode->item->update([
+                'company_id' => $validated['company_id'],
+                'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
+                'pengirim_id' => $validated['pengirim_id'] ?? null,
+                'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
+                'customer' => $validated['customer'] ?? null,
+                'part_name' => $validated['part_name'] ?? null,
+                'part_number' => $validated['part_number'] ?? null,
+                'model' => $validated['model'] ?? null,
+                'berat' => $validated['berat'] ?? null,
+                'qty' => $validated['qty'],
+                'inspector_name' => $validated['inspector_name'] ?? null,
+                'tgl_produksi' => $validated['tgl_produksi'] ?? null,
+                'tgl_expired' => $validated['tgl_expired'] ?? null,
+                'code' => $validated['code'],
+                'posisi_rak' => $validated['posisi_rak'] ?? null,
+                'tingkat' => $validated['tingkat'] ?? null,
+                'ukuran_material' => $validated['ukuran_material'] ?? null,
+                'jenis_bahan' => $validated['jenis_bahan'] ?? null,
+                'quantity_material' => $validated['quantity_material'] ?? null,
+                'no_surat_jalan_material' => $validated['no_surat_jalan_material'] ?? null,
+                'tanggal_terima_material' => $validated['tanggal_terima_material'] ?? null,
+            ]);
+
+            $itemBarcode->itemReceiving->update([
+                'transfer_slip_no' => $validated['transfer_slip_no'] ?? null,
+                'tanggal_terima_fg' => $validated['tanggal_terima_fg'] ?? null,
+                'jumlah_box' => $validated['jumlah_box'] ?? 0,
+            ]);
+        });
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', 'Data barang diperbarui.');
+    }
+
+    public function destroy(ItemBarcode $itemBarcode)
+    {
+        $itemBarcode->load(['item', 'itemReceiving']);
+
+        DB::transaction(function () use ($itemBarcode) {
+            $item = $itemBarcode->item;
+            $receiving = $itemBarcode->itemReceiving;
+            $itemBarcode->delete();
+            $receiving->delete();
+
+            $item->refresh();
+            if ($item->itemBarcodes()->exists() || $item->itemReceivings()->exists() || $item->companyItems()->exists()) {
+                return;
+            }
+            $item->delete();
+        });
+
+        return redirect()->route('item-barcodes.index')
+            ->with('success', 'Barcode barang dihapus.');
     }
 
     public function show(ItemBarcode $itemBarcode)

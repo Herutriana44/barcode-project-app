@@ -10,6 +10,12 @@
             </h2>
             <div class="flex flex-wrap gap-2 justify-end">
                 <button type="button" onclick="window.print()" class="btn-egg-primary">Print</button>
+                <a href="{{ route('item-barcodes.edit', $itemBarcode) }}" class="btn-egg-primary">Ubah</a>
+                <form action="{{ route('item-barcodes.destroy', $itemBarcode) }}" method="POST" class="inline-flex items-center" onsubmit="return confirm('Hapus barcode barang ini? Data penerimaan terkait juga akan dihapus.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-egg-secondary text-red-700 border-red-200 hover:bg-red-50">Hapus</button>
+                </form>
                 <a href="{{ route('item-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
                 <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary">Kembali</a>
             </div>
@@ -18,6 +24,9 @@
 
     <div class="py-8 w-full qc-label-detail-outer max-w-4xl mx-auto print:max-w-none">
         <div class="space-y-8 w-full">
+            @if (session('success'))
+                <p class="no-print p-2 text-sm bg-egg-100 border border-egg-300 rounded text-egg-900">{{ session('success') }}</p>
+            @endif
             <section class="qc-label-font-root" aria-label="Label cetak QC">
                 <h3 class="text-base font-semibold text-egg-800 mb-2 no-print">Label cetak</h3>
                 <p class="text-sm text-egg-600 mb-3 no-print">Tampilan ini sama dengan label pada <strong>Cetak semua label (PDF)</strong>. Saat Print, hanya bagian label yang dicetak.</p>

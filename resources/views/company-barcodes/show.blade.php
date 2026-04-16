@@ -6,6 +6,12 @@
             </h2>
             <div class="flex flex-wrap gap-2 justify-end">
                 <button type="button" onclick="window.print()" class="btn-egg-primary">Print</button>
+                <a href="{{ route('company-barcodes.edit', $companyBarcode) }}" class="btn-egg-primary">Ubah</a>
+                <form action="{{ route('company-barcodes.destroy', $companyBarcode) }}" method="POST" class="inline-flex items-center" onsubmit="return confirm('Hapus seluruh data perusahaan ini, semua barcode perusahaan, dan barang terkait? Tindakan tidak dapat dibatalkan.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-egg-secondary text-red-700 border-red-200 hover:bg-red-50">Hapus</button>
+                </form>
                 <a href="{{ route('company-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
                 <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary">Kembali</a>
             </div>
@@ -14,6 +20,12 @@
 
     <div class="py-8 w-full">
         <div class="max-w-5xl mx-auto w-full">
+            @if (session('success'))
+                <p class="mb-4 p-2 text-sm bg-egg-100 border border-egg-300 rounded text-egg-900">{{ session('success') }}</p>
+            @endif
+            @if (session('error'))
+                <p class="mb-4 p-2 text-sm bg-red-50 border border-red-200 rounded text-red-800">{{ session('error') }}</p>
+            @endif
             <div class="bg-white overflow-hidden shadow-md sm:rounded-xl p-6 print:shadow-none">
                 <div class="border border-egg-200 p-6 rounded-xl">
                     <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6 print:flex-row print:gap-6">

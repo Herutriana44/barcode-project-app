@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Item Barcodes (Modul 1 - Barcode Barang)
     Route::get('item-barcodes/labels', [ItemBarcodeController::class, 'labels'])->name('item-barcodes.labels');
-    Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan
     Route::resource('employees', EmployeeController::class)->except(['show']);
@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('stock-out', [StockOutController::class, 'store'])->name('stock-out.store');
 
     // Company Barcodes (Modul 2 - Barcode Perusahaan)
-    Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Scan
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
