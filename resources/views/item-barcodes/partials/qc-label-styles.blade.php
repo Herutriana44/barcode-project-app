@@ -1,8 +1,8 @@
 <style>
     /* Label QC kecil (mm) — dipakai halaman cetak massal & detail barang */
     :root {
-        --label-w: 96mm;
-        --label-h: 56mm;
+        --label-w: 98mm;
+        --label-min-h: 72mm;
         --label-border: 0.35mm solid #000;
         --label-pad: 1.2mm;
         --font-label: Arial, Helvetica, "Liberation Sans", sans-serif;
@@ -48,7 +48,8 @@
     .label-grid {
         display: grid;
         grid-template-columns: repeat(2, var(--label-w));
-        grid-auto-rows: var(--label-h);
+        grid-auto-rows: auto;
+        align-items: start;
         gap: 3mm 4mm;
         justify-content: center;
         padding-bottom: 1rem;
@@ -57,22 +58,23 @@
     .label-card {
         box-sizing: border-box;
         width: var(--label-w);
-        height: var(--label-h);
+        min-height: var(--label-min-h);
+        height: auto;
         background: #fff;
         border: var(--label-border);
         padding: var(--label-pad);
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow: visible;
     }
 
     .label-table {
         width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
-        flex: 1;
-        font-size: 5.5pt;
-        line-height: 1.2;
+        flex: 0 0 auto;
+        font-size: 6pt;
+        line-height: 1.25;
     }
 
     .label-table col.c-logo { width: 18%; }
@@ -95,8 +97,8 @@
     .label-logo-img {
         display: block;
         margin: 0 auto;
-        max-width: 14mm;
-        max-height: 13mm;
+        max-width: 16mm;
+        max-height: 15mm;
         width: auto;
         height: auto;
         object-fit: contain;
@@ -124,8 +126,8 @@
     .label-fields-inner td {
         border: none;
         border-bottom: var(--label-border);
-        padding: 0.6mm 1mm;
-        font-size: 5.5pt;
+        padding: 0.65mm 1mm;
+        font-size: 6pt;
     }
 
     .label-fields-inner tr:last-child td {
@@ -144,7 +146,6 @@
 
     .side-stack {
         width: 100%;
-        height: 100%;
         border-collapse: collapse;
         table-layout: fixed;
     }
@@ -168,10 +169,10 @@
     .code-big {
         display: block;
         text-align: center;
-        font-size: 16pt;
+        font-size: 15pt;
         font-weight: 800;
-        line-height: 1.05;
-        padding: 0.5mm 0;
+        line-height: 1.1;
+        padding: 0.6mm 0;
     }
 
     .qr-slot {
@@ -182,8 +183,8 @@
     .qr-slot svg {
         display: block;
         margin: 0 auto;
-        max-width: 22mm;
-        max-height: 22mm;
+        max-width: 24mm;
+        max-height: 24mm;
         width: 100%;
         height: auto;
     }
@@ -191,8 +192,8 @@
     .label-footer td {
         text-align: center;
         vertical-align: middle;
-        font-size: 5.5pt;
-        padding: 0.8mm 1mm !important;
+        font-size: 6pt;
+        padding: 1mm 1.2mm !important;
     }
 
     .label-footer .f-h {
@@ -202,16 +203,19 @@
     }
 
     .label-footer .status-ok {
-        font-size: 12pt;
+        font-size: 11pt;
         font-weight: 800;
+        line-height: 1.1;
     }
 
     .label-doc-rev {
-        font-size: 4.5pt;
+        font-size: 5pt;
         color: #222;
-        margin-top: 0.6mm;
+        margin-top: 0.8mm;
         padding-left: 0.5mm;
+        padding-bottom: 0.3mm;
         flex-shrink: 0;
+        line-height: 1.2;
     }
 
     .labels-empty {
