@@ -11,6 +11,7 @@ use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
+use App\Support\ScanUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -130,11 +131,11 @@ class CompanyBarcodeController extends Controller
             'company.companyItems.item.pengirim',
             'company.companyItems.item.operatorForklift',
         ]);
-        $payload = $companyBarcode->barcode_id;
-        $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
-        $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);
+        $scanUrl = ScanUrl::forBarcode($companyBarcode->barcode_id);
+        $barcodeSvg = BarcodeQrCodes::code128SvgForScan($companyBarcode->barcode_id);
+        $qrCodeSvg = BarcodeQrCodes::qrSvgForScan($companyBarcode->barcode_id);
 
-        return view('company-barcodes.show', compact('companyBarcode', 'barcodeSvg', 'qrCodeSvg'));
+        return view('company-barcodes.show', compact('companyBarcode', 'barcodeSvg', 'qrCodeSvg', 'scanUrl'));
     }
 
     public function edit(CompanyBarcode $companyBarcode)

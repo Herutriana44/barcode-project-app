@@ -31,15 +31,24 @@
                     <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6 print:flex-row print:gap-6">
                         <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
+                            <p class="text-xs text-egg-600 text-center mb-2 max-w-md">Isi: URL scan — pemindai garis mengirim tautan ke halaman ini.</p>
                             <div class="barcode-container overflow-x-auto max-w-full">
                                 {!! $barcodeSvg !!}
                             </div>
                         </div>
                         <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Kode QR</span>
+                            <p class="text-xs text-egg-600 text-center mb-2 max-w-md">Isi: URL yang sama — dibuka di browser ponsel.</p>
                             <div class="qr-container w-[220px] max-w-full flex justify-center [&_svg]:max-w-full [&_svg]:h-auto">
                                 {!! $qrCodeSvg !!}
                             </div>
+                        </div>
+                    </div>
+                    <div class="no-print mb-6 max-w-2xl mx-auto">
+                        <p class="text-xs font-medium text-egg-700 mb-1">Tautan scan (salin untuk dibagikan)</p>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" readonly id="company-scan-url" value="{{ $scanUrl }}" class="flex-1 rounded-lg border-egg-300 py-2 px-3 text-sm font-mono bg-egg-50 text-egg-900">
+                            <button type="button" class="btn-egg-secondary shrink-0 text-sm" data-copy-target="company-scan-url">Salin URL</button>
                         </div>
                     </div>
                     <p class="text-center text-lg font-mono mb-4 font-medium text-egg-900">{{ $companyBarcode->barcode_id }}</p>
@@ -78,4 +87,20 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var id = btn.getAttribute('data-copy-target');
+                    var el = document.getElementById(id);
+                    if (!el || !navigator.clipboard) return;
+                    navigator.clipboard.writeText(el.value).then(function () {
+                        var t = btn.textContent;
+                        btn.textContent = 'Disalin';
+                        setTimeout(function () { btn.textContent = t; }, 1500);
+                    });
+                });
+            });
+        </script>
+    @endpush
 </x-app-layout>

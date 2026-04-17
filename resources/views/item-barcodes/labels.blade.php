@@ -19,6 +19,7 @@
             @include('item-barcodes.partials.qc-label-card', [
                 'itemBarcode' => $row['itemBarcode'],
                 'qrSvg' => $row['qrSvg'],
+                'barcodeSvg' => $row['labelBarcodeSvg'],
             ])
         @empty
             <p class="labels-empty">Belum ada barcode barang.</p>

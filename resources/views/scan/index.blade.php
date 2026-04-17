@@ -19,7 +19,7 @@
                     <div>
                         <h3 class="text-xl font-bold text-egg-900 mb-4">Scan dengan Kamera</h3>
                         <div id="reader" class="w-full border-2 border-egg-200 rounded-xl overflow-hidden" style="min-height: 360px;"></div>
-                        <p class="text-base text-egg-700 mt-3">Arahkan kamera ke barcode garis (Code 128) atau ke kode QR pada label.</p>
+                        <p class="text-base text-egg-700 mt-3">Arahkan kamera ke barcode garis atau QR pada label (keduanya berisi URL). Pemindai lain yang membuka URL tersebut juga sampai ke halaman yang sama.</p>
                     </div>
 
                     <!-- Manual Input -->
@@ -27,11 +27,11 @@
                         <h3 class="text-xl font-bold text-egg-900 mb-4">Input Manual</h3>
                         <form id="manualScanForm">
                             <div class="flex flex-col sm:flex-row gap-2 sm:items-stretch">
-                                <input type="text" id="barcode_input" placeholder="ID barcode / QR (IB-… atau CB-…)" class="flex-1 rounded-lg border-egg-300 py-3 px-4 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 min-h-[3rem]">
+                                <input type="text" id="barcode_input" placeholder="IB-… / CB-…, /scan/…, atau tempel URL lengkap" class="flex-1 rounded-lg border-egg-300 py-3 px-4 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 min-h-[3rem]">
                                 <button type="submit" class="btn-egg-primary shrink-0">Cari</button>
                             </div>
                         </form>
-                        <p class="text-base text-egg-700 mt-3">Ketik ID yang sama dengan pada label (barcode atau QR) lalu klik Cari.</p>
+                        <p class="text-base text-egg-700 mt-3">Ketik ID pada label, path <span class="font-mono text-sm">/scan/IB-…</span>, atau tempel URL penuh dari QR/barcode. Klik Cari.</p>
                     </div>
                 </div>
 

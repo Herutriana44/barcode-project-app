@@ -9,6 +9,7 @@ use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
+use App\Support\ScanUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,13 +49,11 @@ class ItemBarcodeController extends Controller
             ->get();
 
         $rows = $itemBarcodes->map(function (ItemBarcode $ib) {
-            $payload = $ib->barcode_id;
-
             return [
                 'itemBarcode' => $ib,
-                'barcodeSvg' => BarcodeQrCodes::code128Svg($payload, 2, 44),
-                /** Ukuran kecil untuk slot QR pada label cetak. */
-                'qrSvg' => BarcodeQrCodes::qrSvg($payload, 88, 2),
+                /** Code 128 berisi URL scan; lebar disesuaikan untuk label kecil. */
+                'labelBarcodeSvg' => BarcodeQrCodes::code128SvgForScan($ib->barcode_id, 1, 28),
+                'qrSvg' => BarcodeQrCodes::qrSvgForScan($ib->barcode_id, 88, 2),
             ];
         });
 
@@ -276,11 +275,12 @@ class ItemBarcodeController extends Controller
             'item.operatorForklift',
             'itemReceiving',
         ]);
-        $payload = $itemBarcode->barcode_id;
-        $barcodeSvg = BarcodeQrCodes::code128Svg($payload);
-        $qrCodeSvg = BarcodeQrCodes::qrSvg($payload);
-        $qcLabelQrSvg = BarcodeQrCodes::qrSvg($payload, 88, 2);
+        $scanUrl = ScanUrl::forBarcode($itemBarcode->barcode_id);
+        $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id);
+        $qrCodeSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id);
+        $qcLabelQrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
+        $qcLabelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
 
-        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg'));
+        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl'));
     }
 }
