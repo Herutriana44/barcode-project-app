@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Employee;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\SvgWriter;
 use Picqer\Barcode\BarcodeGeneratorSVG;
@@ -26,6 +27,23 @@ final class BarcodeQrCodes
     {
         $url = ScanUrl::forBarcode($barcodeId);
         if (strlen($url) > 96) {
+            $widthFactor = 1;
+        }
+
+        return self::code128Svg($url, max(1, $widthFactor), $height);
+    }
+
+    /** QR isi URL profil karyawan. */
+    public static function qrSvgForEmployeeProfile(Employee $employee, int $size = 120, int $margin = 4): string
+    {
+        return self::qrSvg(EmployeeUrl::forProfile($employee), $size, $margin);
+    }
+
+    /** Code 128 isi URL profil karyawan (panjang URL disesuaikan). */
+    public static function code128SvgForEmployeeProfile(Employee $employee, int $widthFactor = 2, int $height = 44): string
+    {
+        $url = EmployeeUrl::forProfile($employee);
+        if (strlen($url) > 80) {
             $widthFactor = 1;
         }
 

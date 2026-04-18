@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Employee;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
@@ -63,9 +62,8 @@ class ItemBarcodeController extends Controller
     public function create()
     {
         $companies = Company::with('items')->orderBy('name')->get();
-        $employees = Employee::orderBy('name')->get();
 
-        return view('item-barcodes.create', compact('companies', 'employees'));
+        return view('item-barcodes.create', compact('companies'));
     }
 
     public function store(Request $request)
@@ -143,9 +141,8 @@ class ItemBarcodeController extends Controller
     {
         $itemBarcode->load(['item', 'itemReceiving']);
         $companies = Company::orderBy('name')->get();
-        $employees = Employee::orderBy('name')->get();
 
-        return view('item-barcodes.edit', compact('itemBarcode', 'companies', 'employees'));
+        return view('item-barcodes.edit', compact('itemBarcode', 'companies'));
     }
 
     public function update(Request $request, ItemBarcode $itemBarcode)

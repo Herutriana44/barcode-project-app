@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyBarcode;
 use App\Models\ItemBarcode;
+use App\Services\FifoStockService;
 use Illuminate\Http\Request;
 
 class ScanController extends Controller
@@ -34,6 +35,8 @@ class ScanController extends Controller
                 return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
             }
 
+            $fifoOlderStockWarning = FifoStockService::hasOlderBatchWithStock($itemBarcode);
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'type' => 'item',
@@ -41,11 +44,12 @@ class ScanController extends Controller
                         'item' => $itemBarcode->item,
                         'receiving' => $itemBarcode->itemReceiving,
                         'company' => $itemBarcode->item->company,
+                        'fifo_older_stock_warning' => $fifoOlderStockWarning,
                     ],
                 ]);
             }
 
-            return view('scan.result-item', compact('itemBarcode'));
+            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning'));
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {
@@ -83,5 +87,58 @@ class ScanController extends Controller
         }
 
         return redirect()->route('scan.index')->with('error', 'Format barcode tidak valid.');
+    }
+
+    /**
+     * Barang masuk / keluar (FIFO) dari halaman hasil scan barcode barang (IB-…).
+     */
+    public function storeMovement(Request $request, string $barcodeId)
+    {
+        if (! str_starts_with($barcodeId, 'IB-')) {
+            return redirect()->route('scan.index')
+                ->with('error', 'Mutasi stok dari scan hanya untuk barcode barang (IB-…).');
+        }
+
+        $validated = $request->validate([
+            'direction' => 'required|in:in,out',
+            'qty' => 'required|integer|min:1',
+        ]);
+
+        $itemBarcode = ItemBarcode::with(['item.company', 'itemReceiving'])
+            ->where('barcode_id', $barcodeId)
+            ->first();
+
+        if (! $itemBarcode) {
+            return redirect()->route('scan.index')
+                ->with('error', 'Barcode barang tidak ditemukan.');
+        }
+
+        $item = $itemBarcode->item;
+
+        try {
+            if ($validated['direction'] === 'in') {
+                FifoStockService::incrementItemQty((int) $item->id, (int) $validated['qty']);
+            } else {
+                FifoStockService::deductFromItems(
+                    (int) $item->company_id,
+                    (int) $validated['qty'],
+                    $item->part_number,
+                    $item->part_name
+                );
+            }
+        } catch (\InvalidArgumentException $e) {
+            return redirect()
+                ->route('scan.show', ['barcode_id' => $barcodeId])
+                ->withInput()
+                ->withErrors(['qty' => $e->getMessage()]);
+        }
+
+        $msg = $validated['direction'] === 'in'
+            ? 'Barang masuk: stok bertambah '.$validated['qty'].' unit.'
+            : 'Barang keluar: pengurangan FIFO '.$validated['qty'].' unit.';
+
+        return redirect()
+            ->route('scan.show', ['barcode_id' => $barcodeId])
+            ->with('success', $msg);
     }
 }

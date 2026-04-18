@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Employee extends Model
 {
@@ -12,8 +13,23 @@ class Employee extends Model
     protected $fillable = [
         'name',
         'nip',
-        'phone',
+        'jabatan',
+        'photo_path',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'nip';
+    }
+
+    public function photoPublicUrl(): ?string
+    {
+        if ($this->photo_path === null || $this->photo_path === '') {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->photo_path);
+    }
 
     public function itemsAsOperatorMobil()
     {

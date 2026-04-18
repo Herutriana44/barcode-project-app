@@ -11,16 +11,14 @@
                 'qty' => (string) $ci->qty,
                 'posisi_rak' => $ci->posisi_rak ?? '',
                 'tingkat' => $ci->tingkat ?? '',
-                'operator_mobil_id' => $item->operator_mobil_id ? (string) $item->operator_mobil_id : '',
-                'pengirim_id' => $item->pengirim_id ? (string) $item->pengirim_id : '',
-                'operator_forklift_id' => $item->operator_forklift_id ? (string) $item->operator_forklift_id : '',
             ];
         })->values()->all();
     }
     if (count($itemRows) === 0) {
-        $itemRows = [['company_item_id' => '', 'part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => '', 'operator_mobil_id' => '', 'pengirim_id' => '', 'operator_forklift_id' => '']];
+        $itemRows = [['company_item_id' => '', 'part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => '']];
     }
 @endphp
+{{-- Kolom input karyawan per baris barang disembunyikan (permintaan). --}}
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-bold text-3xl text-egg-900 leading-tight">
@@ -76,9 +74,6 @@
                                         <th class="text-left py-1.5 px-2 font-semibold w-20">Qty *</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-24">Rak</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-24">Tingkat</th>
-                                        <th class="text-left py-1.5 px-2 font-semibold min-w-[7rem]">Op. mobil</th>
-                                        <th class="text-left py-1.5 px-2 font-semibold min-w-[7rem]">Pengirim</th>
-                                        <th class="text-left py-1.5 px-2 font-semibold min-w-[7rem]">Op. forklift</th>
                                         <th class="w-8 py-1.5 px-1"></th>
                                     </tr>
                                 </thead>
@@ -132,30 +127,6 @@
                                                     class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
                                             </td>
-                                            <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][operator_mobil_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                                                    <option value="">—</option>
-                                                    @foreach($employees as $e)
-                                                        <option value="{{ $e->id }}" @selected((string)($row['operator_mobil_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][pengirim_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                                                    <option value="">—</option>
-                                                    @foreach($employees as $e)
-                                                        <option value="{{ $e->id }}" @selected((string)($row['pengirim_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="py-1 px-2 align-top">
-                                                <select name="items[{{ $idx }}][operator_forklift_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                                                    <option value="">—</option>
-                                                    @foreach($employees as $e)
-                                                        <option value="{{ $e->id }}" @selected((string)($row['operator_forklift_id'] ?? '') === (string)$e->id)>{{ $e->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
                                             <td class="py-1 px-1 align-top text-center">
                                                 <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-0.5" title="Hapus baris" aria-label="Hapus baris">&times;</button>
                                             </td>
@@ -192,30 +163,6 @@
             </td>
             <td class="py-1 px-2 align-top">
                 <input type="text" name="items[__I__][tingkat]" value="" placeholder="Tingkat" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
-            </td>
-            <td class="py-1 px-2 align-top">
-                <select name="items[__I__][operator_mobil_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                    <option value="">—</option>
-                    @foreach($employees as $e)
-                        <option value="{{ $e->id }}">{{ $e->name }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td class="py-1 px-2 align-top">
-                <select name="items[__I__][pengirim_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                    <option value="">—</option>
-                    @foreach($employees as $e)
-                        <option value="{{ $e->id }}">{{ $e->name }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td class="py-1 px-2 align-top">
-                <select name="items[__I__][operator_forklift_id]" class="w-full rounded border-egg-300 text-base shadow-sm py-1">
-                    <option value="">—</option>
-                    @foreach($employees as $e)
-                        <option value="{{ $e->id }}">{{ $e->name }}</option>
-                    @endforeach
-                </select>
             </td>
             <td class="py-1 px-1 align-top text-center">
                 <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-0.5" title="Hapus baris" aria-label="Hapus baris">&times;</button>

@@ -17,17 +17,19 @@
                         <tr>
                             <th class="text-left py-3 px-3 font-semibold">Nama</th>
                             <th class="text-left py-3 px-3 font-semibold">NIP</th>
-                            <th class="text-left py-3 px-3 font-semibold">Telepon</th>
-                            <th class="text-right py-3 px-3 font-semibold w-36">Aksi</th>
+                            <th class="text-left py-3 px-3 font-semibold">Jabatan</th>
+                            <th class="text-right py-3 px-3 font-semibold w-44">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-egg-200">
                         @forelse($employees as $e)
                             <tr>
                                 <td class="py-3 px-3">{{ $e->name }}</td>
-                                <td class="py-3 px-3">{{ $e->nip ?? '—' }}</td>
-                                <td class="py-3 px-3">{{ $e->phone ?? '—' }}</td>
+                                <td class="py-3 px-3 font-mono text-sm">{{ $e->nip }}</td>
+                                <td class="py-3 px-3">{{ $e->jabatan ?? '—' }}</td>
                                 <td class="py-3 px-3 text-right space-x-2">
+                                    <a href="{{ route('employees.show', $e) }}" class="link-egg">Detail</a>
+                                    <a href="{{ route('employees.id-card', $e) }}" target="_blank" class="link-egg">ID card</a>
                                     <a href="{{ route('employees.edit', $e) }}" class="link-egg">Edit</a>
                                     <form action="{{ route('employees.destroy', $e) }}" method="POST" class="inline" onsubmit="return confirm('Hapus karyawan ini?');">
                                         @csrf

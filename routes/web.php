@@ -37,7 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan
-    Route::resource('employees', EmployeeController::class)->except(['show']);
+    Route::get('employees/{employee}/id-card', [EmployeeController::class, 'idCard'])->name('employees.id-card');
+    Route::resource('employees', EmployeeController::class);
 
     // Pengeluaran FIFO
     Route::get('stock-out', [StockOutController::class, 'create'])->name('stock-out.create');
@@ -51,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Scan
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
+    Route::post('/scan/{barcode_id}/movement', [ScanController::class, 'storeMovement'])->name('scan.movement')->where('barcode_id', '[^/]+');
     Route::get('/scan/{barcode_id}', [ScanController::class, 'show'])->name('scan.show')->where('barcode_id', '[^/]+');
 });
 

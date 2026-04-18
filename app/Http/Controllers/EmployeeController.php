@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Support\BarcodeQrCodes;
+use App\Support\EmployeeUrl;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
@@ -23,14 +27,52 @@ class EmployeeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:64',
-            'phone' => 'nullable|string|max:32',
+            'nip' => [
+                'required',
+                'string',
+                'max:64',
+                'regex:/^[A-Za-z0-9._-]+$/',
+                Rule::unique('employees', 'nip'),
+            ],
+            'jabatan' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:4096',
         ]);
 
-        Employee::create($validated);
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('employees', 'public');
+        }
+
+        Employee::create([
+            'name' => $validated['name'],
+            'nip' => $validated['nip'],
+            'jabatan' => $validated['jabatan'] ?? null,
+            'photo_path' => $photoPath,
+        ]);
 
         return redirect()->route('employees.index')
             ->with('success', 'Karyawan berhasil ditambahkan.');
+    }
+
+    public function show(Employee $employee)
+    {
+        $profileUrl = EmployeeUrl::forProfile($employee);
+        $qrSvg = BarcodeQrCodes::qrSvgForEmployeeProfile($employee, 160, 6);
+        $barcodeSvg = BarcodeQrCodes::code128SvgForEmployeeProfile($employee, 1, 40);
+
+        return view('employees.show', compact('employee', 'profileUrl', 'qrSvg', 'barcodeSvg'));
+    }
+
+    /**
+     * Cetak ID card / name tag 9 × 5,3 cm.
+     */
+    public function idCard(Employee $employee)
+    {
+        $profileUrl = EmployeeUrl::forProfile($employee);
+        $qrSvg = BarcodeQrCodes::qrSvgForEmployeeProfile($employee, 72, 2);
+        $barcodeSvg = BarcodeQrCodes::code128SvgForEmployeeProfile($employee, 1, 28);
+
+        return view('employees.id-card', compact('employee', 'profileUrl', 'qrSvg', 'barcodeSvg'));
     }
 
     public function edit(Employee $employee)
@@ -42,11 +84,31 @@ class EmployeeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:64',
-            'phone' => 'nullable|string|max:32',
+            'nip' => [
+                'required',
+                'string',
+                'max:64',
+                'regex:/^[A-Za-z0-9._-]+$/',
+                Rule::unique('employees', 'nip')->ignore($employee->id),
+            ],
+            'jabatan' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:4096',
         ]);
 
-        $employee->update($validated);
+        $photoPath = $employee->photo_path;
+        if ($request->hasFile('photo')) {
+            if ($employee->photo_path) {
+                Storage::disk('public')->delete($employee->photo_path);
+            }
+            $photoPath = $request->file('photo')->store('employees', 'public');
+        }
+
+        $employee->update([
+            'name' => $validated['name'],
+            'nip' => $validated['nip'],
+            'jabatan' => $validated['jabatan'] ?? null,
+            'photo_path' => $photoPath,
+        ]);
 
         return redirect()->route('employees.index')
             ->with('success', 'Data karyawan diperbarui.');
@@ -54,6 +116,9 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
+        if ($employee->photo_path) {
+            Storage::disk('public')->delete($employee->photo_path);
+        }
         $employee->delete();
 
         return redirect()->route('employees.index')

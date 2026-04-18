@@ -6,7 +6,7 @@
     <div class="py-8 w-full">
         <div class="max-w-xl mx-auto w-full">
             <div class="bg-white border border-egg-200 rounded-xl p-6 md:p-8 shadow-md">
-                <form method="POST" action="{{ route('employees.update', $employee) }}" class="space-y-5 text-base">
+                <form method="POST" action="{{ route('employees.update', $employee) }}" enctype="multipart/form-data" class="space-y-5 text-base">
                     @csrf
                     @method('PUT')
                     @include('employees.partials.form', ['employee' => $employee])

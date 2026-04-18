@@ -104,38 +104,12 @@
                         </div>
                     </div>
 
+                    {{-- Input karyawan (opsional) pada barang disembunyikan sesuai permintaan.
                     <div class="border-b pb-3">
                         <h3 class="text-xl font-bold text-egg-900 mb-4">Karyawan (opsional)</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                            <div>
-                                <label class="block text-base font-medium text-egg-800">Operator mobil</label>
-                                <select name="operator_mobil_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
-                                    <option value="">—</option>
-                                    @foreach($employees as $e)
-                                        <option value="{{ $e->id }}" @selected(old('operator_mobil_id') == $e->id)>{{ $e->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-base font-medium text-egg-800">Pengirim</label>
-                                <select name="pengirim_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
-                                    <option value="">—</option>
-                                    @foreach($employees as $e)
-                                        <option value="{{ $e->id }}" @selected(old('pengirim_id') == $e->id)>{{ $e->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-base font-medium text-egg-800">Operator forklift</label>
-                                <select name="operator_forklift_id" class="mt-0.5 block w-full rounded border-egg-300 text-sm py-1">
-                                    <option value="">—</option>
-                                    @foreach($employees as $e)
-                                        <option value="{{ $e->id }}" @selected(old('operator_forklift_id') == $e->id)>{{ $e->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                        ...
                     </div>
+                    --}}
 
                     <div class="border-b pb-4">
                         <h3 class="text-xl font-bold text-egg-900 mb-4">2B: Barang Masuk (Checker/Finishing)</h3>
