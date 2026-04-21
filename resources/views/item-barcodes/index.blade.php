@@ -39,7 +39,7 @@
                                     <td class="px-3 py-3">{{ $ib->barcode_id }}</td>
                                     <td class="px-3 py-3">{{ $ib->item->part_name ?? '-' }}</td>
                                     <td class="px-3 py-3">{{ $ib->item->code ?? '-' }}</td>
-                                    <td class="px-3 py-3">{{ $ib->item->company->name ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $ib->item->customer ?? '-' }}</td>
                                     <td class="px-3 py-3">
                                         <div class="flex flex-wrap items-center gap-2">
                                             <a href="{{ route('item-barcodes.show', $ib) }}" class="link-egg">Lihat</a>

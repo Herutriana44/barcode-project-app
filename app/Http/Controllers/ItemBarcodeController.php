@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\DB;
 
 class ItemBarcodeController extends Controller
 {
+    private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
+
+    private static function warehouseCompanyOrFail(): Company
+    {
+        return Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
+    }
     public function index()
     {
         $itemBarcodes = ItemBarcode::query()
@@ -61,15 +67,17 @@ class ItemBarcodeController extends Controller
 
     public function create()
     {
-        $companies = Company::with('items')->orderBy('name')->get();
+        $warehouseCompany = self::warehouseCompanyOrFail();
+        $customers = Company::query()->orderBy('name')->get();
 
-        return view('item-barcodes.create', compact('companies'));
+        return view('item-barcodes.create', compact('warehouseCompany', 'customers'));
     }
 
     public function store(Request $request)
     {
+        $warehouseCompany = self::warehouseCompanyOrFail();
+
         $validated = $request->validate([
-            'company_id' => 'required|exists:companies,id',
             'customer' => 'nullable|string',
             'part_name' => 'nullable|string',
             'part_number' => 'nullable|string',
@@ -96,7 +104,7 @@ class ItemBarcodeController extends Controller
         ]);
 
         $item = Item::create([
-            'company_id' => $validated['company_id'],
+            'company_id' => $warehouseCompany->id,
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
             'pengirim_id' => $validated['pengirim_id'] ?? null,
             'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
@@ -140,17 +148,18 @@ class ItemBarcodeController extends Controller
     public function edit(ItemBarcode $itemBarcode)
     {
         $itemBarcode->load(['item', 'itemReceiving']);
-        $companies = Company::orderBy('name')->get();
+        $warehouseCompany = self::warehouseCompanyOrFail();
+        $customers = Company::query()->orderBy('name')->get();
 
-        return view('item-barcodes.edit', compact('itemBarcode', 'companies'));
+        return view('item-barcodes.edit', compact('itemBarcode', 'warehouseCompany', 'customers'));
     }
 
     public function update(Request $request, ItemBarcode $itemBarcode)
     {
         $itemBarcode->load(['item', 'itemReceiving']);
+        $warehouseCompany = self::warehouseCompanyOrFail();
 
         $validated = $request->validate([
-            'company_id' => 'required|exists:companies,id',
             'customer' => 'nullable|string',
             'part_name' => 'nullable|string',
             'part_number' => 'nullable|string',
@@ -176,9 +185,9 @@ class ItemBarcodeController extends Controller
             'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
-        DB::transaction(function () use ($itemBarcode, $validated) {
+        DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany) {
             $itemBarcode->item->update([
-                'company_id' => $validated['company_id'],
+                'company_id' => $warehouseCompany->id,
                 'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
                 'pengirim_id' => $validated['pengirim_id'] ?? null,
                 'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,

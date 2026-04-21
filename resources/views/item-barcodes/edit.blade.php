@@ -22,12 +22,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Perusahaan</label>
-                                <select name="company_id" required class="mt-1 block w-full rounded-md border-egg-300">
-                                    @foreach($companies as $c)
-                                        <option value="{{ $c->id }}" @selected(old('company_id', $item->company_id) == $c->id)>{{ $c->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('company_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                <input type="text" value="{{ $warehouseCompany->name }}" class="mt-1 block w-full rounded-md border-egg-300 bg-egg-50" readonly>
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Code (Kode Unik) *</label>
@@ -36,7 +31,13 @@
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Customer</label>
-                                <input type="text" name="customer" value="{{ old('customer', $item->customer) }}" class="mt-1 block w-full rounded-md border-egg-300">
+                                <select name="customer" class="mt-1 block w-full rounded-md border-egg-300">
+                                    <option value="">—</option>
+                                    @foreach($customers as $c)
+                                        <option value="{{ $c->name }}" @selected(old('customer', $item->customer) == $c->name)>{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('customer')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Part Name</label>
