@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             ItemSeeder::class,
             ItemReceivingSeeder::class,
+            Fqc038CleanListPartSeeder::class,
         ]);
     }
 }
