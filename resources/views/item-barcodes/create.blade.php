@@ -76,7 +76,7 @@
                             </div>
                         </div>
 
-                        <h4 class="text-lg font-bold text-egg-900 mt-6 mb-3">Material</h4>
+                        <!-- <h4 class="text-lg font-bold text-egg-900 mt-6 mb-3">Material</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Ukuran Material</label>
@@ -102,10 +102,10 @@
                                 <label class="block text-base font-medium text-egg-800">Tanggal Terima Material</label>
                                 <input type="date" name="tanggal_terima_material" value="{{ old('tanggal_terima_material') }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
-                    {{-- Input karyawan (opsional) pada barang disembunyikan sesuai permintaan.
+                    <!-- {{-- Input karyawan (opsional) pada barang disembunyikan sesuai permintaan.
                     <div class="border-b pb-3">
                         <h3 class="text-xl font-bold text-egg-900 mb-4">Karyawan (opsional)</h3>
                         ...
@@ -128,7 +128,7 @@
                                 <input type="number" name="jumlah_box" value="{{ old('jumlah_box', 0) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="flex flex-wrap gap-4">
                         <button type="submit" class="btn-egg-primary">Generate Barcode</button>
@@ -138,4 +138,59 @@
             </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            const produksi = document.querySelector('input[name="tgl_produksi"]');
+            const expired = document.querySelector('input[name="tgl_expired"]');
+            if (!produksi || !expired) return;
+
+            function toYmd(d) {
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+
+            function parseYmd(s) {
+                if (!s) return null;
+                const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+                if (!m) return null;
+                const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+                return Number.isNaN(d.getTime()) ? null : d;
+            }
+
+            function addMonthsSafe(date, months) {
+                const d = new Date(date.getTime());
+                const day = d.getDate();
+                d.setDate(1);
+                d.setMonth(d.getMonth() + months);
+                const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+                d.setDate(Math.min(day, lastDay));
+                return d;
+            }
+
+            function setDefaultExpiredIfEmpty() {
+                if (expired.value) return;
+                const base = parseYmd(produksi.value) || new Date();
+                const next = addMonthsSafe(base, 3);
+                expired.value = toYmd(next);
+                expired.dataset.auto = '1';
+            }
+
+            setDefaultExpiredIfEmpty();
+
+            expired.addEventListener('input', function () {
+                expired.dataset.auto = '0';
+            });
+
+            produksi.addEventListener('input', function () {
+                if (expired.value && expired.dataset.auto !== '1') return;
+                const base = parseYmd(produksi.value);
+                if (!base) return;
+                expired.value = toYmd(addMonthsSafe(base, 3));
+                expired.dataset.auto = '1';
+            });
+        })();
+    </script>
 </x-app-layout>

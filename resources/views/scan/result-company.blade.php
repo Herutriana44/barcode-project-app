@@ -30,9 +30,9 @@
                                 <td class="py-3 px-2">{{ $ci->qty }}</td>
                                 <td class="py-3 px-2">{{ $ci->posisi_rak ?? '-' }}</td>
                                 <td class="py-3 px-2">{{ $ci->tingkat ?? '-' }}</td>
-                                <td class="py-3 px-2">{{ $ci->item->operatorMobil->name ?? '-' }}</td>
+                                <!-- <td class="py-3 px-2">{{ $ci->item->operatorMobil->name ?? '-' }}</td>
                                 <td class="py-3 px-2">{{ $ci->item->pengirim->name ?? '-' }}</td>
-                                <td class="py-3 px-2">{{ $ci->item->operatorForklift->name ?? '-' }}</td>
+                                <td class="py-3 px-2">{{ $ci->item->operatorForklift->name ?? '-' }}</td> -->
                             </tr>
                         @endforeach
                     </tbody>

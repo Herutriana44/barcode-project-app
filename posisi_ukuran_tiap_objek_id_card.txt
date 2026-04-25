@@ -1,0 +1,53 @@
+# Template gambar `public/Tosca Modern Professional Store Manager ID Card_preview_rev_1.png`
+
+# lingkaran untuk foto : 
+ukuran :
+lebar : 39.43 mm
+Tinggi : 39.43 mm
+
+posisi :
+x : 7.06 mm
+y : 10.66 mm
+
+# Posisi teks `Departemen`
+lebar : 21.49 mm
+tingg : 2.57 mm
+
+x : 5.28 mm
+y : 61.95 mm
+
+font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
+
+# Posisi teks `Jabatan`
+lebar : 21.49 mm
+tingg : 2.57 mm
+
+x : 5 mm
+y : 65.84 mm
+
+font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
+
+# Posisi teks `Nama Karyawan`
+lebar : 28.36 mm
+tingg : 11.19 mm
+
+x : 5 mm
+y : 69.6 mm
+
+font-type : "Atkinson Hyperlegible" (BOLD) `public/Fonts/Atkinson_Hyperlegible/AtkinsonHyperlegible-Bold.ttf`
+
+# Posisi barcode 
+lebar : 11.02
+tinggi : 11.02
+
+x : 35.13
+y : 68.98
+
+# Posisi teks `NIP : NIP_KARYAWAN`
+lebar : 12.52 mm
+tingg : 1.71 mm
+
+x : 33.63 mm
+y : 81.06 mm
+
+font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
