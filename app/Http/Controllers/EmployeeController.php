@@ -63,6 +63,15 @@ class EmployeeController extends Controller
         return view('employees.show', compact('employee', 'profileUrl', 'qrSvg', 'barcodeSvg'));
     }
 
+    public function photo(Employee $employee)
+    {
+        if (! $employee->photo_path) {
+            abort(404);
+        }
+
+        return Storage::disk('public')->response($employee->photo_path);
+    }
+
     /**
      * Cetak ID card / name tag 9 × 5,3 cm.
      */

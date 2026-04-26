@@ -38,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan
+    Route::get('employees/{employee}/photo', [EmployeeController::class, 'photo'])->name('employees.photo');
     Route::get('employees/{employee}/id-card', [EmployeeController::class, 'idCard'])->name('employees.id-card');
     Route::resource('employees', EmployeeController::class);
 

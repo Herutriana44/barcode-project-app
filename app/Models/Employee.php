@@ -28,7 +28,9 @@ class Employee extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->photo_path);
+        // Avoid relying on `public/storage` symlink (storage:link).
+        // Always serve photo via an authenticated route.
+        return route('employees.photo', $this);
     }
 
     public function itemsAsOperatorMobil()
