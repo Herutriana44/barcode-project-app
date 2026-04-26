@@ -78,6 +78,19 @@
                         <div><span class="font-medium">Qty (Label/static):</span> {{ $itemBarcode->item->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Qty (Stok/dynamic):</span> {{ $itemBarcode->item->dynamic_qty ?? '-' }}</div>
                         <div><span class="font-medium">Inspector:</span> {{ $itemBarcode->item->inspector_name ?? '-' }}</div>
+                        <div class="col-span-2">
+                            <form action="{{ route('item-barcodes.checker', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-2 items-start sm:items-end">
+                                @csrf
+                                @method('PATCH')
+                                <div class="flex-1 w-full">
+                                    <label class="block text-sm font-medium text-egg-800">Checker (manual)</label>
+                                    <input type="text" name="checker" value="{{ old('checker', $itemBarcode->item->inspector_name) }}" maxlength="255"
+                                        class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                    @error('checker')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
+                                </div>
+                                <button type="submit" class="btn-egg-secondary text-sm">Simpan checker</button>
+                            </form>
+                        </div>
                         <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Code:</span> {{ $itemBarcode->item->code ?? '-' }}</div>

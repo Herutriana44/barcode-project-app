@@ -28,9 +28,11 @@
     </div>
 
     <div class="isi-body">
-        <div class="isi-fields">
+        <div class="isi-fields-top">
             <div class="row"><span class="k">Part No</span><span class="sep">:</span><span class="v">{{ $partNo }}</span></div>
             <div class="row"><span class="k">Part Name</span><span class="sep">:</span><span class="v">{{ $partName }}</span></div>
+        </div>
+        <div class="isi-fields">
             <div class="row"><span class="k">QTY</span><span class="sep">:</span><span class="v">{{ $qtyStr }}{{ $qtyStr !== '' ? ' Pcs' : '' }}</span></div>
             <div class="row"><span class="k">Berat</span><span class="sep">:</span><span class="v">{{ $beratStr }}{{ $beratStr !== '' ? ' gram' : '' }}</span></div>
             <div class="row"><span class="k">Tgl prod</span><span class="sep">:</span><span class="v">{{ $prod }}</span></div>
@@ -39,7 +41,7 @@
 
         <div class="isi-barcode-box">
             <div class="isi-barcode-wrap">
-                {!! $barcodeSvg !!}
+                {!! $qrSvg !!}
             </div>
         </div>
     </div>

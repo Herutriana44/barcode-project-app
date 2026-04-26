@@ -94,16 +94,32 @@ class ItemBarcodeController extends Controller
             }
             $remaining = max(0, $remaining - $q);
 
-            // Barcode besar (pakai URL scan, sama seperti label box).
-            $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 44);
+            // Pakai QR Code (sesuai permintaan label per isi).
+            $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 140, 2);
 
             $labels[] = [
                 'qtyInPack' => $q,
-                'barcodeSvg' => $barcodeSvg,
+                'qrSvg' => $qrSvg,
             ];
         }
 
         return view('item-barcodes.label-isi', compact('itemBarcode', 'labels'));
+    }
+
+    public function updateChecker(Request $request, ItemBarcode $itemBarcode)
+    {
+        $validated = $request->validate([
+            'checker' => 'nullable|string|max:255',
+        ]);
+
+        $itemBarcode->load('item');
+        $itemBarcode->item->update([
+            // re-use kolom yang sudah ada supaya tidak perlu migration baru
+            'inspector_name' => $validated['checker'] ?? null,
+        ]);
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', 'Checker diperbarui.');
     }
 
     public function create()

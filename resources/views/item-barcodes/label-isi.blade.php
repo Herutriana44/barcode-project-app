@@ -37,50 +37,69 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 18pt;
+            font-size: 12pt;
         }
         .isi-company {
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 18pt;
+            font-size: 12pt;
             letter-spacing: 0.03em;
         }
         .isi-body {
             display: grid;
+            /* Baris 1: part no + part name full width (di atas QR)
+               Baris 2: field lain kiri + QR kanan */
             grid-template-columns: 1fr 34mm;
+            grid-template-rows: auto 1fr;
             min-height: 48mm;
         }
+
+        .isi-fields-top {
+            grid-column: 1 / -1;
+            padding: 3mm 4mm 2.2mm 4mm;
+            border-bottom: 2px solid #222;
+            display: grid;
+            gap: 2.2mm;
+            font-size: 8pt;
+        }
+
         .isi-fields {
-            padding: 4mm 4mm 4mm 4mm;
+            grid-column: 1 / 2;
+            padding: 3mm 4mm 4mm 4mm;
             border-right: 2px solid #222;
             display: grid;
             gap: 2.2mm;
-            font-size: 12pt;
+            font-size: 8pt;
         }
         .row { display: grid; grid-template-columns: 20mm 4mm 1fr; align-items: baseline; }
         .k { font-weight: 500; }
         .sep { text-align: center; }
         .v { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .isi-barcode-box {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4mm;
+            /* QR kecil di pojok kanan bawah */
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 3mm;
         }
         .isi-barcode-wrap {
-            width: 100%;
-            height: 100%;
+            /* Buat kotak (square) dan lebih kecil seperti referensi */
+            width: 24mm;
+            height: 24mm;
             border: 2px solid #222;
-            border-radius: 6mm;
+            border-radius: 4mm;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3mm;
+            padding: 2mm;
             overflow: hidden;
         }
-        .isi-barcode-wrap svg { width: 100%; height: auto; }
+        /* QR harus kotak dan memenuhi area. */
+        .isi-barcode-wrap svg { width: 100%; height: 100%; display: block; }
     </style>
 </head>
 <body>
@@ -94,7 +113,7 @@
         @foreach($labels as $lbl)
             @include('item-barcodes.partials.qc-label-isi-card', [
                 'itemBarcode' => $itemBarcode,
-                'barcodeSvg' => $lbl['barcodeSvg'],
+                'qrSvg' => $lbl['qrSvg'],
                 'qtyInPack' => $lbl['qtyInPack'],
             ])
         @endforeach
