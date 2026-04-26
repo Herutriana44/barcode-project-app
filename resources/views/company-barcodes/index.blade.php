@@ -32,32 +32,39 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-egg-200">
-                            @forelse($companyBarcodes as $cb)
+                            @forelse($companies as $company)
+                                @php
+                                    $cb = $company->companyBarcodes->first();
+                                @endphp
                                 <tr>
-                                    <td class="px-3 py-3">{{ $cb->barcode_id }}</td>
-                                    <td class="px-3 py-3">{{ $cb->company->name ?? '-' }}</td>
-                                    <td class="px-3 py-3">{{ $cb->company->companyItems->count() ?? 0 }}</td>
+                                    <td class="px-3 py-3">{{ $cb->barcode_id ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $company->name ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $company->company_items_count ?? 0 }}</td>
                                     <td class="px-3 py-3">
                                         <div class="flex flex-wrap items-center gap-2">
-                                            <a href="{{ route('company-barcodes.show', $cb) }}" class="link-egg">Lihat</a>
-                                            <a href="{{ route('company-barcodes.edit', $cb) }}" class="link-egg">Ubah</a>
-                                            <form action="{{ route('company-barcodes.destroy', $cb) }}" method="POST" class="inline" onsubmit="return confirm('Hapus seluruh data perusahaan ini, semua barcode perusahaan, dan barang terkait? Tindakan tidak dapat dibatalkan.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800 text-sm underline">Hapus</button>
-                                            </form>
+                                            @if($cb)
+                                                <a href="{{ route('company-barcodes.show', $cb) }}" class="link-egg">Lihat</a>
+                                                <a href="{{ route('company-barcodes.edit', $cb) }}" class="link-egg">Ubah</a>
+                                                <form action="{{ route('company-barcodes.destroy', $cb) }}" method="POST" class="inline" onsubmit="return confirm('Hapus seluruh data perusahaan ini, semua barcode perusahaan, dan barang terkait? Tindakan tidak dapat dibatalkan.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm underline">Hapus</button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('company-barcodes.create', ['company_id' => $company->id]) }}" class="link-egg">Buat Barcode</a>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-3 py-10 text-center text-egg-700 text-lg">Belum ada barcode perusahaan. <a href="{{ route('company-barcodes.create') }}" class="link-egg">Buat baru</a></td>
+                                    <td colspan="4" class="px-3 py-10 text-center text-egg-700 text-lg">Belum ada perusahaan. <a href="{{ route('company-barcodes.create') }}" class="link-egg">Buat baru</a></td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                     <div class="mt-2">
-                        {{ $companyBarcodes->links() }}
+                        {{ $companies->links() }}
                     </div>
                 </div>
             </div>

@@ -18,6 +18,9 @@
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl">
                 <form action="{{ route('company-barcodes.store') }}" method="POST" class="p-6 md:p-8 space-y-6 text-base" id="companyBarcodeForm">
                     @csrf
+                    @if(!empty($company))
+                        <input type="hidden" name="company_id" value="{{ $company->id }}" />
+                    @endif
 
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-egg-800">Nama perusahaan *</label>
@@ -25,7 +28,7 @@
                             type="text"
                             name="company_name"
                             id="company_name"
-                            value="{{ old('company_name') }}"
+                            value="{{ old('company_name', $company->name ?? null) }}"
                             required
                             maxlength="255"
                             placeholder="Contoh: PT Contoh Indonesia"

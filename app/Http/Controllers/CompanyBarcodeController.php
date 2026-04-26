@@ -20,21 +20,31 @@ class CompanyBarcodeController extends Controller
 {
     public function index()
     {
-        $companyBarcodes = CompanyBarcode::with('company.companyItems.item')
-            ->oldest()
+        $companies = Company::query()
+            ->with([
+                'companyBarcodes' => fn ($q) => $q->oldest(),
+            ])
+            ->withCount('companyItems')
+            ->orderBy('name')
             ->paginate(15);
 
-        return view('company-barcodes.index', compact('companyBarcodes'));
+        return view('company-barcodes.index', compact('companies'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('company-barcodes.create');
+        $company = null;
+        if ($request->filled('company_id')) {
+            $company = Company::query()->findOrFail((int) $request->input('company_id'));
+        }
+
+        return view('company-barcodes.create', compact('company'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'company_id' => 'nullable|integer|exists:companies,id',
             'company_name' => 'required|string|max:255',
             'items' => 'required|array|min:1',
             'items.*.part_name' => 'nullable|string|max:255',
@@ -53,7 +63,14 @@ class CompanyBarcodeController extends Controller
         }
 
         return DB::transaction(function () use ($request, $rows) {
-            $company = Company::create(['name' => $request->company_name]);
+            if ($request->filled('company_id')) {
+                $company = Company::query()->findOrFail((int) $request->company_id);
+                if ($company->name !== $request->company_name) {
+                    $company->update(['name' => $request->company_name]);
+                }
+            } else {
+                $company = Company::query()->firstOrCreate(['name' => $request->company_name]);
+            }
 
             foreach ($rows as $row) {
                 $qty = (int) $row['qty'];
@@ -81,10 +98,10 @@ class CompanyBarcodeController extends Controller
                 ]);
             }
 
-            $companyBarcode = CompanyBarcode::create([
-                'company_id' => $company->id,
-                'barcode_id' => 'CB-'.$company->id.'-'.uniqid(),
-            ]);
+            $companyBarcode = CompanyBarcode::query()->firstOrCreate(
+                ['company_id' => $company->id],
+                ['barcode_id' => 'CB-'.$company->id.'-'.uniqid()]
+            );
 
             return redirect()->route('company-barcodes.show', $companyBarcode)
                 ->with('success', 'Barcode perusahaan berhasil dibuat.');

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Company;
+use App\Models\CompanyBarcode;
+use App\Models\CompanyItem;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
@@ -63,6 +65,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
 
         $imported = 0;
         $skipped = 0;
+
+        /** @var array<int, array<string, mixed>> $parsedRows */
+        $parsedRows = [];
 
         foreach ($rows as $row) {
             $rowIndex++;
@@ -142,42 +147,88 @@ final class Fqc038CleanListPartSeeder extends Seeder
 
             $beratTotal = $this->asFloat($assoc['berat_total_kg'] ?? null);
 
-            DB::transaction(function () use (
-                $warehouse,
-                $customerName,
-                $partCode,
-                $partNo,
-                $partDesc,
-                $qtyPack,
-                $qtySubPack,
-                $beratPackagingGram,
-                $beratPerPcsGram,
-                $prodDate,
-                $expDate,
-                $model,
-                $beratTotal,
-                &$imported
-            ) {
-                if ($customerName !== null && $customerName !== '') {
-                    Company::query()->firstOrCreate(['name' => $customerName]);
-                }
+            $parsedRows[] = [
+                'customer_name' => $customerName,
+                'part_code' => $partCode,
+                'part_no' => $partNo,
+                'part_desc' => $partDesc,
+                'qty_pack' => $qtyPack,
+                'qty_sub_pack' => $qtySubPack,
+                'berat_packaging_gram' => $beratPackagingGram,
+                'berat_per_pcs_gram' => $beratPerPcsGram,
+                'prod_date' => $prodDate,
+                'exp_date' => $expDate,
+                'model' => $model,
+                'berat_total_kg' => $beratTotal,
+            ];
+        }
 
+        // 1) Buat barcode semua perusahaan terlebih dahulu.
+        $companyNames = collect($parsedRows)
+            ->pluck('customer_name')
+            ->filter(fn ($n) => is_string($n) && trim($n) !== '')
+            ->map(fn ($n) => trim($n))
+            ->unique()
+            ->values();
+
+        // Sertakan warehouse agar ikut punya barcode perusahaan.
+        $companyNames->prepend($warehouse->name);
+        $companyNames = $companyNames->unique()->values();
+
+        /** @var array<string, \App\Models\Company> $companiesByName */
+        $companiesByName = [];
+
+        DB::transaction(function () use ($companyNames, &$companiesByName) {
+            foreach ($companyNames as $name) {
+                $company = Company::query()->firstOrCreate(['name' => $name]);
+                CompanyBarcode::query()->firstOrCreate(
+                    ['company_id' => $company->id],
+                    ['barcode_id' => 'CB-'.$company->id.'-'.uniqid()]
+                );
+                $companiesByName[$name] = $company;
+            }
+        });
+
+        // 2) Baru buat barcode semua barang + relasi ke perusahaan (CompanyItem).
+        DB::transaction(function () use ($parsedRows, $warehouse, $companiesByName, &$imported) {
+            foreach ($parsedRows as $r) {
+                $customerName = is_string($r['customer_name'] ?? null) ? trim((string) $r['customer_name']) : null;
+                $company = ($customerName !== null && $customerName !== '' && isset($companiesByName[$customerName]))
+                    ? $companiesByName[$customerName]
+                    : $warehouse;
+
+                $qtyPack = $r['qty_pack'] ?? null;
+
+                $prodDate = $r['prod_date'] instanceof Carbon ? $r['prod_date'] : Carbon::today();
+                $expDate = $r['exp_date'] instanceof Carbon ? $r['exp_date'] : (clone $prodDate)->addMonthsNoOverflow(3);
+
+                // Konsisten dengan modul barcode perusahaan:
+                // - item.company_id = perusahaan (customer)
+                // - qty disimpan di company_items
                 $item = Item::query()->create([
-                    'company_id' => $warehouse->id,
+                    'company_id' => $company->id,
                     'customer' => ($customerName !== null && $customerName !== '') ? $customerName : null,
-                    'part_name' => ($partDesc !== null && $partDesc !== '') ? $partDesc : null,
-                    'part_number' => ($partNo !== null && $partNo !== '') ? $partNo : null,
-                    'model' => $model,
-                    'berat' => $beratTotal,
-                    'qty' => $qtyPack ?? 0,
-                    'static_qty' => $qtyPack ?? 0,
-                    'dynamic_qty' => $qtyPack ?? 0,
-                    'qty_sub_pack' => ($qtySubPack !== null && $qtySubPack > 0) ? $qtySubPack : null,
-                    'berat_packaging_gram' => ($beratPackagingGram !== null && $beratPackagingGram > 0) ? $beratPackagingGram : null,
-                    'berat_per_pcs_gram' => ($beratPerPcsGram !== null && $beratPerPcsGram > 0) ? $beratPerPcsGram : null,
+                    'part_name' => ($r['part_desc'] ?? null) ?: null,
+                    'part_number' => ($r['part_no'] ?? null) ?: null,
+                    'model' => $r['model'] ?? null,
+                    'berat' => $r['berat_total_kg'] ?? null,
+                    'qty' => 0,
+                    'static_qty' => 0,
+                    'dynamic_qty' => 0,
+                    'qty_sub_pack' => ($r['qty_sub_pack'] ?? null) ?: null,
+                    'berat_packaging_gram' => ($r['berat_packaging_gram'] ?? null) ?: null,
+                    'berat_per_pcs_gram' => ($r['berat_per_pcs_gram'] ?? null) ?: null,
                     'tgl_produksi' => $prodDate->format('Y-m-d'),
                     'tgl_expired' => $expDate->format('Y-m-d'),
-                    'code' => ($partCode !== null && $partCode !== '') ? $partCode : null,
+                    'code' => ($r['part_code'] ?? null) ?: null,
+                ]);
+
+                CompanyItem::query()->create([
+                    'company_id' => $company->id,
+                    'item_id' => $item->id,
+                    'qty' => is_int($qtyPack) ? $qtyPack : 0,
+                    'posisi_rak' => null,
+                    'tingkat' => null,
                 ]);
 
                 $receiving = ItemReceiving::query()->create([
@@ -194,8 +245,8 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 ]);
 
                 $imported++;
-            });
-        }
+            }
+        });
 
         if ($headerRowIndex === null) {
             $this->command?->warn('Header tidak terdeteksi. Pastikan sheet memiliki kolom part code/part no/qty pack/customer.');
