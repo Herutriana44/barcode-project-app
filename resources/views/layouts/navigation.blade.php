@@ -32,9 +32,9 @@
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                         {{ __('Karyawan') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
+                    <!-- <x-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                         {{ __('FIFO Keluar') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
                 </div>
             </div>
 
@@ -102,9 +102,9 @@
             <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                 {{ __('Karyawan') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
+            <!-- <x-responsive-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                 {{ __('FIFO Keluar') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> -->
         </div>
 
         <!-- Responsive Settings Options -->
