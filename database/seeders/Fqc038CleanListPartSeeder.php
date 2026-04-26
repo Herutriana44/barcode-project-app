@@ -13,12 +13,15 @@ use OpenSpout\Reader\XLSX\Reader;
 
 final class Fqc038CleanListPartSeeder extends Seeder
 {
-    private const FILE_NAME = '038. F-QC-038. Tag delivery_REV_.LABEL.xlsx';
+    private const FILE_NAME = 'data.xlsx';
 
     private const SHEET_NAME = 'clean_list_part';
 
-    /** Header ada di A4/B4/... (1-indexed row). */
-    private const HEADER_ROW_INDEX = 4;
+    /**
+     * Fallback jika auto-detect header gagal.
+     * Excel lama pernah menaruh header di A4/B4/... (1-indexed row).
+     */
+    private const FALLBACK_HEADER_ROW_INDEX = 4;
 
     private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
 
@@ -55,6 +58,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
     private function seedSheet(\Iterator $rows, Company $warehouse): void
     {
         $header = null;
+        $headerRowIndex = null;
         $rowIndex = 0;
 
         $imported = 0;
@@ -75,13 +79,23 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 }
             }
 
-            if ($rowIndex < self::HEADER_ROW_INDEX) {
-                continue;
-            }
+            // Auto-detect header row (lebih robust dibanding hardcode baris 4).
+            if (! is_array($header)) {
+                $maybeHeader = array_map(fn ($h) => $this->canonicalHeader((string) $h), $cells);
+                if ($this->looksLikeHeaderRow($maybeHeader)) {
+                    $header = $maybeHeader;
+                    $headerRowIndex = $rowIndex;
+                    continue;
+                }
 
-            // Header row
-            if ($rowIndex === self::HEADER_ROW_INDEX) {
-                $header = array_map(fn ($h) => $this->normalizeHeader((string) $h), $cells);
+                // Fallback: jika sampai baris fallback, pakai baris itu sebagai header.
+                if ($rowIndex === self::FALLBACK_HEADER_ROW_INDEX) {
+                    $header = $maybeHeader;
+                    $headerRowIndex = $rowIndex;
+                    continue;
+                }
+
+                // Belum ketemu header, lanjut.
                 continue;
             }
 
@@ -97,17 +111,18 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 $assoc[$key] = $cells[$i] ?? null;
             }
 
-            $partCode = $this->asString($assoc['part code'] ?? null);
-            $partNo = $this->asString($assoc['current part no'] ?? null);
-            $partDesc = $this->asString($assoc['part description'] ?? null);
-            $qtyPack = $this->asInt($assoc['qty/pack(pcs)'] ?? null);
+            $partCode = $this->asString($assoc['part_code'] ?? null);
+            $partNo = $this->asString($assoc['part_no'] ?? null);
+            $partDesc = $this->asString($assoc['part_description'] ?? null);
+            $qtyPack = $this->asInt($assoc['qty_pack_pcs'] ?? null);
             $customerName = $this->asString($assoc['customer'] ?? null);
-            $qtySubPack = $this->asInt($assoc['qty sub pack'] ?? ($assoc['qty sub pack(pcs)'] ?? null));
-            $beratPackagingGram = $this->asInt($assoc['berat packaging(gram)'] ?? ($assoc['berat packaging (gram)'] ?? null));
-            $beratPerPcsGram = $this->asInt($assoc['berat per pcs(gram)'] ?? ($assoc['berat per pcs (gram)'] ?? null));
+            $qtySubPack = $this->asInt($assoc['qty_sub_pack_pcs'] ?? null);
+            $beratPackagingGram = $this->asInt($assoc['berat_packaging_gram'] ?? null);
+            $beratPerPcsGram = $this->asInt($assoc['berat_per_pcs_gram'] ?? null);
 
-            // Jika baris benar-benar kosong, stop iterasi (umumnya bawah sheet kosong semua).
-            if ($partCode === null && $partNo === null && $partDesc === null && $qtyPack === null && $customerName === null) {
+            $hasAnyCellValue = collect($cells)->contains(fn ($v) => ! ($v === null || $v === ''));
+            // Jika baris benar-benar kosong, skip (umumnya bawah sheet kosong semua).
+            if (! $hasAnyCellValue) {
                 continue;
             }
 
@@ -117,15 +132,15 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 continue;
             }
 
-            $prodDate = $this->asDate($assoc['prod. date'] ?? null) ?? Carbon::today();
-            $expDate = $this->asDate($assoc['exp. date'] ?? null) ?? (clone $prodDate)->addMonthsNoOverflow(3);
+            $prodDate = $this->asDate($assoc['prod_date'] ?? null) ?? Carbon::today();
+            $expDate = $this->asDate($assoc['exp_date'] ?? null) ?? (clone $prodDate)->addMonthsNoOverflow(3);
 
             $model = $this->asString($assoc['model'] ?? null);
             if ($model === '-' || $model === '—') {
                 $model = null;
             }
 
-            $beratTotal = $this->asFloat($assoc['berat total(kg)'] ?? null);
+            $beratTotal = $this->asFloat($assoc['berat_total_kg'] ?? null);
 
             DB::transaction(function () use (
                 $warehouse,
@@ -182,6 +197,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
             });
         }
 
+        if ($headerRowIndex === null) {
+            $this->command?->warn('Header tidak terdeteksi. Pastikan sheet memiliki kolom part code/part no/qty pack/customer.');
+        }
         $this->command?->info("FQC-038 import selesai. Imported: {$imported}, skipped: {$skipped}");
     }
 
@@ -191,6 +209,83 @@ final class Fqc038CleanListPartSeeder extends Seeder
         $h = preg_replace('/\s+/', ' ', $h) ?? $h;
 
         return mb_strtolower(trim($h));
+    }
+
+    private function canonicalHeader(string $h): string
+    {
+        $n = $this->normalizeHeader($h);
+        if ($n === '' || $n === '-' || $n === '—') {
+            return '';
+        }
+
+        // Normalisasi karakter umum.
+        $n = str_replace(['.', ':'], '', $n);
+
+        // Map variasi header Excel ke key internal yang stabil.
+        $map = [
+            'part code' => 'part_code',
+            'partcode' => 'part_code',
+            'kode part' => 'part_code',
+            'code' => 'part_code',
+            'current part no' => 'part_no',
+            'current part number' => 'part_no',
+            'current part no ' => 'part_no',
+            'part no' => 'part_no',
+            'part number' => 'part_no',
+            'part number ' => 'part_no',
+            'current part no/part number' => 'part_no',
+            'part description' => 'part_description',
+            'description' => 'part_description',
+            'qty/pack(pcs)' => 'qty_pack_pcs',
+            'qty/pack (pcs)' => 'qty_pack_pcs',
+            'qty/pack' => 'qty_pack_pcs',
+            'qty pack(pcs)' => 'qty_pack_pcs',
+            'qty pack' => 'qty_pack_pcs',
+            'customer' => 'customer',
+            'cust' => 'customer',
+            'qty sub pack' => 'qty_sub_pack_pcs',
+            'qty sub pack(pcs)' => 'qty_sub_pack_pcs',
+            'qty sub pack (pcs)' => 'qty_sub_pack_pcs',
+            'berat packaging(gram)' => 'berat_packaging_gram',
+            'berat packaging (gram)' => 'berat_packaging_gram',
+            'berat packaging gram' => 'berat_packaging_gram',
+            'berat per pcs(gram)' => 'berat_per_pcs_gram',
+            'berat per pcs (gram)' => 'berat_per_pcs_gram',
+            'berat per pcs gram' => 'berat_per_pcs_gram',
+            'prod date' => 'prod_date',
+            'prod. date' => 'prod_date',
+            'production date' => 'prod_date',
+            'exp date' => 'exp_date',
+            'exp. date' => 'exp_date',
+            'expired date' => 'exp_date',
+            'berat total(kg)' => 'berat_total_kg',
+            'berat total (kg)' => 'berat_total_kg',
+            'berat total kg' => 'berat_total_kg',
+            'model' => 'model',
+        ];
+
+        return $map[$n] ?? $n;
+    }
+
+    /**
+     * @param  array<int, string>  $maybeHeader
+     */
+    private function looksLikeHeaderRow(array $maybeHeader): bool
+    {
+        $keys = array_filter($maybeHeader, fn ($k) => is_string($k) && $k !== '');
+        if (count($keys) < 3) {
+            return false;
+        }
+
+        $required = ['part_code', 'part_no', 'qty_pack_pcs', 'customer'];
+        $hit = 0;
+        foreach ($required as $r) {
+            if (in_array($r, $keys, true)) {
+                $hit++;
+            }
+        }
+
+        return $hit >= 2;
     }
 
     private function asString(mixed $v): ?string
