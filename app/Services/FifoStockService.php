@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 final class FifoStockService
 {
     /**
-     * Kurangi stok pada `items.qty` (alur barcode barang) — batch paling lama dulu.
+     * Kurangi stok pada `items.dynamic_qty` (alur barcode barang) — batch paling lama dulu.
      */
     public static function deductFromItems(int $companyId, int $qtyToShip, ?string $partNumber = null, ?string $partName = null): void
     {
@@ -24,7 +24,7 @@ final class FifoStockService
 
             $query = Item::query()
                 ->where('company_id', $companyId)
-                ->where('qty', '>', 0)
+                ->where('dynamic_qty', '>', 0)
                 ->with(['itemReceivings' => fn ($q) => $q->orderBy('id')]);
 
             if ($partNumber !== null && $partNumber !== '') {
@@ -49,10 +49,12 @@ final class FifoStockService
                 if ($remaining <= 0) {
                     break;
                 }
-                $take = min((int) $item->qty, $remaining);
+                $take = min((int) $item->dynamic_qty, $remaining);
                 if ($take <= 0) {
                     continue;
                 }
+                $item->decrement('dynamic_qty', $take);
+                // Backward compatibility: keep qty in sync (used by legacy views/exports)
                 $item->decrement('qty', $take);
                 $remaining -= $take;
             }
@@ -105,7 +107,7 @@ final class FifoStockService
     }
 
     /**
-     * Tambah stok pada baris `items` yang dipindai (barang masuk dari halaman scan).
+     * Tambah stok pada baris `items` yang dipindai (barang masuk dari halaman scan) — hanya dynamic.
      */
     public static function incrementItemQty(int $itemId, int $qty): void
     {
@@ -115,6 +117,8 @@ final class FifoStockService
 
         DB::transaction(function () use ($itemId, $qty) {
             $item = Item::query()->lockForUpdate()->findOrFail($itemId);
+            $item->increment('dynamic_qty', $qty);
+            // Backward compatibility: keep qty in sync (used by legacy views/exports)
             $item->increment('qty', $qty);
         });
     }
@@ -138,7 +142,7 @@ final class FifoStockService
         $query = Item::query()
             ->where('company_id', $item->company_id)
             ->where('id', '!=', $item->id)
-            ->where('qty', '>', 0);
+            ->where('dynamic_qty', '>', 0);
 
         if ($item->part_number !== null && $item->part_number !== '') {
             $query->where('part_number', $item->part_number);

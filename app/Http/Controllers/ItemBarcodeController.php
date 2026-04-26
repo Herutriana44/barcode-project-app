@@ -9,6 +9,7 @@ use App\Models\ItemReceiving;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -65,6 +66,46 @@ class ItemBarcodeController extends Controller
         return view('item-barcodes.labels', compact('rows'));
     }
 
+    /**
+     * Label per isi/sub-pack untuk satu barcode box.
+     */
+    public function labelIsi(ItemBarcode $itemBarcode)
+    {
+        $itemBarcode->load(['item.company', 'itemReceiving']);
+
+        $item = $itemBarcode->item;
+        $staticQty = max(0, (int) ($item->static_qty ?? 0));
+        $sub = (int) ($item->qty_sub_pack ?? 0);
+
+        // Jika qty_sub_pack ada, asumsi: 1 label = 1 sub-pack berisi qty_sub_pack pcs.
+        // Jika tidak ada, asumsi: 1 label = 1 pcs.
+        $qtyPerLabel = $sub > 0 ? $sub : 1;
+        $labelCount = $staticQty > 0 ? (int) ceil($staticQty / $qtyPerLabel) : 1;
+
+        // Hindari render ribuan label secara tidak sengaja.
+        $labelCount = min($labelCount, 500);
+
+        $labels = [];
+        $remaining = max(0, $staticQty);
+        for ($i = 0; $i < $labelCount; $i++) {
+            $q = $qtyPerLabel;
+            if ($sub > 0 && $remaining > 0) {
+                $q = min($qtyPerLabel, $remaining);
+            }
+            $remaining = max(0, $remaining - $q);
+
+            // Barcode besar (pakai URL scan, sama seperti label box).
+            $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 44);
+
+            $labels[] = [
+                'qtyInPack' => $q,
+                'barcodeSvg' => $barcodeSvg,
+            ];
+        }
+
+        return view('item-barcodes.label-isi', compact('itemBarcode', 'labels'));
+    }
+
     public function create()
     {
         $warehouseCompany = self::warehouseCompanyOrFail();
@@ -114,6 +155,8 @@ class ItemBarcodeController extends Controller
             'model' => $validated['model'] ?? null,
             'berat' => $validated['berat'] ?? null,
             'qty' => $validated['qty'],
+            'static_qty' => $validated['qty'],
+            'dynamic_qty' => $validated['qty'],
             'inspector_name' => $validated['inspector_name'] ?? null,
             'tgl_produksi' => $validated['tgl_produksi'] ?? null,
             'tgl_expired' => $validated['tgl_expired'] ?? null,
@@ -196,7 +239,9 @@ class ItemBarcodeController extends Controller
                 'part_number' => $validated['part_number'] ?? null,
                 'model' => $validated['model'] ?? null,
                 'berat' => $validated['berat'] ?? null,
+                // qty input dianggap "isi per box" (static). Dynamic tidak diubah lewat edit form.
                 'qty' => $validated['qty'],
+                'static_qty' => $validated['qty'],
                 'inspector_name' => $validated['inspector_name'] ?? null,
                 'tgl_produksi' => $validated['tgl_produksi'] ?? null,
                 'tgl_expired' => $validated['tgl_expired'] ?? null,

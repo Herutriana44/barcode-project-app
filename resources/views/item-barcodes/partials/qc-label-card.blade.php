@@ -2,7 +2,7 @@
     $item = $itemBarcode->item;
     $companyName = $item->company->name ?? '—';
     $beratStr = $item->berat !== null ? number_format((float) $item->berat, 2, '.', '') : '';
-    $qtyStr = $item->qty !== null ? (string) $item->qty : '';
+    $qtyStr = $item->static_qty !== null ? (string) $item->static_qty : '';
 @endphp
 <article class="label-card">
     <table class="label-table">

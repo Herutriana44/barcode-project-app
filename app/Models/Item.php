@@ -20,6 +20,11 @@ class Item extends Model
         'model',
         'berat',
         'qty',
+        'static_qty',
+        'dynamic_qty',
+        'qty_sub_pack',
+        'berat_packaging_gram',
+        'berat_per_pcs_gram',
         'inspector_name',
         'tgl_produksi',
         'tgl_expired',
@@ -38,6 +43,11 @@ class Item extends Model
         'tgl_expired' => 'date',
         'tanggal_terima_material' => 'date',
         'berat' => 'decimal:2',
+        'static_qty' => 'integer',
+        'dynamic_qty' => 'integer',
+        'qty_sub_pack' => 'integer',
+        'berat_packaging_gram' => 'integer',
+        'berat_per_pcs_gram' => 'integer',
     ];
 
     public function company()

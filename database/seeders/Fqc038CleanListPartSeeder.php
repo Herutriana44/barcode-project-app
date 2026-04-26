@@ -102,6 +102,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
             $partDesc = $this->asString($assoc['part description'] ?? null);
             $qtyPack = $this->asInt($assoc['qty/pack(pcs)'] ?? null);
             $customerName = $this->asString($assoc['customer'] ?? null);
+            $qtySubPack = $this->asInt($assoc['qty sub pack'] ?? ($assoc['qty sub pack(pcs)'] ?? null));
+            $beratPackagingGram = $this->asInt($assoc['berat packaging(gram)'] ?? ($assoc['berat packaging (gram)'] ?? null));
+            $beratPerPcsGram = $this->asInt($assoc['berat per pcs(gram)'] ?? ($assoc['berat per pcs (gram)'] ?? null));
 
             // Jika baris benar-benar kosong, stop iterasi (umumnya bawah sheet kosong semua).
             if ($partCode === null && $partNo === null && $partDesc === null && $qtyPack === null && $customerName === null) {
@@ -131,6 +134,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 $partNo,
                 $partDesc,
                 $qtyPack,
+                $qtySubPack,
+                $beratPackagingGram,
+                $beratPerPcsGram,
                 $prodDate,
                 $expDate,
                 $model,
@@ -149,6 +155,11 @@ final class Fqc038CleanListPartSeeder extends Seeder
                     'model' => $model,
                     'berat' => $beratTotal,
                     'qty' => $qtyPack ?? 0,
+                    'static_qty' => $qtyPack ?? 0,
+                    'dynamic_qty' => $qtyPack ?? 0,
+                    'qty_sub_pack' => ($qtySubPack !== null && $qtySubPack > 0) ? $qtySubPack : null,
+                    'berat_packaging_gram' => ($beratPackagingGram !== null && $beratPackagingGram > 0) ? $beratPackagingGram : null,
+                    'berat_per_pcs_gram' => ($beratPerPcsGram !== null && $beratPerPcsGram > 0) ? $beratPerPcsGram : null,
                     'tgl_produksi' => $prodDate->format('Y-m-d'),
                     'tgl_expired' => $expDate->format('Y-m-d'),
                     'code' => ($partCode !== null && $partCode !== '') ? $partCode : null,

@@ -37,6 +37,9 @@
                         'barcodeSvg' => $qcLabelBarcodeSvg,
                     ])
                 </div>
+                <div class="mt-4 no-print">
+                    <a href="{{ route('item-barcodes.label-isi', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Label Per Isi</a>
+                </div>
             </section>
 
             <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">
@@ -72,7 +75,8 @@
                         <div><span class="font-medium">Part Number:</span> {{ $itemBarcode->item->part_number ?? '-' }}</div>
                         <div><span class="font-medium">Model:</span> {{ $itemBarcode->item->model ?? '-' }}</div>
                         <div><span class="font-medium">Berat:</span> {{ $itemBarcode->item->berat ?? '-' }}</div>
-                        <div><span class="font-medium">Qty:</span> {{ $itemBarcode->item->qty ?? '-' }}</div>
+                        <div><span class="font-medium">Qty (Label/static):</span> {{ $itemBarcode->item->static_qty ?? '-' }}</div>
+                        <div><span class="font-medium">Qty (Stok/dynamic):</span> {{ $itemBarcode->item->dynamic_qty ?? '-' }}</div>
                         <div><span class="font-medium">Inspector:</span> {{ $itemBarcode->item->inspector_name ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>

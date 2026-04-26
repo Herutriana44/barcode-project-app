@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('item-barcodes/import', [ItemBarcodeController::class, 'importForm'])->name('item-barcodes.import');
     Route::post('item-barcodes/import', [ItemBarcodeController::class, 'importStore'])->name('item-barcodes.import.store');
     Route::get('item-barcodes/labels', [ItemBarcodeController::class, 'labels'])->name('item-barcodes.labels');
+    Route::get('item-barcodes/{itemBarcode}/label-isi', [ItemBarcodeController::class, 'labelIsi'])->name('item-barcodes.label-isi');
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan
