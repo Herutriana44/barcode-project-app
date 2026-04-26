@@ -45,13 +45,16 @@
             border: 0;
         }
 
-        /* Background template image (opsional). Jika file ada di public/, akan ter-render. */
-        .bg {
+        /* Template image (lebih aman untuk print dibanding background-image). */
+        .bg-img {
             position: absolute;
             inset: 0;
-            background-image: url("/Tosca Modern Professional Store Manager ID Card_preview_rev_1.png");
-            background-size: cover;
-            background-position: center;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            /* Layer paling atas untuk template */
+            z-index: 2;
         }
 
         /* Foto lingkaran: 39.43mm, x 7.06mm, y 10.66mm */
@@ -59,16 +62,19 @@
             position: absolute;
             left: 7.06mm;
             top: 10.66mm;
-            width: 39.43mm;
-            height: 39.43mm;
+            width: 45mm;
+            height: 45mm;
             border-radius: 9999px;
             overflow: hidden;
             background: #d9d9d9;
+            /* Foto di bawah template (agar template bisa jadi frame) */
+            z-index: 1;
         }
         .photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
         }
         .photo .no-photo {
             width: 100%;
@@ -93,10 +99,11 @@
             font-weight: 400;
             font-size: 7.5pt;
             line-height: 1;
-            color: #0b3a3a;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            z-index: 3;
         }
 
         /* Text: Jabatan value (DM Sans Reg) - x 5mm, y 65.84mm, w 21.49mm, h 2.57mm */
@@ -110,10 +117,11 @@
             font-weight: 400;
             font-size: 7.5pt;
             line-height: 1;
-            color: #0b3a3a;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            z-index: 3;
         }
 
         /* Text: Nama Karyawan (Atkinson Bold) - x 5mm, y 69.6mm, w 28.36mm, h 11.19mm */
@@ -127,8 +135,9 @@
             font-weight: 700;
             font-size: 12pt;
             line-height: 1.05;
-            color: #0a2f2f;
+            color: #ffffff;
             overflow: hidden;
+            z-index: 3;
         }
 
         /* QR / barcode square - x 35.13mm, y 68.98mm, w 11.02mm, h 11.02mm */
@@ -138,6 +147,7 @@
             top: 68.98mm;
             width: 11.02mm;
             height: 11.02mm;
+            z-index: 3;
         }
         .qr svg {
             width: 100%;
@@ -154,20 +164,23 @@
             height: 1.71mm;
             font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 6.5pt;
+            font-size: 3.25pt;
             line-height: 1;
-            color: #0b3a3a;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            z-index: 3;
         }
 
-        /* Fallback jika background template tidak tersedia */
+        /* Fallback jika template image tidak tersedia */
         .fallback {
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, #e2f6f4 0%, #f7fffe 55%, #ffffff 100%);
-            opacity: 0.9;
+            opacity: 1;
+            /* Layer paling bawah */
+            z-index: 0;
         }
 
         .toolbar {
@@ -189,8 +202,8 @@
     </div>
 
     <div class="card">
-        <div class="bg" aria-hidden="true"></div>
         <div class="fallback" aria-hidden="true"></div>
+        <img class="bg-img" src="{{ asset(str_replace(' ', '%20', 'Tosca Modern Professional Store Manager ID Card_preview_rev_1.png')) }}" alt="" aria-hidden="true" />
 
         <div class="photo">
             @if ($employee->photoPublicUrl())
@@ -200,7 +213,7 @@
             @endif
         </div>
 
-        <div class="dept">Departemen</div>
+        <div class="dept">{{ $employee->departemen ?? 'Departemen' }}</div>
         <div class="jabatan">{{ $employee->jabatan ?? 'Jabatan' }}</div>
         <div class="name">{{ $employee->name }}</div>
         <div class="qr">{!! $qrSvg !!}</div>

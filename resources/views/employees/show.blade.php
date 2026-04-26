@@ -30,6 +30,7 @@
                     <div class="flex-1 space-y-2 text-base">
                         <h3 class="text-2xl font-bold text-egg-900">{{ $employee->name }}</h3>
                         <p><span class="font-medium text-egg-800">NIP:</span> {{ $employee->nip }}</p>
+                        <p><span class="font-medium text-egg-800">Departemen:</span> {{ $employee->departemen ?? '—' }}</p>
                         <p><span class="font-medium text-egg-800">Jabatan:</span> {{ $employee->jabatan ?? '—' }}</p>
                         <p class="pt-2 text-sm text-egg-600 break-all">
                             <span class="font-medium text-egg-800">Tautan profil:</span><br />

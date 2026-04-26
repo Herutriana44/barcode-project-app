@@ -34,6 +34,7 @@ class EmployeeController extends Controller
                 'regex:/^[A-Za-z0-9._-]+$/',
                 Rule::unique('employees', 'nip'),
             ],
+            'departemen' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:4096',
         ]);
@@ -46,6 +47,7 @@ class EmployeeController extends Controller
         Employee::create([
             'name' => $validated['name'],
             'nip' => $validated['nip'],
+            'departemen' => $validated['departemen'] ?? null,
             'jabatan' => $validated['jabatan'] ?? null,
             'photo_path' => $photoPath,
         ]);
@@ -100,6 +102,7 @@ class EmployeeController extends Controller
                 'regex:/^[A-Za-z0-9._-]+$/',
                 Rule::unique('employees', 'nip')->ignore($employee->id),
             ],
+            'departemen' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:4096',
         ]);
@@ -115,6 +118,7 @@ class EmployeeController extends Controller
         $employee->update([
             'name' => $validated['name'],
             'nip' => $validated['nip'],
+            'departemen' => $validated['departemen'] ?? null,
             'jabatan' => $validated['jabatan'] ?? null,
             'photo_path' => $photoPath,
         ]);

@@ -23,6 +23,12 @@
     @error('jabatan')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
 </div>
 <div>
+    <label class="block text-base font-medium text-egg-800">Departemen</label>
+    <input type="text" name="departemen" value="{{ old('departemen', $e->departemen ?? '') }}" maxlength="255"
+        class="mt-1 block w-full rounded-lg border-egg-300 text-base py-2.5 shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+    @error('departemen')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
+</div>
+<div>
     <label class="block text-base font-medium text-egg-800">Foto (opsional)</label>
     <input type="file" name="photo" accept="image/*"
         class="mt-1 block w-full text-base text-egg-800 file:mr-3 file:rounded-lg file:border-0 file:bg-egg-100 file:px-3 file:py-2 file:text-egg-900" />
