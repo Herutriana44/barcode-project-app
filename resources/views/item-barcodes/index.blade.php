@@ -5,7 +5,6 @@
                 {{ __('Barcode Barang') }}
             </h2>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('item-barcodes.labels') }}" class="btn-egg-secondary" target="_blank" rel="noopener">Cetak semua label (PDF)</a>
                 <a href="{{ route('item-barcodes.import') }}" class="btn-egg-secondary">Import Excel</a>
                 <a href="{{ route('item-barcodes.create') }}" class="btn-egg-primary">Buat Baru</a>
             </div>
@@ -21,6 +20,23 @@
                 <p class="mb-4 p-2 text-sm bg-red-50 border border-red-200 rounded text-red-800">{{ session('error') }}</p>
             @endif
             <p class="text-base text-egg-700 mb-4">Urutan: <strong>FIFO</strong> (terima FG lebih dulu di atas).</p>
+            <div class="mb-4 flex flex-col sm:flex-row gap-2 sm:items-end sm:justify-between">
+                <form method="GET" action="{{ route('item-barcodes.index') }}" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <div class="w-full sm:w-96">
+                        <label class="block text-sm font-medium text-egg-800">Cari Part Code / Code Part</label>
+                        <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Contoh: 955985"
+                            class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn-egg-secondary text-sm">Cari</button>
+                        <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm">Reset</a>
+                    </div>
+                </form>
+                <a href="{{ route('item-barcodes.labels', ($q ?? request('q')) ? ['q' => ($q ?? request('q'))] : []) }}"
+                    class="btn-egg-secondary" target="_blank" rel="noopener">
+                    Cetak semua label (PDF)
+                </a>
+            </div>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">
                     <table class="min-w-full divide-y divide-egg-200 text-base">

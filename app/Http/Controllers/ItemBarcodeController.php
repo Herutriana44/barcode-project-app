@@ -23,16 +23,26 @@ class ItemBarcodeController extends Controller
     }
     public function index()
     {
+        $q = trim((string) request()->query('q', ''));
+
         $itemBarcodes = ItemBarcode::query()
             ->with(['item.company', 'itemReceiving'])
+            ->join('items', 'items.id', '=', 'item_barcodes.item_id')
             ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where('items.code', 'like', '%'.$q.'%');
+            })
             ->orderByRaw('COALESCE(item_receivings.tanggal_terima_fg, DATE(item_receivings.created_at)) ASC')
             ->orderBy('item_receivings.id')
             ->orderBy('item_barcodes.id')
             ->select('item_barcodes.*')
             ->paginate(15);
 
-        return view('item-barcodes.index', compact('itemBarcodes'));
+        if ($q !== '') {
+            $itemBarcodes->appends(['q' => $q]);
+        }
+
+        return view('item-barcodes.index', compact('itemBarcodes', 'q'));
     }
 
     /**
@@ -40,6 +50,8 @@ class ItemBarcodeController extends Controller
      */
     public function labels()
     {
+        $q = trim((string) request()->query('q', ''));
+
         $itemBarcodes = ItemBarcode::with([
             'item.company',
             'item.operatorMobil',
@@ -47,7 +59,11 @@ class ItemBarcodeController extends Controller
             'item.operatorForklift',
             'itemReceiving',
         ])
+            ->join('items', 'items.id', '=', 'item_barcodes.item_id')
             ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where('items.code', 'like', '%'.$q.'%');
+            })
             ->orderByRaw('COALESCE(item_receivings.tanggal_terima_fg, DATE(item_receivings.created_at)) ASC')
             ->orderBy('item_receivings.id')
             ->orderBy('item_barcodes.id')
