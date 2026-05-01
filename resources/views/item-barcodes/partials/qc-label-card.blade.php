@@ -1,8 +1,14 @@
 @php
+    $labelQtyPcs = $labelQtyPcs ?? null;
     $item = $itemBarcode->item;
     $companyName = $item->company->name ?? '—';
     $beratStr = $item->berat !== null ? number_format((float) $item->berat, 2, '.', '') : '';
-    $qtyStr = $item->static_qty !== null ? (string) $item->static_qty : '';
+    if ($labelQtyPcs !== null) {
+        $qtyStr = (int) $labelQtyPcs > 0 ? (string) (int) $labelQtyPcs : '';
+    } else {
+        $qtyStr = $item->static_qty !== null ? (string) $item->static_qty : '';
+    }
+    $qtySuffix = $qtyStr !== '' ? (((int) ($item->qty_sub_pack ?? 0) > 0 && $labelQtyPcs !== null) ? ' Pcs (per box)' : ' Pcs') : '';
 @endphp
 <article class="label-card">
     <table class="label-table">
@@ -46,11 +52,15 @@
                     </tr>
                     <tr>
                         <td class="fld-lbl">Quantity</td>
-                        <td>: {{ $qtyStr }}{{ $qtyStr !== '' ? ' Pcs' : '' }}</td>
+                        <td>: {{ $qtyStr }}{{ $qtySuffix }}</td>
                     </tr>
                     <tr>
                         <td class="fld-lbl">Inspector name</td>
                         <td>: {{ $item->inspector_name ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fld-lbl">Checker</td>
+                        <td>: {{ $item->checker_name ?? '' }}</td>
                     </tr>
                 </table>
             </td>

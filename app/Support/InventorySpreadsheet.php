@@ -339,6 +339,8 @@ final class InventorySpreadsheet
                     'model' => $p['model'],
                     'berat' => $p['berat'],
                     'qty' => $p['qty'],
+                    'static_qty' => $p['qty'],
+                    'dynamic_qty' => $p['qty'],
                     'inspector_name' => $p['inspector_name'],
                     'tgl_produksi' => $p['tgl_produksi'],
                     'tgl_expired' => $p['tgl_expired'],
@@ -581,12 +583,18 @@ final class InventorySpreadsheet
         if (is_numeric($v)) {
             return (float) $v;
         }
-        $s = str_replace(',', '.', (string) $v);
-        if (is_numeric($s)) {
-            return (float) $s;
+        $s = trim((string) $v);
+        $s = str_replace(["\u{00A0}"], '', $s);
+        if (preg_match('/^-?\d{1,3}(\.\d{3})+(,\d+)?$/', $s) === 1) {
+            $s = str_replace('.', '', $s);
+            $s = str_replace(',', '.', $s);
+        } elseif (str_contains($s, ',') && ! str_contains($s, '.')) {
+            $s = str_replace(',', '.', $s);
+        } else {
+            $s = str_replace(' ', '', $s);
         }
 
-        return null;
+        return is_numeric($s) ? (float) $s : null;
     }
 
     /** @return null|string|false */

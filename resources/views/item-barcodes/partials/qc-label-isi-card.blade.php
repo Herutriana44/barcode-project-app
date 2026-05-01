@@ -3,7 +3,7 @@
     $companyName = $item->company->name ?? '—';
     $partNo = $item->part_number ?? '';
     $partName = $item->part_name ?? '';
-    $checker = $item->inspector_name ?? '';
+    $checker = $item->checker_name ?? '';
     $prod = $item->tgl_produksi?->format('d/m/Y') ?? '';
 
     $qtyInPack = (int) ($qtyInPack ?? 1);

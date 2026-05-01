@@ -70,14 +70,51 @@ class ItemBarcodeController extends Controller
             ->select('item_barcodes.*')
             ->get();
 
-        $rows = $itemBarcodes->map(function (ItemBarcode $ib) {
-            return [
-                'itemBarcode' => $ib,
-                /** Code 128 berisi URL scan; lebar disesuaikan untuk label kecil. */
-                'labelBarcodeSvg' => BarcodeQrCodes::code128SvgForScan($ib->barcode_id, 1, 28),
-                'qrSvg' => BarcodeQrCodes::qrSvgForScan($ib->barcode_id, 88, 2),
-            ];
-        });
+        /** @var \Illuminate\Support\Collection<int, array{itemBarcode: ItemBarcode, labelBarcodeSvg: string, qrSvg: string, labelQtyPcs: int|null}> $rows */
+        $rows = collect();
+
+        foreach ($itemBarcodes as $ib) {
+            $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($ib->barcode_id, 1, 28);
+            $qrSvg = BarcodeQrCodes::qrSvgForScan($ib->barcode_id, 88, 2);
+
+            $item = $ib->item;
+            $staticQty = max(0, (int) ($item->static_qty ?? 0));
+            $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
+
+            if ($staticQty <= 0) {
+                $rows->push([
+                    'itemBarcode' => $ib,
+                    'labelBarcodeSvg' => $labelBarcodeSvg,
+                    'qrSvg' => $qrSvg,
+                    'labelQtyPcs' => null,
+                ]);
+
+                continue;
+            }
+
+            if ($sub > 0) {
+                $labelCount = (int) ceil($staticQty / $sub);
+                $labelCount = min($labelCount, 500);
+                $remaining = $staticQty;
+                for ($i = 0; $i < $labelCount; $i++) {
+                    $pcs = min($sub, $remaining);
+                    $remaining -= $pcs;
+                    $rows->push([
+                        'itemBarcode' => $ib,
+                        'labelBarcodeSvg' => $labelBarcodeSvg,
+                        'qrSvg' => $qrSvg,
+                        'labelQtyPcs' => $pcs > 0 ? $pcs : $sub,
+                    ]);
+                }
+            } else {
+                $rows->push([
+                    'itemBarcode' => $ib,
+                    'labelBarcodeSvg' => $labelBarcodeSvg,
+                    'qrSvg' => $qrSvg,
+                    'labelQtyPcs' => $staticQty,
+                ]);
+            }
+        }
 
         return view('item-barcodes.labels', compact('rows'));
     }
@@ -93,9 +130,8 @@ class ItemBarcodeController extends Controller
         $staticQty = max(0, (int) ($item->static_qty ?? 0));
         $sub = (int) ($item->qty_sub_pack ?? 0);
 
-        // Jika qty_sub_pack ada, asumsi: 1 label = 1 sub-pack berisi qty_sub_pack pcs.
-        // Jika tidak ada, asumsi: 1 label = 1 pcs.
-        $qtyPerLabel = $sub > 0 ? $sub : 1;
+        // Satu label = satu box; isi box = qty_sub_pack (pcs). Tanpa sub pack: satu label untuk seluruh qty.
+        $qtyPerLabel = $sub > 0 ? $sub : max(1, $staticQty);
         $labelCount = $staticQty > 0 ? (int) ceil($staticQty / $qtyPerLabel) : 1;
 
         // Hindari render ribuan label secara tidak sengaja.
@@ -130,8 +166,7 @@ class ItemBarcodeController extends Controller
 
         $itemBarcode->load('item');
         $itemBarcode->item->update([
-            // re-use kolom yang sudah ada supaya tidak perlu migration baru
-            'inspector_name' => $validated['checker'] ?? null,
+            'checker_name' => $validated['checker'] ?? null,
         ]);
 
         return redirect()->route('item-barcodes.show', $itemBarcode)

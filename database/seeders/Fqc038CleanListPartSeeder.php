@@ -198,6 +198,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
                     : $warehouse;
 
                 $qtyPack = $r['qty_pack'] ?? null;
+                $qtyForItem = is_int($qtyPack) ? $qtyPack : 0;
 
                 $prodDate = $r['prod_date'] instanceof Carbon ? $r['prod_date'] : Carbon::today();
                 $expDate = $r['exp_date'] instanceof Carbon ? $r['exp_date'] : (clone $prodDate)->addMonthsNoOverflow(3);
@@ -205,6 +206,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 // Konsisten dengan modul barcode perusahaan:
                 // - item.company_id = perusahaan (customer)
                 // - qty disimpan di company_items
+                // - static_qty / dynamic_qty disamakan dengan qty pack agar label & FIFO konsisten
                 $item = Item::query()->create([
                     'company_id' => $company->id,
                     'customer' => ($customerName !== null && $customerName !== '') ? $customerName : null,
@@ -212,9 +214,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
                     'part_number' => ($r['part_no'] ?? null) ?: null,
                     'model' => $r['model'] ?? null,
                     'berat' => $r['berat_total_kg'] ?? null,
-                    'qty' => 0,
-                    'static_qty' => 0,
-                    'dynamic_qty' => 0,
+                    'qty' => $qtyForItem,
+                    'static_qty' => $qtyForItem,
+                    'dynamic_qty' => $qtyForItem,
                     'qty_sub_pack' => ($r['qty_sub_pack'] ?? null) ?: null,
                     'berat_packaging_gram' => ($r['berat_packaging_gram'] ?? null) ?: null,
                     'berat_per_pcs_gram' => ($r['berat_per_pcs_gram'] ?? null) ?: null,
@@ -297,12 +299,31 @@ final class Fqc038CleanListPartSeeder extends Seeder
             'qty sub pack' => 'qty_sub_pack_pcs',
             'qty sub pack(pcs)' => 'qty_sub_pack_pcs',
             'qty sub pack (pcs)' => 'qty_sub_pack_pcs',
+            'qty subpack' => 'qty_sub_pack_pcs',
+            'qty sub-pack' => 'qty_sub_pack_pcs',
+            'qty sub pack pcs' => 'qty_sub_pack_pcs',
+            'isi per box (pcs)' => 'qty_sub_pack_pcs',
+            'isi per box' => 'qty_sub_pack_pcs',
             'berat packaging(gram)' => 'berat_packaging_gram',
             'berat packaging (gram)' => 'berat_packaging_gram',
             'berat packaging gram' => 'berat_packaging_gram',
+            'berat packaging (g)' => 'berat_packaging_gram',
+            'berat packaging(g)' => 'berat_packaging_gram',
+            'berat kemasan (gram)' => 'berat_packaging_gram',
+            'berat kemasan (g)' => 'berat_packaging_gram',
+            'berat kemasan gram' => 'berat_packaging_gram',
+            'berat dus (gram)' => 'berat_packaging_gram',
+            'berat box (gram)' => 'berat_packaging_gram',
+            'bw packaging (gram)' => 'berat_packaging_gram',
             'berat per pcs(gram)' => 'berat_per_pcs_gram',
             'berat per pcs (gram)' => 'berat_per_pcs_gram',
             'berat per pcs gram' => 'berat_per_pcs_gram',
+            'berat per pcs (g)' => 'berat_per_pcs_gram',
+            'berat per pcs(g)' => 'berat_per_pcs_gram',
+            'berat pcs (gram)' => 'berat_per_pcs_gram',
+            'berat/pcs (gram)' => 'berat_per_pcs_gram',
+            'berat / pcs (gram)' => 'berat_per_pcs_gram',
+            'berat nett/pcs (gram)' => 'berat_per_pcs_gram',
             'prod date' => 'prod_date',
             'prod. date' => 'prod_date',
             'production date' => 'prod_date',
@@ -312,6 +333,12 @@ final class Fqc038CleanListPartSeeder extends Seeder
             'berat total(kg)' => 'berat_total_kg',
             'berat total (kg)' => 'berat_total_kg',
             'berat total kg' => 'berat_total_kg',
+            'berat total' => 'berat_total_kg',
+            'berat (kg)' => 'berat_total_kg',
+            'berat kg' => 'berat_total_kg',
+            'berat' => 'berat_total_kg',
+            'weight (kg)' => 'berat_total_kg',
+            'weight total (kg)' => 'berat_total_kg',
             'model' => 'model',
         ];
 
@@ -368,12 +395,27 @@ final class Fqc038CleanListPartSeeder extends Seeder
             return (int) round($v);
         }
         if (is_string($v)) {
-            $s = preg_replace('/[^\d\-]/', '', $v) ?? '';
-            if ($s === '' || $s === '-') {
+            $s = trim($v);
+            if ($s === '' || $s === '-' || $s === '—') {
+                return null;
+            }
+            $s = str_replace(["\u{00A0}"], '', $s);
+            // 1.234,5 → 1234.5
+            if (preg_match('/^-?\d{1,3}(\.\d{3})+(,\d+)?$/', $s) === 1) {
+                $s = str_replace('.', '', $s);
+                $s = str_replace(',', '.', $s);
+            } elseif (str_contains($s, ',') && ! str_contains($s, '.')) {
+                $s = str_replace(',', '.', $s);
+            }
+            if (is_numeric($s)) {
+                return (int) round((float) $s);
+            }
+            $digits = preg_replace('/[^\d\-]/', '', $s) ?? '';
+            if ($digits === '' || $digits === '-') {
                 return null;
             }
 
-            return (int) $s;
+            return (int) $digits;
         }
 
         return null;
@@ -388,12 +430,24 @@ final class Fqc038CleanListPartSeeder extends Seeder
             return (float) $v;
         }
         if (is_string($v)) {
-            $s = str_replace([' ', ','], ['', '.'], trim($v));
+            $s = trim($v);
             if ($s === '' || $s === '-' || $s === '—') {
                 return null;
             }
+            $s = str_replace(["\u{00A0}"], '', $s);
+            if (preg_match('/^-?\d{1,3}(\.\d{3})+(,\d+)?$/', $s) === 1) {
+                $s = str_replace('.', '', $s);
+                $s = str_replace(',', '.', $s);
+            } elseif (str_contains($s, ',') && ! str_contains($s, '.')) {
+                $s = str_replace(',', '.', $s);
+            } else {
+                $s = str_replace(' ', '', $s);
+            }
+            if ($s === '' || ! is_numeric($s)) {
+                return null;
+            }
 
-            return is_numeric($s) ? (float) $s : null;
+            return (float) $s;
         }
 
         return null;

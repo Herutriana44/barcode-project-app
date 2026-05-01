@@ -26,6 +26,7 @@ class Item extends Model
         'berat_packaging_gram',
         'berat_per_pcs_gram',
         'inspector_name',
+        'checker_name',
         'tgl_produksi',
         'tgl_expired',
         'code',

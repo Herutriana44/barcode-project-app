@@ -20,6 +20,7 @@
                 'itemBarcode' => $row['itemBarcode'],
                 'qrSvg' => $row['qrSvg'],
                 'barcodeSvg' => $row['labelBarcodeSvg'],
+                'labelQtyPcs' => $row['labelQtyPcs'] ?? null,
             ])
         @empty
             <p class="labels-empty">Belum ada barcode barang.</p>

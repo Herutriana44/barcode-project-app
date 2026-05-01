@@ -18,15 +18,24 @@
                 </div>
             @endif
 
+            @php
+                $scanItem = $itemBarcode->item;
+                $subPackPcs = (int) ($scanItem->qty_sub_pack ?? 0);
+                $qtyPcs = (int) ($scanItem->dynamic_qty ?? $scanItem->qty ?? 0);
+                $boxApprox = ($subPackPcs > 0 && $qtyPcs > 0) ? (int) ceil($qtyPcs / $subPackPcs) : null;
+            @endphp
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
-                    <div><span class="font-medium">Customer:</span> {{ $itemBarcode->item->customer ?? '-' }}</div>
-                    <div><span class="font-medium">Part Name:</span> {{ $itemBarcode->item->part_name ?? '-' }}</div>
-                    <div><span class="font-medium">Part Number:</span> {{ $itemBarcode->item->part_number ?? '-' }}</div>
-                    <div><span class="font-medium">Model:</span> {{ $itemBarcode->item->model ?? '-' }}</div>
-                    <div><span class="font-medium">Berat:</span> {{ $itemBarcode->item->berat ?? '-' }}</div>
-                    <div><span class="font-medium">Qty:</span> {{ $itemBarcode->item->qty ?? '-' }}</div>
-                    <div><span class="font-medium">Inspector:</span> {{ $itemBarcode->item->inspector_name ?? '-' }}</div>
+                    <div><span class="font-medium">Customer:</span> {{ $scanItem->customer ?? '-' }}</div>
+                    <div><span class="font-medium">Part Name:</span> {{ $scanItem->part_name ?? '-' }}</div>
+                    <div><span class="font-medium">Part Number:</span> {{ $scanItem->part_number ?? '-' }}</div>
+                    <div><span class="font-medium">Model:</span> {{ $scanItem->model ?? '-' }}</div>
+                    <div><span class="font-medium">Berat:</span> {{ $scanItem->berat ?? '-' }}</div>
+                    <div><span class="font-medium">Qty (pcs):</span> {{ $qtyPcs }}</div>
+                    <div><span class="font-medium">Qty per box (sub pack):</span> {{ $subPackPcs > 0 ? $subPackPcs.' pcs' : '-' }}</div>
+                    <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $boxApprox !== null ? $boxApprox.' box' : '-' }}</div>
+                    <div><span class="font-medium">Inspector:</span> {{ $scanItem->inspector_name ?? '-' }}</div>
+                    <div><span class="font-medium">Checker:</span> {{ $scanItem->checker_name ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Code:</span> {{ $itemBarcode->item->code ?? '-' }}</div>

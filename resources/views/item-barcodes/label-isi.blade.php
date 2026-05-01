@@ -106,7 +106,7 @@
     <div class="toolbar no-print">
         <button type="button" onclick="window.print()" class="btn">Cetak / Simpan PDF</button>
         <a href="{{ route('item-barcodes.show', $itemBarcode) }}" class="btn" style="text-decoration:none;color:inherit;">Kembali</a>
-        <span class="hint">Label per isi. Jumlah label dihitung dari qty sub pack jika ada; jika tidak, dicetak per 1 pcs sampai qty label.</span>
+        <span class="hint">Satu label = satu box. Isi per box = qty sub pack (pcs). Jumlah label = total qty (pcs) ÷ qty sub pack (sisa pcs pada label terakhir). Tanpa sub pack: satu label untuk seluruh qty.</span>
     </div>
 
     <div class="grid">
