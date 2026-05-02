@@ -20,7 +20,7 @@ use Throwable;
 
 final class InventorySpreadsheet
 {
-    public const FG_COLS = 24;
+    public const FG_COLS = 27;
 
     public const COMPANY_COLS = 9;
 
@@ -52,6 +52,9 @@ final class InventorySpreadsheet
             'operator_mobil_nama',
             'pengirim_nama',
             'operator_forklift_nama',
+            'qty_sub_pack',
+            'berat_packaging_gram',
+            'berat_per_pcs_gram',
         ];
     }
 
@@ -83,6 +86,9 @@ final class InventorySpreadsheet
             '',
             '',
             '',
+            24,
+            120,
+            45,
         ];
     }
 
@@ -261,6 +267,9 @@ final class InventorySpreadsheet
             $opMobName = self::str($row[21] ?? null);
             $opPengName = self::str($row[22] ?? null);
             $opForkName = self::str($row[23] ?? null);
+            $qtySubPack = self::toNullableInt($row[24] ?? null);
+            $beratPackagingG = self::toNullableInt($row[25] ?? null);
+            $beratPerPcsG = self::toNullableInt($row[26] ?? null);
 
             foreach (['operator_mobil' => $opMobName, 'pengirim' => $opPengName, 'operator_forklift' => $opForkName] as $label => $ename) {
                 if ($ename !== '' && self::resolveEmployeeIdByName($ename) === null) {
@@ -315,6 +324,9 @@ final class InventorySpreadsheet
                 'operator_mobil_id' => self::resolveEmployeeIdByName($opMobName),
                 'pengirim_id' => self::resolveEmployeeIdByName($opPengName),
                 'operator_forklift_id' => self::resolveEmployeeIdByName($opForkName),
+                'qty_sub_pack' => $qtySubPack !== null && $qtySubPack > 0 ? $qtySubPack : null,
+                'berat_packaging_gram' => $beratPackagingG,
+                'berat_per_pcs_gram' => $beratPerPcsG,
             ];
         }
 
@@ -341,6 +353,9 @@ final class InventorySpreadsheet
                     'qty' => $p['qty'],
                     'static_qty' => $p['qty'],
                     'dynamic_qty' => $p['qty'],
+                    'qty_sub_pack' => $p['qty_sub_pack'],
+                    'berat_packaging_gram' => $p['berat_packaging_gram'],
+                    'berat_per_pcs_gram' => $p['berat_per_pcs_gram'],
                     'inspector_name' => $p['inspector_name'],
                     'tgl_produksi' => $p['tgl_produksi'],
                     'tgl_expired' => $p['tgl_expired'],

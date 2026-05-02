@@ -259,6 +259,8 @@ final class Fqc038CleanListPartSeeder extends Seeder
     private function normalizeHeader(string $h): string
     {
         $h = str_replace(["\r", "\n", "\t"], ' ', $h);
+        // Hilangkan zero-width / BOM yang sering memecah matching header Excel.
+        $h = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{2060}]/u', '', $h) ?? $h;
         $h = preg_replace('/\s+/', ' ', $h) ?? $h;
 
         return mb_strtolower(trim($h));
@@ -270,6 +272,13 @@ final class Fqc038CleanListPartSeeder extends Seeder
         if ($n === '' || $n === '-' || $n === '—') {
             return '';
         }
+
+        // Kurung & tanda baca fullwidth → ASCII (Excel regional / copy-paste).
+        $n = str_replace(
+            ['（', '）', '［', '］', '：', '．', '，'],
+            ['(', ')', '[', ']', ':', '.', ','],
+            $n
+        );
 
         // Normalisasi karakter umum.
         $n = str_replace(['.', ':'], '', $n);
@@ -342,7 +351,24 @@ final class Fqc038CleanListPartSeeder extends Seeder
             'model' => 'model',
         ];
 
-        return $map[$n] ?? $n;
+        if (isset($map[$n])) {
+            return $map[$n];
+        }
+
+        // Fallback: header tidak persis di peta tapi maknanya jelas (variasi Excel).
+        if (str_contains($n, 'berat') && str_contains($n, 'packaging') && (str_contains($n, 'gram') || str_contains($n, '(g)'))) {
+            return 'berat_packaging_gram';
+        }
+        if (str_contains($n, 'berat')
+            && (str_contains($n, 'per') && str_contains($n, 'pcs') || str_contains($n, '/pcs'))
+            && (str_contains($n, 'gram') || str_contains($n, '(g)'))) {
+            return 'berat_per_pcs_gram';
+        }
+        if (str_contains($n, 'berat') && str_contains($n, 'total')) {
+            return 'berat_total_kg';
+        }
+
+        return $n;
     }
 
     /**

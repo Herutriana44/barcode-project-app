@@ -20,6 +20,7 @@
             </p>
             <p class="text-sm text-egg-600">
                 Tanggal boleh teks (<code>YYYY-MM-DD</code> atau format umum) atau angka serial Excel. <code>jenis_bahan</code>: kosong, SPCC, atau SESE.
+                Kolom akhir template (opsional): <code>qty_sub_pack</code>, <code>berat_packaging_gram</code>, <code>berat_per_pcs_gram</code>.
             </p>
 
             @if ($errors->any())

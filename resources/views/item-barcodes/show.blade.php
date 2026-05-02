@@ -74,34 +74,44 @@
                     </div>
                     <p class="text-center text-lg font-mono mb-6 font-medium text-egg-900">{{ $itemBarcode->barcode_id }}</p>
 
+                    @php
+                        $detailItem = $itemBarcode->item;
+                        $detailSubPack = (int) ($detailItem->qty_sub_pack ?? 0);
+                        $detailQtyPcs = (int) ($detailItem->dynamic_qty ?? $detailItem->qty ?? 0);
+                        $detailBoxApprox = ($detailSubPack > 0 && $detailQtyPcs > 0) ? (int) ceil($detailQtyPcs / $detailSubPack) : null;
+                    @endphp
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-base">
-                        <div><span class="font-medium">Customer:</span> {{ $itemBarcode->item->customer ?? '-' }}</div>
-                        <div><span class="font-medium">Part Name:</span> {{ $itemBarcode->item->part_name ?? '-' }}</div>
-                        <div><span class="font-medium">Part Number:</span> {{ $itemBarcode->item->part_number ?? '-' }}</div>
-                        <div><span class="font-medium">Model:</span> {{ $itemBarcode->item->model ?? '-' }}</div>
-                        <div><span class="font-medium">Berat:</span> {{ $itemBarcode->item->berat ?? '-' }}</div>
-                        <div><span class="font-medium">Qty (Label/static):</span> {{ $itemBarcode->item->static_qty ?? '-' }}</div>
-                        <div><span class="font-medium">Qty (Stok/dynamic):</span> {{ $itemBarcode->item->dynamic_qty ?? '-' }}</div>
-                        <div><span class="font-medium">Inspector:</span> {{ $itemBarcode->item->inspector_name ?? '-' }}</div>
-                        <div><span class="font-medium">Checker:</span> {{ $itemBarcode->item->checker_name ?? '-' }}</div>
+                        <div><span class="font-medium">Customer:</span> {{ $detailItem->customer ?? '-' }}</div>
+                        <div><span class="font-medium">Part Name:</span> {{ $detailItem->part_name ?? '-' }}</div>
+                        <div><span class="font-medium">Part Number:</span> {{ $detailItem->part_number ?? '-' }}</div>
+                        <div><span class="font-medium">Model:</span> {{ $detailItem->model ?? '-' }}</div>
+                        <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div>
+                        <div><span class="font-medium">Qty sub pack / isi per box (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
+                        <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $detailBoxApprox !== null ? $detailBoxApprox.' box' : '-' }}</div>
+                        <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
+                        <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>
+                        <div><span class="font-medium">Berat packaging (gram):</span> {{ $detailItem->berat_packaging_gram !== null ? $detailItem->berat_packaging_gram : '-' }}</div>
+                        <div><span class="font-medium">Berat per pcs (gram):</span> {{ $detailItem->berat_per_pcs_gram !== null ? $detailItem->berat_per_pcs_gram : '-' }}</div>
+                        <div><span class="font-medium">Inspector:</span> {{ $detailItem->inspector_name ?? '-' }}</div>
+                        <div><span class="font-medium">Checker:</span> {{ $detailItem->checker_name ?? '-' }}</div>
                         <div class="col-span-2">
                             <form action="{{ route('item-barcodes.checker', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-2 items-start sm:items-end">
                                 @csrf
                                 @method('PATCH')
                                 <div class="flex-1 w-full">
                                     <label class="block text-sm font-medium text-egg-800">Checker (manual)</label>
-                                    <input type="text" name="checker" value="{{ old('checker', $itemBarcode->item->checker_name) }}" maxlength="255"
+                                    <input type="text" name="checker" value="{{ old('checker', $detailItem->checker_name) }}" maxlength="255"
                                         class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                                     @error('checker')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
                                 </div>
                                 <button type="submit" class="btn-egg-secondary text-sm">Simpan checker</button>
                             </form>
                         </div>
-                        <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
-                        <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
-                        <div><span class="font-medium">Code:</span> {{ $itemBarcode->item->code ?? '-' }}</div>
-                        <div><span class="font-medium">Posisi Rak:</span> {{ $itemBarcode->item->posisi_rak ?? '-' }}</div>
-                        <div><span class="font-medium">Tingkat:</span> {{ $itemBarcode->item->tingkat ?? '-' }}</div>
+                        <div><span class="font-medium">Tgl Produksi:</span> {{ $detailItem->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
+                        <div><span class="font-medium">Tgl Expired:</span> {{ $detailItem->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
+                        <div><span class="font-medium">Code:</span> {{ $detailItem->code ?? '-' }}</div>
+                        <div><span class="font-medium">Posisi Rak:</span> {{ $detailItem->posisi_rak ?? '-' }}</div>
+                        <div><span class="font-medium">Tingkat:</span> {{ $detailItem->tingkat ?? '-' }}</div>
                         <!-- <div class="col-span-2 border-t pt-2 mt-2"><span class="font-medium">Transfer Slip:</span> {{ $itemBarcode->itemReceiving->transfer_slip_no ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Terima FG:</span> {{ $itemBarcode->itemReceiving->tanggal_terima_fg?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div> -->

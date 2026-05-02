@@ -30,9 +30,11 @@
                     <div><span class="font-medium">Part Name:</span> {{ $scanItem->part_name ?? '-' }}</div>
                     <div><span class="font-medium">Part Number:</span> {{ $scanItem->part_number ?? '-' }}</div>
                     <div><span class="font-medium">Model:</span> {{ $scanItem->model ?? '-' }}</div>
-                    <div><span class="font-medium">Berat:</span> {{ $scanItem->berat ?? '-' }}</div>
-                    <div><span class="font-medium">Qty (pcs):</span> {{ $qtyPcs }}</div>
-                    <div><span class="font-medium">Qty per box (sub pack):</span> {{ $subPackPcs > 0 ? $subPackPcs.' pcs' : '-' }}</div>
+                    <div><span class="font-medium">Berat total (Kg):</span> {{ $scanItem->berat !== null ? $scanItem->berat : '-' }}</div>
+                    <div><span class="font-medium">Berat packaging (gram):</span> {{ $scanItem->berat_packaging_gram !== null ? $scanItem->berat_packaging_gram : '-' }}</div>
+                    <div><span class="font-medium">Berat per pcs (gram):</span> {{ $scanItem->berat_per_pcs_gram !== null ? $scanItem->berat_per_pcs_gram : '-' }}</div>
+                    <div><span class="font-medium">Qty total (pcs):</span> {{ $qtyPcs }}</div>
+                    <div><span class="font-medium">Qty sub pack / isi per box (pcs):</span> {{ $subPackPcs > 0 ? $subPackPcs : '-' }}</div>
                     <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $boxApprox !== null ? $boxApprox.' box' : '-' }}</div>
                     <div><span class="font-medium">Inspector:</span> {{ $scanItem->inspector_name ?? '-' }}</div>
                     <div><span class="font-medium">Checker:</span> {{ $scanItem->checker_name ?? '-' }}</div>
