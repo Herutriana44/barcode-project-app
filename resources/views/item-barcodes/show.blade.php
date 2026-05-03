@@ -31,15 +31,12 @@
                 <h3 class="text-base font-semibold text-egg-800 mb-2 no-print">Label cetak</h3>
                 <p class="text-sm text-egg-600 mb-3 no-print">Tampilan ini sama dengan label pada <strong>Cetak semua label (PDF)</strong>. Saat Print, hanya bagian label yang dicetak.</p>
                 <div class="qc-label-detail-wrap">
-                    @php
-                        $subPack = (int) ($itemBarcode->item->qty_sub_pack ?? 0);
-                        $previewLabelQty = $subPack > 0 ? $subPack : max(0, (int) ($itemBarcode->item->static_qty ?? 0));
-                    @endphp
                     @include('item-barcodes.partials.qc-label-card', [
                         'itemBarcode' => $itemBarcode,
                         'qrSvg' => $qcLabelQrSvg,
                         'barcodeSvg' => $qcLabelBarcodeSvg,
-                        'labelQtyPcs' => $previewLabelQty > 0 ? $previewLabelQty : null,
+                        'labelQtyPcs' => null,
+                        'quantityUseStatic' => true,
                     ])
                 </div>
                 <div class="mt-4 no-print">

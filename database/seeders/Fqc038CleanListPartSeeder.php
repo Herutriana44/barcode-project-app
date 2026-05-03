@@ -8,6 +8,7 @@ use App\Models\CompanyItem;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
+use App\Support\Fqc038CleanListHeader;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -86,8 +87,8 @@ final class Fqc038CleanListPartSeeder extends Seeder
 
             // Auto-detect header row (lebih robust dibanding hardcode baris 4).
             if (! is_array($header)) {
-                $maybeHeader = array_map(fn ($h) => $this->canonicalHeader((string) $h), $cells);
-                if ($this->looksLikeHeaderRow($maybeHeader)) {
+                $maybeHeader = array_map(fn ($h) => Fqc038CleanListHeader::canonicalHeader((string) $h), $cells);
+                if (Fqc038CleanListHeader::looksLikeHeaderRow($maybeHeader)) {
                     $header = $maybeHeader;
                     $headerRowIndex = $rowIndex;
                     continue;
@@ -146,6 +147,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
             }
 
             $beratTotal = $this->asFloat($assoc['berat_total_kg'] ?? null);
+            $rak = $this->asString($assoc['rak'] ?? null);
 
             $parsedRows[] = [
                 'customer_name' => $customerName,
@@ -160,6 +162,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 'exp_date' => $expDate,
                 'model' => $model,
                 'berat_total_kg' => $beratTotal,
+                'rak' => $rak,
             ];
         }
 
@@ -223,13 +226,14 @@ final class Fqc038CleanListPartSeeder extends Seeder
                     'tgl_produksi' => $prodDate->format('Y-m-d'),
                     'tgl_expired' => $expDate->format('Y-m-d'),
                     'code' => ($r['part_code'] ?? null) ?: null,
+                    'posisi_rak' => ($r['rak'] ?? null) ?: null,
                 ]);
 
                 CompanyItem::query()->create([
                     'company_id' => $company->id,
                     'item_id' => $item->id,
                     'qty' => is_int($qtyPack) ? $qtyPack : 0,
-                    'posisi_rak' => null,
+                    'posisi_rak' => ($r['rak'] ?? null) ?: null,
                     'tingkat' => null,
                 ]);
 
@@ -254,142 +258,6 @@ final class Fqc038CleanListPartSeeder extends Seeder
             $this->command?->warn('Header tidak terdeteksi. Pastikan sheet memiliki kolom part code/part no/qty pack/customer.');
         }
         $this->command?->info("FQC-038 import selesai. Imported: {$imported}, skipped: {$skipped}");
-    }
-
-    private function normalizeHeader(string $h): string
-    {
-        $h = str_replace(["\r", "\n", "\t"], ' ', $h);
-        // Hilangkan zero-width / BOM yang sering memecah matching header Excel.
-        $h = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{2060}]/u', '', $h) ?? $h;
-        $h = preg_replace('/\s+/', ' ', $h) ?? $h;
-
-        return mb_strtolower(trim($h));
-    }
-
-    private function canonicalHeader(string $h): string
-    {
-        $n = $this->normalizeHeader($h);
-        if ($n === '' || $n === '-' || $n === '—') {
-            return '';
-        }
-
-        // Kurung & tanda baca fullwidth → ASCII (Excel regional / copy-paste).
-        $n = str_replace(
-            ['（', '）', '［', '］', '：', '．', '，'],
-            ['(', ')', '[', ']', ':', '.', ','],
-            $n
-        );
-
-        // Normalisasi karakter umum.
-        $n = str_replace(['.', ':'], '', $n);
-
-        // Map variasi header Excel ke key internal yang stabil.
-        $map = [
-            'part code' => 'part_code',
-            'partcode' => 'part_code',
-            'kode part' => 'part_code',
-            'code' => 'part_code',
-            'current part no' => 'part_no',
-            'current part number' => 'part_no',
-            'current part no ' => 'part_no',
-            'part no' => 'part_no',
-            'part number' => 'part_no',
-            'part number ' => 'part_no',
-            'current part no/part number' => 'part_no',
-            'part description' => 'part_description',
-            'description' => 'part_description',
-            'qty/pack(pcs)' => 'qty_pack_pcs',
-            'qty/pack (pcs)' => 'qty_pack_pcs',
-            'qty/pack' => 'qty_pack_pcs',
-            'qty pack(pcs)' => 'qty_pack_pcs',
-            'qty pack' => 'qty_pack_pcs',
-            'customer' => 'customer',
-            'cust' => 'customer',
-            'qty sub pack' => 'qty_sub_pack_pcs',
-            'qty sub pack(pcs)' => 'qty_sub_pack_pcs',
-            'qty sub pack (pcs)' => 'qty_sub_pack_pcs',
-            'qty subpack' => 'qty_sub_pack_pcs',
-            'qty sub-pack' => 'qty_sub_pack_pcs',
-            'qty sub pack pcs' => 'qty_sub_pack_pcs',
-            'isi per box (pcs)' => 'qty_sub_pack_pcs',
-            'isi per box' => 'qty_sub_pack_pcs',
-            'berat packaging(gram)' => 'berat_packaging_gram',
-            'berat packaging (gram)' => 'berat_packaging_gram',
-            'berat packaging gram' => 'berat_packaging_gram',
-            'berat packaging (g)' => 'berat_packaging_gram',
-            'berat packaging(g)' => 'berat_packaging_gram',
-            'berat kemasan (gram)' => 'berat_packaging_gram',
-            'berat kemasan (g)' => 'berat_packaging_gram',
-            'berat kemasan gram' => 'berat_packaging_gram',
-            'berat dus (gram)' => 'berat_packaging_gram',
-            'berat box (gram)' => 'berat_packaging_gram',
-            'bw packaging (gram)' => 'berat_packaging_gram',
-            'berat per pcs(gram)' => 'berat_per_pcs_gram',
-            'berat per pcs (gram)' => 'berat_per_pcs_gram',
-            'berat per pcs gram' => 'berat_per_pcs_gram',
-            'berat per pcs (g)' => 'berat_per_pcs_gram',
-            'berat per pcs(g)' => 'berat_per_pcs_gram',
-            'berat pcs (gram)' => 'berat_per_pcs_gram',
-            'berat/pcs (gram)' => 'berat_per_pcs_gram',
-            'berat / pcs (gram)' => 'berat_per_pcs_gram',
-            'berat nett/pcs (gram)' => 'berat_per_pcs_gram',
-            'prod date' => 'prod_date',
-            'prod. date' => 'prod_date',
-            'production date' => 'prod_date',
-            'exp date' => 'exp_date',
-            'exp. date' => 'exp_date',
-            'expired date' => 'exp_date',
-            'berat total(kg)' => 'berat_total_kg',
-            'berat total (kg)' => 'berat_total_kg',
-            'berat total kg' => 'berat_total_kg',
-            'berat total' => 'berat_total_kg',
-            'berat (kg)' => 'berat_total_kg',
-            'berat kg' => 'berat_total_kg',
-            'berat' => 'berat_total_kg',
-            'weight (kg)' => 'berat_total_kg',
-            'weight total (kg)' => 'berat_total_kg',
-            'model' => 'model',
-        ];
-
-        if (isset($map[$n])) {
-            return $map[$n];
-        }
-
-        // Fallback: header tidak persis di peta tapi maknanya jelas (variasi Excel).
-        if (str_contains($n, 'berat') && str_contains($n, 'packaging') && (str_contains($n, 'gram') || str_contains($n, '(g)'))) {
-            return 'berat_packaging_gram';
-        }
-        if (str_contains($n, 'berat')
-            && (str_contains($n, 'per') && str_contains($n, 'pcs') || str_contains($n, '/pcs'))
-            && (str_contains($n, 'gram') || str_contains($n, '(g)'))) {
-            return 'berat_per_pcs_gram';
-        }
-        if (str_contains($n, 'berat') && str_contains($n, 'total')) {
-            return 'berat_total_kg';
-        }
-
-        return $n;
-    }
-
-    /**
-     * @param  array<int, string>  $maybeHeader
-     */
-    private function looksLikeHeaderRow(array $maybeHeader): bool
-    {
-        $keys = array_filter($maybeHeader, fn ($k) => is_string($k) && $k !== '');
-        if (count($keys) < 3) {
-            return false;
-        }
-
-        $required = ['part_code', 'part_no', 'qty_pack_pcs', 'customer'];
-        $hit = 0;
-        foreach ($required as $r) {
-            if (in_array($r, $keys, true)) {
-                $hit++;
-            }
-        }
-
-        return $hit >= 2;
     }
 
     private function asString(mixed $v): ?string

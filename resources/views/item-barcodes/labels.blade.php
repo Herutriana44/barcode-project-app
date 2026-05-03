@@ -21,6 +21,7 @@
                 'qrSvg' => $row['qrSvg'],
                 'barcodeSvg' => $row['labelBarcodeSvg'],
                 'labelQtyPcs' => $row['labelQtyPcs'] ?? null,
+                'quantityUseStatic' => true,
             ])
         @empty
             <p class="labels-empty">Belum ada barcode barang.</p>

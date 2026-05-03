@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             ItemSeeder::class,
             ItemReceivingSeeder::class,
             Fqc038CleanListPartSeeder::class,
+            RakSeeder::class,
         ]);
     }
 }
