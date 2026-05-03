@@ -116,7 +116,9 @@ class ItemBarcodeController extends Controller
             }
         }
 
-        return view('item-barcodes.labels', compact('rows'));
+        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
+
+        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
     }
 
     /**
@@ -399,6 +401,8 @@ class ItemBarcodeController extends Controller
         $qcLabelQrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
         $qcLabelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
 
-        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl'));
+        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
+
+        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
     }
 }

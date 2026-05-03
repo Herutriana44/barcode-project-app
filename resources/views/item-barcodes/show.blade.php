@@ -37,6 +37,7 @@
                         'barcodeSvg' => $qcLabelBarcodeSvg,
                         'labelQtyPcs' => null,
                         'quantityUseStatic' => true,
+                        'headerCompanyName' => $labelHeaderCompanyName,
                     ])
                 </div>
                 <div class="mt-4 no-print">
