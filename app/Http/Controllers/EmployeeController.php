@@ -36,6 +36,7 @@ class EmployeeController extends Controller
             ],
             'departemen' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:4096',
         ]);
 
@@ -49,6 +50,7 @@ class EmployeeController extends Controller
             'nip' => $validated['nip'],
             'departemen' => $validated['departemen'] ?? null,
             'jabatan' => $validated['jabatan'] ?? null,
+            'status' => $validated['status'] ?? null,
             'photo_path' => $photoPath,
         ]);
 
@@ -104,6 +106,7 @@ class EmployeeController extends Controller
             ],
             'departemen' => 'nullable|string|max:255',
             'jabatan' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
             'photo' => 'nullable|image|max:4096',
         ]);
 
@@ -120,6 +123,7 @@ class EmployeeController extends Controller
             'nip' => $validated['nip'],
             'departemen' => $validated['departemen'] ?? null,
             'jabatan' => $validated['jabatan'] ?? null,
+            'status' => $validated['status'] ?? null,
             'photo_path' => $photoPath,
         ]);
 

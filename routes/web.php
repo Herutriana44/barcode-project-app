@@ -4,6 +4,7 @@ use App\Http\Controllers\CompanyBarcodeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ItemBarcodeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RakController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StockOutController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('company-barcodes/import', [CompanyBarcodeController::class, 'importForm'])->name('company-barcodes.import');
     Route::post('company-barcodes/import', [CompanyBarcodeController::class, 'importStore'])->name('company-barcodes.import.store');
     Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+
+    // Rak options (untuk dropdown per perusahaan/customer)
+    Route::get('raks/options', [RakController::class, 'options'])->name('raks.options');
 
     // Scan
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');

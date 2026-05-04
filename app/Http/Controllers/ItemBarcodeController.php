@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
+use App\Models\Rak;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
@@ -24,6 +25,7 @@ class ItemBarcodeController extends Controller
     public function index()
     {
         $q = trim((string) request()->query('q', ''));
+        $expiredSort = (string) request()->query('expired_sort', '');
 
         $itemBarcodes = ItemBarcode::query()
             ->with(['item.company', 'itemReceiving'])
@@ -32,17 +34,24 @@ class ItemBarcodeController extends Controller
             ->when($q !== '', function ($query) use ($q) {
                 $query->where('items.code', 'like', '%'.$q.'%');
             })
+            ->when($expiredSort === 'expired_first', function ($query) {
+                $query->orderByRaw("CASE WHEN items.tgl_expired IS NOT NULL AND items.tgl_expired < CURDATE() THEN 0 ELSE 1 END ASC");
+            })
+            ->when($expiredSort === 'valid_first', function ($query) {
+                $query->orderByRaw("CASE WHEN items.tgl_expired IS NOT NULL AND items.tgl_expired < CURDATE() THEN 0 ELSE 1 END DESC");
+            })
             ->orderByRaw('COALESCE(item_receivings.tanggal_terima_fg, DATE(item_receivings.created_at)) ASC')
             ->orderBy('item_receivings.id')
             ->orderBy('item_barcodes.id')
             ->select('item_barcodes.*')
             ->paginate(15);
 
-        if ($q !== '') {
-            $itemBarcodes->appends(['q' => $q]);
-        }
+        $appends = [];
+        if ($q !== '') $appends['q'] = $q;
+        if ($expiredSort !== '') $appends['expired_sort'] = $expiredSort;
+        if ($appends !== []) $itemBarcodes->appends($appends);
 
-        return view('item-barcodes.index', compact('itemBarcodes', 'q'));
+        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort'));
     }
 
     /**
@@ -213,6 +222,24 @@ class ItemBarcodeController extends Controller
             'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
+        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
+        $allowedRak = [];
+        if ($customerName !== '') {
+            $allowedRak = Rak::query()
+                ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($customerName)])
+                ->pluck('code')
+                ->map(fn ($v) => (string) $v)
+                ->all();
+        }
+        if (count($allowedRak) > 0) {
+            $rak = isset($validated['posisi_rak']) ? trim((string) $validated['posisi_rak']) : '';
+            if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
+                return back()->withInput()->withErrors([
+                    'posisi_rak' => "Rak \"{$rak}\" tidak valid untuk customer \"{$customerName}\".",
+                ]);
+            }
+        }
+
         $item = Item::create([
             'company_id' => $warehouseCompany->id,
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
@@ -296,6 +323,24 @@ class ItemBarcodeController extends Controller
             'pengirim_id' => 'nullable|exists:employees,id',
             'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
+
+        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
+        $allowedRak = [];
+        if ($customerName !== '') {
+            $allowedRak = Rak::query()
+                ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($customerName)])
+                ->pluck('code')
+                ->map(fn ($v) => (string) $v)
+                ->all();
+        }
+        if (count($allowedRak) > 0) {
+            $rak = isset($validated['posisi_rak']) ? trim((string) $validated['posisi_rak']) : '';
+            if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
+                return back()->withInput()->withErrors([
+                    'posisi_rak' => "Rak \"{$rak}\" tidak valid untuk customer \"{$customerName}\".",
+                ]);
+            }
+        }
 
         DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany) {
             $itemBarcode->item->update([

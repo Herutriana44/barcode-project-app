@@ -19,6 +19,7 @@
                             <th class="text-left py-3 px-3 font-semibold">NIP</th>
                             <th class="text-left py-3 px-3 font-semibold">Departemen</th>
                             <th class="text-left py-3 px-3 font-semibold">Jabatan</th>
+                            <th class="text-left py-3 px-3 font-semibold">Status</th>
                             <th class="text-right py-3 px-3 font-semibold w-44">Aksi</th>
                         </tr>
                     </thead>
@@ -29,6 +30,7 @@
                                 <td class="py-3 px-3 font-mono text-sm">{{ $e->nip }}</td>
                                 <td class="py-3 px-3">{{ $e->departemen ?? '—' }}</td>
                                 <td class="py-3 px-3">{{ $e->jabatan ?? '—' }}</td>
+                                <td class="py-3 px-3">{{ $e->status ?? '—' }}</td>
                                 <td class="py-3 px-3 text-right space-x-2">
                                     <a href="{{ route('employees.show', $e) }}" class="link-egg">Detail</a>
                                     <a href="{{ route('employees.id-card', $e) }}" target="_blank" class="link-egg">ID card</a>
@@ -41,7 +43,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="py-6 px-2 text-center text-egg-600">Belum ada karyawan.</td></tr>
+                            <tr><td colspan="6" class="py-6 px-2 text-center text-egg-600">Belum ada karyawan.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

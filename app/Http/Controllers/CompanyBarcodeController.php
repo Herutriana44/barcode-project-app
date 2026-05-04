@@ -8,6 +8,7 @@ use App\Models\CompanyItem;
 use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
+use App\Models\Rak;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
@@ -60,6 +61,24 @@ class CompanyBarcodeController extends Controller
         $rows = collect($request->items)->filter(fn ($r) => (int) ($r['qty'] ?? 0) > 0);
         if ($rows->isEmpty()) {
             return back()->withInput()->withErrors(['items' => 'Isi minimal satu barang dengan qty lebih dari 0.']);
+        }
+
+        $companyName = (string) $request->company_name;
+        $allowedRak = Rak::query()
+            ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower(trim($companyName))])
+            ->pluck('code')
+            ->map(fn ($v) => (string) $v)
+            ->all();
+
+        if (count($allowedRak) > 0) {
+            foreach ($rows as $i => $row) {
+                $rak = isset($row['posisi_rak']) ? trim((string) $row['posisi_rak']) : '';
+                if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
+                    return back()->withInput()->withErrors([
+                        "items.{$i}.posisi_rak" => "Rak \"{$rak}\" tidak valid untuk perusahaan \"{$companyName}\".",
+                    ]);
+                }
+            }
         }
 
         return DB::transaction(function () use ($request, $rows) {
@@ -187,6 +206,24 @@ class CompanyBarcodeController extends Controller
         $rows = collect($validated['items'])->filter(fn ($r) => (int) ($r['qty'] ?? 0) > 0);
         if ($rows->isEmpty()) {
             return back()->withInput()->withErrors(['items' => 'Isi minimal satu barang dengan qty lebih dari 0.']);
+        }
+
+        $companyName = (string) $validated['company_name'];
+        $allowedRak = Rak::query()
+            ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower(trim($companyName))])
+            ->pluck('code')
+            ->map(fn ($v) => (string) $v)
+            ->all();
+
+        if (count($allowedRak) > 0) {
+            foreach ($rows as $i => $row) {
+                $rak = isset($row['posisi_rak']) ? trim((string) $row['posisi_rak']) : '';
+                if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
+                    return back()->withInput()->withErrors([
+                        "items.{$i}.posisi_rak" => "Rak \"{$rak}\" tidak valid untuk perusahaan \"{$companyName}\".",
+                    ]);
+                }
+            }
         }
 
         $keptCiIds = $rows->pluck('company_item_id')->filter()->map(fn ($id) => (int) $id)->values()->all();

@@ -110,13 +110,14 @@
                                                 />
                                             </td>
                                             <td class="py-1 px-2 align-top">
-                                                <input
-                                                    type="text"
+                                                <select
                                                     name="items[{{ $idx }}][posisi_rak]"
-                                                    value="{{ $row['posisi_rak'] ?? '' }}"
-                                                    placeholder="Rak"
-                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
-                                                />
+                                                    data-rak-select
+                                                    data-current="{{ $row['posisi_rak'] ?? '' }}"
+                                                    class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1 bg-white"
+                                                >
+                                                    <option value="">—</option>
+                                                </select>
                                             </td>
                                             <td class="py-1 px-2 align-top">
                                                 <input
@@ -159,7 +160,9 @@
                 <input type="number" name="items[__I__][qty]" value="" min="0" placeholder="0" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 item-qty py-1" />
             </td>
             <td class="py-1 px-2 align-top">
-                <input type="text" name="items[__I__][posisi_rak]" value="" placeholder="Rak" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
+                <select name="items[__I__][posisi_rak]" data-rak-select data-current="" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1 bg-white">
+                    <option value="">—</option>
+                </select>
             </td>
             <td class="py-1 px-2 align-top">
                 <input type="text" name="items[__I__][tingkat]" value="" placeholder="Tingkat" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
@@ -184,6 +187,7 @@
                 nextIndex++;
                 tbody.appendChild(row);
                 bindRemove(row.querySelector('.remove-item-row'));
+                refreshRakOptions();
             });
 
             function bindRemove(btn) {
@@ -200,6 +204,60 @@
             }
 
             tbody.querySelectorAll('.remove-item-row').forEach(bindRemove);
+
+            const companyNameInput = document.getElementById('company_name');
+
+            async function fetchRakOptions(companyName) {
+                const name = (companyName || '').trim();
+                if (!name) return [];
+                const url = `{{ route('raks.options') }}?company_name=${encodeURIComponent(name)}`;
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) return [];
+                const json = await res.json();
+                return Array.isArray(json.codes) ? json.codes : [];
+            }
+
+            function applyOptionsToAllSelects(codes) {
+                document.querySelectorAll('select[data-rak-select]').forEach(function (sel) {
+                    const current = (sel.getAttribute('data-current') || '').trim();
+                    const keep = sel.value || current;
+                    sel.innerHTML = '<option value="">—</option>';
+                    codes.forEach(function (c) {
+                        const opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        sel.appendChild(opt);
+                    });
+                    if (keep) {
+                        sel.value = keep;
+                        if (sel.value !== keep) {
+                            const opt = document.createElement('option');
+                            opt.value = keep;
+                            opt.textContent = keep + ' (tidak tersedia)';
+                            sel.appendChild(opt);
+                            sel.value = keep;
+                        }
+                    }
+                });
+            }
+
+            let lastCompany = '';
+            async function refreshRakOptions() {
+                const name = (companyNameInput?.value || '').trim();
+                if (name === lastCompany) return;
+                lastCompany = name;
+                const codes = await fetchRakOptions(name);
+                applyOptionsToAllSelects(codes);
+            }
+
+            if (companyNameInput) {
+                companyNameInput.addEventListener('input', function () {
+                    window.clearTimeout(companyNameInput._rakT);
+                    companyNameInput._rakT = window.setTimeout(refreshRakOptions, 250);
+                });
+            }
+
+            refreshRakOptions();
         })();
     </script>
 </x-app-layout>

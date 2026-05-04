@@ -15,6 +15,7 @@ class Employee extends Model
         'nip',
         'departemen',
         'jabatan',
+        'status',
         'photo_path',
     ];
 

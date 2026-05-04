@@ -32,6 +32,7 @@
                         <p><span class="font-medium text-egg-800">NIP:</span> {{ $employee->nip }}</p>
                         <p><span class="font-medium text-egg-800">Departemen:</span> {{ $employee->departemen ?? '—' }}</p>
                         <p><span class="font-medium text-egg-800">Jabatan:</span> {{ $employee->jabatan ?? '—' }}</p>
+                        <p><span class="font-medium text-egg-800">Status:</span> {{ $employee->status ?? '—' }}</p>
                         <p class="pt-2 text-sm text-egg-600 break-all">
                             <span class="font-medium text-egg-800">Tautan profil:</span><br />
                             <a href="{{ $profileUrl }}" class="link-egg">{{ $profileUrl }}</a>

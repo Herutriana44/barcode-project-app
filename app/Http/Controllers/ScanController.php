@@ -36,6 +36,7 @@ class ScanController extends Controller
             }
 
             $fifoOlderStockWarning = FifoStockService::hasOlderBatchWithStock($itemBarcode);
+            $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -45,6 +46,7 @@ class ScanController extends Controller
                         'receiving' => $itemBarcode->itemReceiving,
                         'company' => $itemBarcode->item->company,
                         'fifo_older_stock_warning' => $fifoOlderStockWarning,
+                        'expired_warning' => $expiredWarning,
                     ],
                 ]);
             }

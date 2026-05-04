@@ -25,7 +25,7 @@
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Customer</label>
-                                <select name="customer" class="mt-1 block w-full rounded-md border-egg-300">
+                                <select name="customer" id="customer_company" class="mt-1 block w-full rounded-md border-egg-300 bg-white">
                                     <option value="">—</option>
                                     @foreach($customers as $c)
                                         <option value="{{ $c->name }}" {{ old('customer') == $c->name ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -68,7 +68,10 @@
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
-                                <input type="text" name="posisi_rak" value="{{ old('posisi_rak') }}" class="mt-1 block w-full rounded-md border-egg-300">
+                                <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak') }}"
+                                    class="mt-1 block w-full rounded-md border-egg-300 bg-white">
+                                    <option value="">—</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Tingkat</label>
@@ -191,6 +194,58 @@
                 expired.value = toYmd(addMonthsSafe(base, 3));
                 expired.dataset.auto = '1';
             });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            const customerSelect = document.getElementById('customer_company');
+            const rakSelect = document.getElementById('posisi_rak');
+            if (!customerSelect || !rakSelect) return;
+
+            async function fetchRakOptions(companyName) {
+                const name = (companyName || '').trim();
+                if (!name) return [];
+                const url = `{{ route('raks.options') }}?company_name=${encodeURIComponent(name)}`;
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) return [];
+                const json = await res.json();
+                return Array.isArray(json.codes) ? json.codes : [];
+            }
+
+            function applyOptions(codes) {
+                const current = (rakSelect.getAttribute('data-current') || '').trim();
+                const keep = rakSelect.value || current;
+                rakSelect.innerHTML = '<option value="">—</option>';
+                codes.forEach(function (c) {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    rakSelect.appendChild(opt);
+                });
+                if (keep) {
+                    rakSelect.value = keep;
+                    if (rakSelect.value !== keep) {
+                        const opt = document.createElement('option');
+                        opt.value = keep;
+                        opt.textContent = keep + ' (tidak tersedia)';
+                        rakSelect.appendChild(opt);
+                        rakSelect.value = keep;
+                    }
+                }
+            }
+
+            let last = '';
+            async function refresh() {
+                const name = (customerSelect.value || '').trim();
+                if (name === last) return;
+                last = name;
+                const codes = await fetchRakOptions(name);
+                applyOptions(codes);
+            }
+
+            customerSelect.addEventListener('change', refresh);
+            refresh();
         })();
     </script>
 </x-app-layout>

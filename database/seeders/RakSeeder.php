@@ -3,20 +3,21 @@
 namespace Database\Seeders;
 
 use App\Models\Rak;
-use App\Support\Fqc038CleanListHeader;
 use Illuminate\Database\Seeder;
 use OpenSpout\Reader\XLSX\Reader;
 
 /**
- * Mengisi tabel raks dari nilai unik kolom Rak pada sheet clean_list_part (data.xlsx).
+ * Mengisi tabel raks dari sheet "rak" pada Excel (database/seeders/data/data.xlsx).
+ *
+ * Kolom wajib:
+ * - Perusahaan
+ * - Rak
  */
 final class RakSeeder extends Seeder
 {
     private const FILE_NAME = 'data.xlsx';
 
-    private const SHEET_NAME = 'clean_list_part';
-
-    private const FALLBACK_HEADER_ROW_INDEX = 4;
+    private const SHEET_NAME = 'rak';
 
     public function run(): void
     {
@@ -48,31 +49,31 @@ final class RakSeeder extends Seeder
             return;
         }
 
-        $codes = $this->collectUniqueRakCodes($rowIterator);
+        $rows = $this->collectUniqueRaks($rowIterator);
         $reader->close();
 
         $n = 0;
-        foreach ($codes as $code) {
-            Rak::query()->firstOrCreate(['code' => $code]);
+        foreach ($rows as $r) {
+            Rak::query()->firstOrCreate([
+                'company_name' => $r['company_name'],
+                'code' => $r['code'],
+            ]);
             $n++;
         }
 
-        $this->command?->info("RakSeeder: {$n} kode rak unik dari Excel.");
+        $this->command?->info("RakSeeder: {$n} rak (per perusahaan) dari Excel.");
     }
 
     /**
      * @param  \Iterator<\OpenSpout\Common\Entity\Row>  $rows
-     * @return list<string>
+     * @return list<array{company_name: string, code: string}>
      */
-    private function collectUniqueRakCodes(\Iterator $rows): array
+    private function collectUniqueRaks(\Iterator $rows): array
     {
         $header = null;
-        $rowIndex = 0;
         $seen = [];
 
         foreach ($rows as $row) {
-            $rowIndex++;
-
             $cells = [];
             foreach ($row->getCells() as $cell) {
                 $v = $cell->getValue();
@@ -86,15 +87,7 @@ final class RakSeeder extends Seeder
             }
 
             if (! is_array($header)) {
-                $maybeHeader = array_map(fn ($h) => Fqc038CleanListHeader::canonicalHeader((string) $h), $cells);
-                if (Fqc038CleanListHeader::looksLikeHeaderRow($maybeHeader)) {
-                    $header = $maybeHeader;
-                    continue;
-                }
-                if ($rowIndex === self::FALLBACK_HEADER_ROW_INDEX) {
-                    $header = $maybeHeader;
-                    continue;
-                }
+                $header = array_map(fn ($h) => self::canon((string) $h), $cells);
                 continue;
             }
 
@@ -106,20 +99,45 @@ final class RakSeeder extends Seeder
                 $assoc[$key] = $cells[$i] ?? null;
             }
 
-            $raw = $assoc['rak'] ?? null;
-            if ($raw === null || $raw === '') {
+            $company = self::cleanStr($assoc['perusahaan'] ?? null);
+            $code = self::cleanStr($assoc['rak'] ?? null);
+            if ($company === '' || $code === '') {
                 continue;
             }
-            $code = is_string($raw) ? trim($raw) : trim((string) $raw);
-            if ($code === '' || $code === '-' || $code === '—') {
-                continue;
-            }
-            $seen[$code] = true;
+            $k = mb_strtolower(trim($company)).'|'.mb_strtolower(trim($code));
+            $seen[$k] = ['company_name' => $company, 'code' => $code];
         }
 
-        $list = array_keys($seen);
-        sort($list);
+        $list = array_values($seen);
+        usort($list, fn ($a, $b) => [$a['company_name'], $a['code']] <=> [$b['company_name'], $b['code']]);
 
         return $list;
+    }
+
+    private static function canon(string $s): string
+    {
+        $s = trim($s);
+        $s = str_replace(['`', '"', "'"], '', $s);
+        $s = preg_replace('/\s+/', ' ', $s) ?? $s;
+        $s = mb_strtolower($s);
+
+        return match ($s) {
+            'perusahaan', 'nama perusahaan', 'company', 'customer' => 'perusahaan',
+            'rak', 'posisi rak', 'posisi_rak' => 'rak',
+            default => $s,
+        };
+    }
+
+    private static function cleanStr(mixed $v): string
+    {
+        if ($v === null) {
+            return '';
+        }
+        $s = trim((string) $v);
+        if ($s === '' || $s === '-' || $s === '—') {
+            return '';
+        }
+
+        return $s;
     }
 }

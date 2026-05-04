@@ -19,6 +19,15 @@
             @endif
 
             @php
+                $isExpired = $itemBarcode->item->tgl_expired?->isPast() ?? false;
+            @endphp
+            @if ($isExpired)
+                <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Warning: Expired items should be checked</p>
+                </div>
+            @endif
+
+            @php
                 $scanItem = $itemBarcode->item;
                 $subPackPcs = (int) ($scanItem->qty_sub_pack ?? 0);
                 $qtyPcs = (int) ($scanItem->dynamic_qty ?? $scanItem->qty ?? 0);
