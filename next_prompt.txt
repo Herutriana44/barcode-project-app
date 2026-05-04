@@ -1,4 +1,5 @@
-revisi projek ini, berikut poin revisinya
+revisi projek berikut:
 
-1. show data pada barcode barang detail untuk menampilkan qty per pcs dan per box dan qty sub pack
-2. masih belum bisa seeder atribut `Berat Packaging(gram)`, `Berat per pcs(gram)`, dan `Berat total(Kg)`(dari excel). jika belum ada atribut di database, maka buatkan migrasi nya dulu untuk atribut diatas. setelah itu tampilkan semua data-data atribut baru ini di informasi barcode barang
+1. tambahkan seeder data karyawan dari file excel data karyawan dengan kolom No, Nama, `Nomor Induk Pegawai `, DEPARTEMEN, JABATAN, `STATUS `
+2. tambah warning expired ketika scan, "Warning: Expired items should be checked"
+3. tambahkan fitur sort barang antara expired atau belum
