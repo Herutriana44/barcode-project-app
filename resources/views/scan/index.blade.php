@@ -17,7 +17,12 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <!-- Camera Scan -->
                     <div>
-                        <h3 class="text-xl font-bold text-egg-900 mb-4">Scan dengan Kamera</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-egg-900">Scan dengan Kamera</h3>
+                            <button id="switchCameraBtn" class="px-4 py-2 bg-egg-100 text-egg-800 rounded-lg text-sm font-semibold hover:bg-egg-200 transition hidden">
+                                🔄 Ganti Kamera
+                            </button>
+                        </div>
                         <div id="reader" class="w-full border-2 border-egg-200 rounded-xl overflow-hidden" style="min-height: 360px;"></div>
                         <p class="text-base text-egg-700 mt-3">Arahkan kamera ke barcode garis atau QR pada label (keduanya berisi URL). Pemindai lain yang membuka URL tersebut juga sampai ke halaman yang sama.</p>
                     </div>

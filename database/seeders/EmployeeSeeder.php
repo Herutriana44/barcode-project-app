@@ -19,7 +19,7 @@ use OpenSpout\Reader\XLSX\Reader;
  */
 final class EmployeeSeeder extends Seeder
 {
-    private const FILE_NAME = 'data-karyawan.xlsx';
+    private const FILE_NAME = 'data karyawan 4.xlsx';
 
     private const SHEET_NAME = 'karyawan';
 
