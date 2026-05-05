@@ -130,7 +130,7 @@ final class EmployeeSeeder extends Seeder
             'nomor induk pegawai', 'nomorindukpegawai', 'nip', 'nomor induk pegawai ' => 'nip',
             'departemen', 'department', 'dept' => 'departemen',
             'jabatan', 'position' => 'jabatan',
-            'status', 'status ' => 'status',
+            'status', 'status ', 'status kerja' => 'status',
             default => $s,
         };
     }
