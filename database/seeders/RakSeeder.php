@@ -100,7 +100,7 @@ final class RakSeeder extends Seeder
             }
 
             $company = self::cleanStr($assoc['perusahaan'] ?? null);
-            $code = self::cleanStr($assoc['rak'] ?? null);
+            $code = self::cleanRakCode($assoc['rak'] ?? null);
             if ($company === '' || $code === '') {
                 continue;
             }
@@ -137,6 +137,19 @@ final class RakSeeder extends Seeder
         if ($s === '' || $s === '-' || $s === '—') {
             return '';
         }
+
+        return $s;
+    }
+
+    private static function cleanRakCode(mixed $v): string
+    {
+        $s = self::cleanStr($v);
+        if ($s === '') {
+            return '';
+        }
+        // Konsisten dengan format excel seperti "B4, B6, C10"
+        $s = strtoupper($s);
+        $s = preg_replace('/\s+/', '', $s) ?? $s;
 
         return $s;
     }
