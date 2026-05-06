@@ -39,23 +39,9 @@ class RakController extends Controller
 
         // Ambil nilai unik
         $codes = array_values(array_unique($allCodes));
-
-        // Sort natural untuk format seperti "B4, B6, C10"
-        usort($codes, function (string $a, string $b) {
-            $pa = $this->parseRakCode($a);
-            $pb = $this->parseRakCode($b);
-
-            // Unknown format taruh di bawah tapi tetap stabil
-            if ($pa === null && $pb === null) return $a <=> $b;
-            if ($pa === null) return 1;
-            if ($pb === null) return -1;
-
-            [$la, $na] = $pa;
-            [$lb, $nb] = $pb;
-            if ($la !== $lb) return $la <=> $lb;
-            if ($na !== $nb) return $na <=> $nb;
-            return $a <=> $b;
-        });
+        
+        // Cukup sort secara alfabetis standar agar konsisten
+        sort($codes);
 
         return response()->json(['codes' => $codes]);
     }
