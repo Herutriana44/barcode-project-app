@@ -21,21 +21,29 @@ class RakController extends Controller
             return response()->json(['codes' => []]);
         }
 
-        // Ambil data rak yang ada di database untuk perusahaan tersebut
-        $dbCodes = Rak::query()
+        // Ambil semua code sebagai string, lalu pecah berdasarkan koma
+        $rawCodes = Rak::query()
             ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($companyName)])
             ->pluck('code')
-            ->map(function ($v) {
-                return strtoupper(trim((string) $v));
-            })
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+            ->toArray();
 
-        // Gabungkan dengan daftar yang diizinkan (atau batasi hanya pada daftar yang diizinkan)
-        // Kita gunakan intersection agar hanya kode yang ada di DB DAN diizinkan yang muncul
-        $codes = array_values(array_intersect($dbCodes, self::ALLOWED_RAK_CODES));
+        $allCodes = [];
+        foreach ($rawCodes as $row) {
+            // Pecah string "E1, E2, E3" menjadi array ['E1', 'E2', 'E3']
+            $parts = explode(',', (string) $row);
+            foreach ($parts as $p) {
+                $trimmed = strtoupper(trim($p));
+                if ($trimmed !== '') {
+                    $allCodes[] = $trimmed;
+                }
+            }
+        }
+
+        // Ambil nilai unik dan filter hanya yang ada di ALLOWED_RAK_CODES
+        $uniqueCodes = array_unique($allCodes);
+        $codes = array_values(array_filter($uniqueCodes, function ($code) {
+            return in_array($code, self::ALLOWED_RAK_CODES, true);
+        }));
 
         // Jika array kosong setelah filter, namun kita ingin tetap menampilkan pilihan E1, E2, E3 
         // (opsional: tergantung kebutuhan bisnis, namun biasanya yang ada di DB saja)
