@@ -11,6 +11,7 @@
                 <h3 class="font-bold text-2xl text-egg-900 mb-6">{{ $companyBarcode->company->name }}</h3>
 
                 <div class="overflow-x-auto">
+            <div class="overflow-x-auto">
                 <table class="min-w-full text-base">
                     <thead>
                         <tr class="border-b border-egg-200">

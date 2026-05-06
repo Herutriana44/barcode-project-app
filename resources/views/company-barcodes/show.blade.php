@@ -56,7 +56,8 @@
                     <h3 class="font-bold text-2xl mb-4">{{ $companyBarcode->company->name }}</h3>
 
                     <div class="overflow-x-auto">
-                    <table class="min-w-full text-base">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-base">
                         <thead>
                             <tr class="border-b border-egg-200">
                                 <th class="text-left py-3 px-2 font-semibold">Nama</th>

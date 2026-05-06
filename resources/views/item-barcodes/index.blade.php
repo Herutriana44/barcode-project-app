@@ -47,6 +47,7 @@
             </div>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">
+                <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-egg-200 text-base">
                         <thead>
                             <tr>

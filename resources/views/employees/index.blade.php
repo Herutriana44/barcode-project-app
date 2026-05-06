@@ -12,6 +12,7 @@
                 <p class="mb-2 p-2 text-sm bg-egg-100 border border-egg-300 rounded text-egg-900">{{ session('success') }}</p>
             @endif
             <div class="bg-white border border-egg-200 rounded overflow-hidden">
+            <div class="overflow-x-auto">
                 <table class="min-w-full text-base">
                     <thead class="bg-egg-50 text-egg-800">
                         <tr>

@@ -66,6 +66,7 @@
                         @enderror
 
                         <div class="overflow-x-auto border border-egg-200 rounded-lg">
+                        <div class="overflow-x-auto">
                             <table class="min-w-full text-sm">
                                 <thead class="bg-egg-50 text-egg-800">
                                     <tr>
