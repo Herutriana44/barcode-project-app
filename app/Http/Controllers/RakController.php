@@ -19,31 +19,28 @@ class RakController extends Controller
             return response()->json(['codes' => []]);
         }
 
-        // Ambil semua code sebagai string, lalu pecah berdasarkan koma
-        $rawCodes = Rak::query()
+        // Ambil semua code sebagai string dari database
+        $rows = Rak::query()
             ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($companyName)])
-            ->pluck('code')
-            ->toArray();
+            ->pluck('code');
 
         $allCodes = [];
-        foreach ($rawCodes as $row) {
-            // Pecah string "E1, E2, E3" menjadi array ['E1', 'E2', 'E3']
+        foreach ($rows as $row) {
+            // Pecah berdasarkan koma jika ada, trim, dan ambil yang tidak kosong
             $parts = explode(',', (string) $row);
-            foreach ($parts as $p) {
-                $trimmed = strtoupper(trim($p));
-                if ($trimmed !== '') {
-                    $allCodes[] = $trimmed;
+            foreach ($parts as $part) {
+                $code = trim($part);
+                if ($code !== '') {
+                    $allCodes[] = $code;
                 }
             }
         }
 
-        // Ambil nilai unik
-        $codes = array_values(array_unique($allCodes));
-        
-        // Cukup sort secara alfabetis standar agar konsisten
-        sort($codes);
+        // Ambil nilai unik dan urutkan secara alfabetis
+        $uniqueCodes = array_unique($allCodes);
+        sort($uniqueCodes);
 
-        return response()->json(['codes' => $codes]);
+        return response()->json(['codes' => array_values($uniqueCodes)]);
     }
 
     /**
