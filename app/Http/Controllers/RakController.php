@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 class RakController extends Controller
 {
+    private const ALLOWED_RAK_CODES = ['E1', 'E2', 'E3'];
+
     /**
      * Ambil opsi rak berdasarkan nama perusahaan (case-insensitive).
      *
@@ -29,6 +31,10 @@ class RakController extends Controller
             })
             ->filter()
             ->unique()
+            ->values()
+            ->filter(function ($code) {
+                return in_array($code, self::ALLOWED_RAK_CODES, true);
+            })
             ->values()
             ->all();
 
