@@ -52,7 +52,13 @@
                                                     <button type="submit" class="text-red-600 hover:text-red-800 text-sm underline">Hapus</button>
                                                 </form>
                                             @else
-                                                <a href="{{ route('company-barcodes.create', ['company_id' => $company->id]) }}" class="link-egg">Buat Barcode</a>
+                                                <div class="flex flex-wrap items-center gap-2">
+                                                    <a href="{{ route('company-barcodes.create', ['company_id' => $company->id]) }}" class="link-egg">Buat Barcode</a>
+                                                    <form action="{{ route('company-barcodes.destroy-company', $company->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus perusahaan ini?');">
+                                                        @csrf
+                                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm underline">Hapus</button>
+                                                    </form>
+                                                </div>
                                             @endif
                                         </div>
                                     </td>

@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('company-barcodes/import/template', [CompanyBarcodeController::class, 'importTemplate'])->name('company-barcodes.import.template');
     Route::get('company-barcodes/import', [CompanyBarcodeController::class, 'importForm'])->name('company-barcodes.import');
     Route::post('company-barcodes/import', [CompanyBarcodeController::class, 'importStore'])->name('company-barcodes.import.store');
+    Route::post('company-barcodes/destroy-company/{id}', [CompanyBarcodeController::class, 'destroyCompany'])->name('company-barcodes.destroy-company');
     Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Rak options (untuk dropdown per perusahaan/customer)

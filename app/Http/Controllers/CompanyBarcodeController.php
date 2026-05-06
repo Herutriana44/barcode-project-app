@@ -328,6 +328,30 @@ class CompanyBarcodeController extends Controller
             ->with('success', 'Data perusahaan dan barcode terkait dihapus.');
     }
 
+    public function destroyCompany($id)
+    {
+        $company = Company::findOrFail($id);
+
+        $hasFg = Item::where('company_id', $company->id)->whereHas('itemBarcodes')->exists();
+        if ($hasFg) {
+            return redirect()->route('company-barcodes.index')
+                ->with('error', 'Tidak dapat menghapus perusahaan: masih ada barcode barang (FG) yang menggunakan perusahaan ini.');
+        }
+
+        DB::transaction(function () use ($company) {
+            $itemIds = Item::where('company_id', $company->id)->pluck('id');
+            ItemBarcode::whereIn('item_id', $itemIds)->delete();
+            ItemReceiving::whereIn('item_id', $itemIds)->delete();
+            CompanyBarcode::where('company_id', $company->id)->delete();
+            CompanyItem::where('company_id', $company->id)->delete();
+            Item::whereIn('id', $itemIds)->delete();
+            $company->delete();
+        });
+
+        return redirect()->route('company-barcodes.index')
+            ->with('success', 'Data perusahaan dihapus.');
+    }
+
     private function deleteOrphanItemIfUnused(Item $item): void
     {
         $item->refresh();
