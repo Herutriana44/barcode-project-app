@@ -19,13 +19,16 @@ class RakController extends Controller
             return response()->json(['codes' => [], 'raw_data' => [], 'parsed_codes' => []]);
         }
 
-        // Ambil semua code sebagai string dari database
+        // Ambil semua code sebagai array
         $rows = Rak::query()
             ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($companyName)])
             ->pluck('code');
 
         $allCodes = [];
         foreach ($rows as $row) {
+            // Kita pastikan string diproses dengan benar. 
+            // Jika row mengandung koma, explode akan memecahnya.
+            // Kita juga tangani jika ada spasi di sekitar koma.
             $parts = explode(',', (string) $row);
             foreach ($parts as $part) {
                 $code = trim($part);
