@@ -21,29 +21,31 @@ class RakController extends Controller
             return response()->json(['codes' => []]);
         }
 
-        $codes = Rak::query()
+        // Ambil data rak yang ada di database untuk perusahaan tersebut
+        $dbCodes = Rak::query()
             ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($companyName)])
             ->pluck('code')
-            ->values()
             ->map(function ($v) {
-                $s = strtoupper(trim((string) $v));
-                return $s === '' ? null : $s;
+                return strtoupper(trim((string) $v));
             })
             ->filter()
             ->unique()
             ->values()
-            ->filter(function ($code) {
-                return in_array($code, self::ALLOWED_RAK_CODES, true);
-            })
-            ->values()
             ->all();
+
+        // Gabungkan dengan daftar yang diizinkan (atau batasi hanya pada daftar yang diizinkan)
+        // Kita gunakan intersection agar hanya kode yang ada di DB DAN diizinkan yang muncul
+        $codes = array_values(array_intersect($dbCodes, self::ALLOWED_RAK_CODES));
+
+        // Jika array kosong setelah filter, namun kita ingin tetap menampilkan pilihan E1, E2, E3 
+        // (opsional: tergantung kebutuhan bisnis, namun biasanya yang ada di DB saja)
+        // Jika user ingin E1, E2, E3 selalu muncul meski di DB belum ada, logika harus diubah.
 
         // Sort natural untuk format seperti "B4, B6, C10"
         usort($codes, function (string $a, string $b) {
             $pa = $this->parseRakCode($a);
             $pb = $this->parseRakCode($b);
 
-            // Unknown format taruh di bawah tapi tetap stabil
             if ($pa === null && $pb === null) return $a <=> $b;
             if ($pa === null) return 1;
             if ($pb === null) return -1;
