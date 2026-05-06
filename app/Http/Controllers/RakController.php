@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class RakController extends Controller
 {
-    private const ALLOWED_RAK_CODES = ['E1', 'E2', 'E3'];
-
     /**
      * Ambil opsi rak berdasarkan nama perusahaan (case-insensitive).
      *
@@ -39,21 +37,15 @@ class RakController extends Controller
             }
         }
 
-        // Ambil nilai unik dan filter hanya yang ada di ALLOWED_RAK_CODES
-        $uniqueCodes = array_unique($allCodes);
-        $codes = array_values(array_filter($uniqueCodes, function ($code) {
-            return in_array($code, self::ALLOWED_RAK_CODES, true);
-        }));
-
-        // Jika array kosong setelah filter, namun kita ingin tetap menampilkan pilihan E1, E2, E3 
-        // (opsional: tergantung kebutuhan bisnis, namun biasanya yang ada di DB saja)
-        // Jika user ingin E1, E2, E3 selalu muncul meski di DB belum ada, logika harus diubah.
+        // Ambil nilai unik
+        $codes = array_values(array_unique($allCodes));
 
         // Sort natural untuk format seperti "B4, B6, C10"
         usort($codes, function (string $a, string $b) {
             $pa = $this->parseRakCode($a);
             $pb = $this->parseRakCode($b);
 
+            // Unknown format taruh di bawah tapi tetap stabil
             if ($pa === null && $pb === null) return $a <=> $b;
             if ($pa === null) return 1;
             if ($pb === null) return -1;
