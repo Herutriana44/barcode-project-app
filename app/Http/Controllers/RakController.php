@@ -16,7 +16,7 @@ class RakController extends Controller
     {
         $companyName = trim((string) $request->query('company_name', ''));
         if ($companyName === '') {
-            return response()->json(['codes' => []]);
+            return response()->json(['codes' => [], 'raw_data' => [], 'parsed_codes' => []]);
         }
 
         // Ambil semua code sebagai string dari database
@@ -26,7 +26,6 @@ class RakController extends Controller
 
         $allCodes = [];
         foreach ($rows as $row) {
-            // Pecah berdasarkan koma jika ada, trim, dan ambil yang tidak kosong
             $parts = explode(',', (string) $row);
             foreach ($parts as $part) {
                 $code = trim($part);
@@ -36,11 +35,16 @@ class RakController extends Controller
             }
         }
 
-        // Ambil nilai unik dan urutkan secara alfabetis
+        // Ambil nilai unik dan urutkan
         $uniqueCodes = array_unique($allCodes);
         sort($uniqueCodes);
+        $finalCodes = array_values($uniqueCodes);
 
-        return response()->json(['codes' => array_values($uniqueCodes)]);
+        return response()->json([
+            'codes' => $finalCodes,
+            'raw_data' => $rows->toArray(),
+            'parsed_codes' => $finalCodes
+        ]);
     }
 
     /**

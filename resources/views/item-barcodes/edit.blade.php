@@ -201,6 +201,8 @@
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
                 if (!res.ok) return [];
                 const json = await res.json();
+                console.log('Rak Debug - Raw Data:', json.raw_data);
+                console.log('Rak Debug - Parsed Codes:', json.parsed_codes);
                 return Array.isArray(json.codes) ? json.codes : [];
             }
 
