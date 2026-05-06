@@ -1,0 +1,2 @@
+nama_perusahaan,code,customer,part_name,part_number,model,berat,qty,inspector_name,tgl_produksi,tgl_expired,posisi_rak,tingkat,ukuran_material,jenis_bahan,quantity_material,no_surat_jalan_material,tanggal_terima_material,transfer_slip_no,tanggal_terima_fg,jumlah_box,operator_mobil_nama,pengirim_nama,operator_forklift_nama,qty_sub_pack,berat_packaging_gram,berat_per_pcs_gram
+(isi persis nama perusahaan di sistem),KODE-UNIK-01,PT Customer Contoh,Part contoh,PN-001,Model-A,1.25,100,Inspector,2026-01-15,2026-12-31,Rak-A1,1,,SPCC,,,,TS-001,2026-02-01,1,,,,24,120,45
