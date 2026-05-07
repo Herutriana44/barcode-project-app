@@ -81,7 +81,7 @@
                             </div>
                         </fieldset>
                         <div>
-                            <label for="scan_qty" class="block text-sm font-medium text-egg-800">Qty *</label>
+                            <label for="scan_qty" class="block text-sm font-medium text-egg-800">Jumlah Box *</label>
                             <input id="scan_qty" type="number" name="qty" value="{{ old('qty', 1) }}" min="1" step="1" required
                                 class="mt-1 block w-40 rounded-lg border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500" />
                             @error('qty')
