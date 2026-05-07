@@ -19,6 +19,14 @@
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-bold text-egg-900">Scan dengan Kamera</h3>
+                            <div class="flex gap-2">
+                                <label class="flex items-center gap-1 cursor-pointer text-sm">
+                                    <input type="radio" name="scan_mode" value="qr" checked class="text-egg-600 focus:ring-egg-500"> QR
+                                </label>
+                                <label class="flex items-center gap-1 cursor-pointer text-sm">
+                                    <input type="radio" name="scan_mode" value="bar" class="text-egg-600 focus:ring-egg-500"> Barcode
+                                </label>
+                            </div>
                             <button id="switchCameraBtn" class="px-4 py-2 bg-egg-100 text-egg-800 rounded-lg text-sm font-semibold hover:bg-egg-200 transition hidden">
                                 🔄 Ganti Kamera
                             </button>

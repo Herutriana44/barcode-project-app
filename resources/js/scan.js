@@ -61,17 +61,19 @@ document.addEventListener('DOMContentLoaded', function () {
         let currentCameraId = null;
         let cameras = [];
         let cameraIndex = 0;
+        let currentMode = 'qr';
 
-        const config = {
+        const getConfig = (mode) => ({
             fps: 10,
-            qrbox: { width: 250, height: 150 },
-            formatsToSupport: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        };
+            qrbox: mode === 'qr' ? { width: 250, height: 250 } : { width: 250, height: 100 },
+            formatsToSupport: mode === 'qr' ? [0] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        });
 
-        const startCamera = (cameraId) => {
+        const startCamera = (cameraId, mode) => {
+            currentMode = mode;
             html5QrCode.start(
                 cameraId,
-                config,
+                getConfig(mode),
                 (decodedText) => {
                     const nav = resolveScanNavigation(decodedText);
                     if (!nav) {
@@ -83,9 +85,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 () => {}
             ).catch(err => {
                 console.warn('Camera error:', err);
-                readerDiv.innerHTML = '<p class="p-4 text-gray-500">Kamera tidak tersedia. Gunakan input manual.</p>';
             });
         };
+
+        const scanModeRadios = document.querySelectorAll('input[name="scan_mode"]');
+        scanModeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const newMode = e.target.value;
+                if (html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        startCamera(cameras[cameraIndex].id, newMode);
+                    });
+                } else {
+                    startCamera(cameras[cameraIndex].id, newMode);
+                }
+            });
+        });
 
         Html5Qrcode.getCameras().then(foundCameras => {
             cameras = foundCameras;
@@ -95,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     switchCameraBtn.addEventListener('click', () => {
                         cameraIndex = (cameraIndex + 1) % cameras.length;
                         html5QrCode.stop().then(() => {
-                            startCamera(cameras[cameraIndex].id);
+                            startCamera(cameras[cameraIndex].id, currentMode);
                         });
                     });
                 }
@@ -104,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const backCameraIndex = cameras.findIndex(c => c.label.toLowerCase().includes('back'));
                 cameraIndex = backCameraIndex !== -1 ? backCameraIndex : 0;
                 
-                startCamera(cameras[cameraIndex].id);
+                startCamera(cameras[cameraIndex].id, 'qr');
             } else {
                 readerDiv.innerHTML = '<p class="p-4 text-gray-500">Tidak ada kamera terdeteksi. Gunakan input manual.</p>';
             }
