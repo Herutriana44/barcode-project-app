@@ -116,14 +116,15 @@ class ScanController extends Controller
         }
 
         $item = $itemBarcode->item;
+        $qtyToDeduct = $validated['qty'] * ($item->qty_sub_pack ?? 1);
 
         try {
             if ($validated['direction'] === 'in') {
-                FifoStockService::incrementItemQty((int) $item->id, (int) $validated['qty']);
+                FifoStockService::incrementItemQty((int) $item->id, (int) $qtyToDeduct);
             } else {
                 FifoStockService::deductFromItems(
                     (int) $item->company_id,
-                    (int) $validated['qty'],
+                    (int) $qtyToDeduct,
                     $item->part_number,
                     $item->part_name
                 );
@@ -136,8 +137,8 @@ class ScanController extends Controller
         }
 
         $msg = $validated['direction'] === 'in'
-            ? 'Barang masuk: stok bertambah '.$validated['qty'].' unit.'
-            : 'Barang keluar: pengurangan FIFO '.$validated['qty'].' unit.';
+            ? 'Barang masuk: stok bertambah '.$qtyToDeduct.' unit ('.$validated['qty'].' box).'
+            : 'Barang keluar: pengurangan FIFO '.$qtyToDeduct.' unit ('.$validated['qty'].' box).';
 
         return redirect()
             ->route('scan.show', ['barcode_id' => $barcodeId])
