@@ -11,6 +11,15 @@
             @if (session('success'))
                 <p class="mb-2 p-2 text-sm bg-egg-100 border border-egg-300 rounded text-egg-900">{{ session('success') }}</p>
             @endif
+
+            <form method="GET" action="{{ route('employees.index') }}" class="mb-4 flex gap-2">
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama atau NIP..." class="flex-1 rounded border-egg-300 focus:border-egg-500 focus:ring-egg-500">
+                <button type="submit" class="btn-egg-primary">Cari</button>
+                @if($search)
+                    <a href="{{ route('employees.index') }}" class="btn-egg-secondary">Reset</a>
+                @endif
+            </form>
+
             <div class="bg-white border border-egg-200 rounded overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full text-base">

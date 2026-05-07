@@ -11,11 +11,20 @@ use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::query()->orderBy('name')->paginate(20);
+        $search = $request->get('search');
 
-        return view('employees.index', compact('employees'));
+        $employees = Employee::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('nip', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('employees.index', compact('employees', 'search'));
     }
 
     public function create()
