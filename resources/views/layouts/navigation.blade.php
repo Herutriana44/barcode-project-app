@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" style="position:sticky;top:0;z-index:9999;" class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
+<nav x-data="{ open: false }" style="position:sticky; top:0; z-index:9999; width:100%;" class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
     <!-- Primary Navigation Menu -->
     <div class="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12">
         <div class="flex justify-between items-center min-h-[4.25rem] sm:min-h-[4.5rem]">
