@@ -12,9 +12,33 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            /* Sticky navbar for guest dashboard */
+            header.sticky-navbar {
+                position: -webkit-sticky !important;
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 9999 !important;
+                width: 100% !important;
+            }
+        </style>
+
+        <script>
+            // Ensure sticky positioning works
+            document.addEventListener('DOMContentLoaded', function() {
+                var nav = document.querySelector('header.sticky-navbar');
+                if (!nav) return;
+
+                nav.style.position = 'sticky';
+                nav.style.top = '0';
+                nav.style.zIndex = '9999';
+                nav.style.width = '100%';
+            });
+        </script>
     </head>
     <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed min-h-screen flex flex-col bg-egg-50">
-        <header class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
+        <header class="sticky-navbar sticky top-0 z-[9999] bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
             <div class="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 min-h-[4.25rem] flex items-center justify-between gap-4">
                 <div class="flex items-center gap-4 min-w-0">
                     <x-application-logo class="h-11 w-auto rounded-md ring-2 ring-white/25 shadow-md shrink-0" />
