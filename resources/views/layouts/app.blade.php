@@ -16,17 +16,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
-            /* Method 1: CSS sticky with multiple selectors for maximum compatibility */
-            nav.sticky-nav {
-                position: -webkit-sticky !important;
-                position: sticky !important;
-                top: 0 !important;
-                z-index: 9999 !important;
-                width: 100% !important;
-            }
-
-            /* Method 2: Fixed positioning fallback via class */
-            nav.fixed-nav {
+            /* Fixed navbar - most reliable positioning method */
+            nav.fixed-navbar {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
@@ -35,89 +26,65 @@
                 width: 100% !important;
             }
 
-            /* Ensure body doesn't have overflow that breaks sticky */
-            html, body {
+            /* Spacer to prevent content from hiding under fixed navbar */
+            .navbar-spacer {
+                width: 100%;
+                height: 0;
+            }
+
+            /* Reset any conflicting styles */
+            html {
                 overflow-x: hidden;
             }
 
-            /* Spacer to prevent content jump when using fixed nav */
-            .nav-spacer {
-                height: 0;
-                transition: height 0.2s ease;
+            body {
+                margin: 0;
+                padding: 0;
             }
         </style>
 
         <script>
-            // Method 3: JavaScript fallback to force sticky/fixed positioning
-            document.addEventListener('DOMContentLoaded', function() {
-                var nav = document.querySelector('nav.sticky-nav');
+            // Simple reliable fixed navbar with dynamic height adjustment
+            function initFixedNavbar() {
+                var nav = document.querySelector('nav.fixed-navbar');
                 if (!nav) return;
 
-                // Force sticky via JavaScript
-                nav.style.position = 'sticky';
+                // Force fixed positioning via JavaScript as backup
+                nav.style.position = 'fixed';
                 nav.style.top = '0';
-                nav.style.zIndex = '9999';
+                nav.style.left = '0';
+                nav.style.right = '0';
                 nav.style.width = '100%';
+                nav.style.zIndex = '9999';
 
-                // Method 4: Intersection Observer for robust sticky detection
-                if ('IntersectionObserver' in window) {
-                    var spacer = document.querySelector('.nav-spacer');
-                    var observer = new IntersectionObserver(function(entries) {
-                        entries.forEach(function(entry) {
-                            // If nav is not intersecting, it's scrolled past
-                            if (!entry.isIntersecting) {
-                                // Sticky is working, ensure it stays on top
-                                nav.style.position = 'sticky';
-                            }
-                        });
-                    }, {
-                        root: null,
-                        threshold: 1.0,
-                        rootMargin: '-1px 0px 0px 0px'
-                    });
-                    observer.observe(nav);
+                // Set spacer height to match navbar height
+                var spacer = document.querySelector('.navbar-spacer');
+                if (spacer) {
+                    spacer.style.height = nav.offsetHeight + 'px';
                 }
+            }
 
-                // Method 5: Fallback - if sticky doesn't work after 1 second, use fixed
-                setTimeout(function() {
-                    var rect = nav.getBoundingClientRect();
-                    // If nav is at top but page is scrolled, sticky might not be working
-                    if (window.scrollY > 0 && rect.top > 0) {
-                        console.log('Sticky not working, switching to fixed');
-                        nav.classList.remove('sticky-nav');
-                        nav.classList.add('fixed-nav');
-                        if (spacer) {
-                            spacer.style.height = nav.offsetHeight + 'px';
-                        }
-                    }
-                }, 1000);
+            // Run on DOMContentLoaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initFixedNavbar);
+            } else {
+                initFixedNavbar();
+            }
 
-                // Update spacer height on resize
-                window.addEventListener('resize', function() {
-                    var spacer = document.querySelector('.nav-spacer');
-                    var nav = document.querySelector('nav.fixed-nav');
-                    if (nav && spacer) {
-                        spacer.style.height = nav.offsetHeight + 'px';
-                    }
-                });
-            });
+            // Run again on window load (after all resources)
+            window.addEventListener('load', initFixedNavbar);
 
-            // Method 6: Handle scroll events to ensure nav stays on top
-            window.addEventListener('scroll', function() {
-                var nav = document.querySelector('nav.sticky-nav, nav.fixed-nav');
-                if (nav) {
-                    nav.style.zIndex = '9999';
-                }
-            }, { passive: true });
+            // Update on resize
+            window.addEventListener('resize', initFixedNavbar);
         </script>
 
         @stack('styles')
     </head>
     <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed">
-        <div class="min-h-screen bg-egg-50">
-            @include('layouts.navigation')
-            <div class="nav-spacer"></div>
+        @include('layouts.navigation')
+        <div class="navbar-spacer"></div>
 
+        <div class="min-h-screen bg-egg-50">
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white shadow-sm border-b border-egg-200 print:hidden">
