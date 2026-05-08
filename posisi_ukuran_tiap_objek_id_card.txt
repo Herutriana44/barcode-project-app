@@ -1,53 +1,56 @@
-# Template gambar `public/Tosca Modern Professional Store Manager ID Card_preview_rev_1.png`
+# Template gambar `public/DESAIN 2.png`
 
-# lingkaran untuk foto : 
+# persegi panjang untuk foto : 
 ukuran :
-lebar : 39.43 mm
-Tinggi : 39.43 mm
+lebar : 2.17 cm
+Tinggi : 3.27 cm
 
 posisi :
-x : 7.06 mm
-y : 10.66 mm
+x : 0.15 cm
+y : 2.64 cm
 
 # Posisi teks `Departemen`
-lebar : 21.49 mm
-tingg : 2.57 mm
+lebar : 1.92 cm
+tingg : 0.18 cm
 
-x : 5.28 mm
-y : 61.95 mm
-
-font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
+x : 3.06 cm
+y : 3.01 cm
 
 # Posisi teks `Jabatan`
-lebar : 21.49 mm
-tingg : 2.57 mm
+lebar : 1.35 cm
+tingg : 0.18 cm
 
-x : 5 mm
-y : 65.84 mm
+x : 3.06 cm
+y : 3.69 cm
 
-font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
+
+# Posisi teks `Status Kerja`
+lebar : 0.82 cm
+tingg : 0.18 cm
+
+x : 3.06 cm
+y : 4.29 cm
+
 
 # Posisi teks `Nama Karyawan`
-lebar : 28.36 mm
-tingg : 11.19 mm
+lebar : 1.45 cm
+tingg : 0.18 cm
 
-x : 5 mm
-y : 69.6 mm
+x : 3.06 cm
+y : 4.93 cm
 
-font-type : "Atkinson Hyperlegible" (BOLD) `public/Fonts/Atkinson_Hyperlegible/AtkinsonHyperlegible-Bold.ttf`
+# Posisi teks `NIP`
+lebar : 1.03 cm
+tingg : 0.18 cm
 
-# Posisi barcode 
-lebar : 11.02
-tinggi : 11.02
+x : 3.06 cm
+y : 5.58 cm
 
-x : 35.13
-y : 68.98
+# Kotak Barcode
+lebar : 1.53 cm
+tingg : 1.53 cm
 
-# Posisi teks `NIP : NIP_KARYAWAN`
-lebar : 12.52 mm
-tingg : 1.71 mm
+x : 3.5 cm
+y : 6.82 cm
 
-x : 33.63 mm
-y : 81.06 mm
-
-font-type : "DM-Sans" (Reguler) `public/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf`
+semua font menggunakan Canva Sans Regular (`public\Fonts\Canva-Sans-Regular`)
