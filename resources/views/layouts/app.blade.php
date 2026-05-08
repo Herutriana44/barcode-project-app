@@ -18,12 +18,12 @@
         <style>
             /* Fixed navbar - most reliable positioning method */
             nav.fixed-navbar {
-                position: fixed !important;
+                /* position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
                 z-index: 9999 !important;
-                width: 100% !important;
+                width: 100% !important; */
             }
 
             /* Spacer to prevent content from hiding under fixed navbar */
