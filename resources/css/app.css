@@ -10,12 +10,6 @@
 }
 
 @layer components {
-    .navbar-sticky {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-    }
-
     .btn-egg-primary {
         @apply inline-flex items-center justify-center px-5 py-2.5 text-base font-semibold rounded-lg text-white bg-egg-500 shadow-md
             hover:bg-egg-600 active:bg-egg-700 transition-colors;
