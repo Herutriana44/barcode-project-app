@@ -8,27 +8,19 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         @font-face {
-            font-family: "DM Sans";
-            src: url("/Fonts/DM_Sans/static/DMSans_18pt-Regular.ttf") format("truetype");
+            font-family: "Canva Sans";
+            src: url("/Fonts/Canva-Sans-Regular/Typeface/Canva Sans/Desktop/CanvaSans-Regular.otf") format("opentype");
             font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: "Atkinson Hyperlegible";
-            src: url("/Fonts/Atkinson_Hyperlegible/AtkinsonHyperlegible-Bold.ttf") format("truetype");
-            font-weight: 700;
             font-style: normal;
             font-display: swap;
         }
 
         body {
-            font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             background: #e8e4dc;
             padding: 12px;
         }
         @page {
-            /* Mengikuti koordinat mm dari template: orientasi portrait (lebar 53mm, tinggi 90mm) */
             size: 53mm 90mm;
             margin: 0;
         }
@@ -45,7 +37,7 @@
             border: 0;
         }
 
-        /* Template image (lebih aman untuk print dibanding background-image). */
+        /* Template image - layer paling belakang */
         .bg-img {
             position: absolute;
             inset: 0;
@@ -53,21 +45,18 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            /* Layer paling atas untuk template */
-            z-index: 2;
+            z-index: 0;
         }
 
-        /* Foto lingkaran: 39.43mm, x 7.06mm, y 10.66mm */
+        /* Foto persegi panjang: 2.17cm x 3.27cm, x 0.15cm, y 2.64cm */
         .photo {
             position: absolute;
-            left: 7.06mm;
-            top: 10.66mm;
-            width: 45mm;
-            height: 45mm;
-            border-radius: 9999px;
+            left: 1.5mm;
+            top: 26.4mm;
+            width: 21.7mm;
+            height: 32.7mm;
             overflow: hidden;
             background: #d9d9d9;
-            /* Foto di bawah template (agar template bisa jadi frame) */
             z-index: 1;
         }
         .photo img {
@@ -88,65 +77,85 @@
             padding: 2mm;
         }
 
-        /* Text: Departemen label (DM Sans Reg) - x 5.28mm, y 61.95mm, w 21.49mm, h 2.57mm */
+        /* Text: Departemen - w 1.92cm, h 0.18cm, x 3.06cm, y 3.01cm */
         .dept {
             position: absolute;
-            left: 5.28mm;
-            top: 61.95mm;
-            width: 21.49mm;
-            height: 2.57mm;
-            font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+            left: 30.6mm;
+            top: 30.1mm;
+            width: 19.2mm;
+            height: 1.8mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7.5pt;
+            font-size: 7pt;
             line-height: 1;
-            color: #ffffff;
+            color: #000000;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             z-index: 3;
         }
 
-        /* Text: Jabatan value (DM Sans Reg) - x 5mm, y 65.84mm, w 21.49mm, h 2.57mm */
+        /* Text: Jabatan - w 1.35cm, h 0.18cm, x 3.06cm, y 3.69cm */
         .jabatan {
             position: absolute;
-            left: 5mm;
-            top: 65.84mm;
-            width: 21.49mm;
-            height: 2.57mm;
-            font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+            left: 30.6mm;
+            top: 36.9mm;
+            width: 13.5mm;
+            height: 1.8mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7.5pt;
+            font-size: 7pt;
             line-height: 1;
-            color: #ffffff;
+            color: #000000;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             z-index: 3;
         }
 
-        /* Text: Nama Karyawan (Atkinson Bold) - x 5mm, y 69.6mm, w 28.36mm, h 11.19mm */
-        .name {
+        /* Text: Status Kerja - w 0.82cm, h 0.18cm, x 3.06cm, y 4.29cm */
+        .status {
             position: absolute;
-            left: 5mm;
-            top: 69.6mm;
-            width: 28.36mm;
-            height: 11.19mm;
-            font-family: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 700;
-            font-size: 12pt;
-            line-height: 1.05;
-            color: #ffffff;
+            left: 30.6mm;
+            top: 42.9mm;
+            width: 8.2mm;
+            height: 1.8mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
+            font-weight: 400;
+            font-size: 7pt;
+            line-height: 1;
+            color: #000000;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
             z-index: 3;
         }
 
-        /* QR / barcode square - x 35.13mm, y 68.98mm, w 11.02mm, h 11.02mm */
+        /* Text: Nama Karyawan - w 1.45cm, h 0.18cm, x 3.06cm, y 4.93cm */
+        .name {
+            position: absolute;
+            left: 30.6mm;
+            top: 49.3mm;
+            width: 14.5mm;
+            height: 1.8mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
+            font-weight: 400;
+            font-size: 7pt;
+            line-height: 1;
+            color: #000000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 3;
+        }
+
+        /* Kotak Barcode - w 1.53cm, h 1.53cm, x 3.5cm, y 6.82cm */
         .qr {
             position: absolute;
-            left: 35.13mm;
-            top: 68.98mm;
-            width: 11.02mm;
-            height: 11.02mm;
+            left: 35mm;
+            top: 68.2mm;
+            width: 15.3mm;
+            height: 15.3mm;
             z-index: 3;
         }
         .qr svg {
@@ -155,18 +164,18 @@
             display: block;
         }
 
-        /* Text: NIP - x 33.63mm, y 81.06mm, w 12.52mm, h 1.71mm */
+        /* Text: NIP - w 1.03cm, h 0.18cm, x 3.06cm, y 5.58cm */
         .nip {
             position: absolute;
-            left: 33.63mm;
-            top: 81.06mm;
-            width: 12.52mm;
-            height: 1.71mm;
-            font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+            left: 30.6mm;
+            top: 55.8mm;
+            width: 10.3mm;
+            height: 1.8mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 3.25pt;
+            font-size: 7pt;
             line-height: 1;
-            color: #ffffff;
+            color: #000000;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -179,8 +188,7 @@
             inset: 0;
             background: linear-gradient(180deg, #e2f6f4 0%, #f7fffe 55%, #ffffff 100%);
             opacity: 1;
-            /* Layer paling bawah */
-            z-index: 0;
+            z-index: -1;
         }
 
         .toolbar {
@@ -203,7 +211,7 @@
 
     <div class="card">
         <div class="fallback" aria-hidden="true"></div>
-        <img class="bg-img" src="{{ asset(str_replace(' ', '%20', 'Tosca Modern Professional Store Manager ID Card_preview_rev_1.png')) }}" alt="" aria-hidden="true" />
+        <img class="bg-img" src="{{ asset(str_replace(' ', '%20', 'DESAIN 2.png')) }}" alt="" aria-hidden="true" />
 
         <div class="photo">
             @if ($employee->photoPublicUrl())
@@ -215,9 +223,10 @@
 
         <div class="dept">{{ $employee->departemen ?? 'Departemen' }}</div>
         <div class="jabatan">{{ $employee->jabatan ?? 'Jabatan' }}</div>
+        <div class="status">{{ $employee->status ?? 'Status' }}</div>
         <div class="name">{{ $employee->name }}</div>
         <div class="qr">{!! $qrSvg !!}</div>
-        <div class="nip">NIP : {{ $employee->nip }}</div>
+        <div class="nip">{{ $employee->nip }}</div>
     </div>
 </body>
 </html>
