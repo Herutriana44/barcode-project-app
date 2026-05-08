@@ -16,75 +16,43 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
-            /* Fixed navbar - most reliable positioning method */
-            nav.fixed-navbar {
-                /* position: fixed !important;
+            /* Sticky navbar - ensure it sticks to top when scrolling */
+            nav.sticky-navbar {
+                position: -webkit-sticky !important;
+                position: sticky !important;
                 top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
                 z-index: 9999 !important;
-                width: 100% !important; */
+                width: 100% !important;
             }
 
-            /* Spacer to prevent content from hiding under fixed navbar */
-            .navbar-spacer {
-                width: 100%;
-                height: 0;
-            }
-
-            /* Reset any conflicting styles */
-            html {
-                overflow-x: hidden;
-            }
-
+            /* Prevent any parent from breaking sticky */
             body {
-                margin: 0;
-                padding: 0;
+                overflow-x: hidden;
             }
         </style>
 
         <script>
-            // Simple reliable fixed navbar with dynamic height adjustment
-            function initFixedNavbar() {
-                var nav = document.querySelector('nav.fixed-navbar');
+            // Ensure sticky positioning works
+            document.addEventListener('DOMContentLoaded', function() {
+                var nav = document.querySelector('nav.sticky-navbar');
                 if (!nav) return;
 
-                // Force fixed positioning via JavaScript as backup
-                nav.style.position = 'fixed';
+                // Force sticky via JS
+                nav.style.position = 'sticky';
                 nav.style.top = '0';
-                nav.style.left = '0';
-                nav.style.right = '0';
-                nav.style.width = '100%';
                 nav.style.zIndex = '9999';
+                nav.style.width = '100%';
 
-                // Set spacer height to match navbar height
-                var spacer = document.querySelector('.navbar-spacer');
-                if (spacer) {
-                    spacer.style.height = nav.offsetHeight + 'px';
-                }
-            }
-
-            // Run on DOMContentLoaded
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initFixedNavbar);
-            } else {
-                initFixedNavbar();
-            }
-
-            // Run again on window load (after all resources)
-            window.addEventListener('load', initFixedNavbar);
-
-            // Update on resize
-            window.addEventListener('resize', initFixedNavbar);
+                console.log('Sticky navbar initialized');
+            });
         </script>
 
         @stack('styles')
     </head>
     <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed">
-        @include('layouts.navigation')
-        <div class="navbar-spacer"></div>
-
         <div class="min-h-screen bg-egg-50">
+            @include('layouts.navigation')
+
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white shadow-sm border-b border-egg-200 print:hidden">
