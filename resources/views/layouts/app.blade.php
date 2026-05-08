@@ -36,6 +36,17 @@
                 {{ $slot }}
             </main>
         </div>
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var nav = document.getElementById('main-nav');
+    if(nav) {
+        nav.style.position = 'sticky';
+        nav.style.top = '0';
+        nav.style.zIndex = '9999';
+        nav.style.width = '100%';
+    }
+});
+</script>
         @stack('scripts')
     </body>
 </html>

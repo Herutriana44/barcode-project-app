@@ -1,15 +1,4 @@
-<nav id="main-nav" x-data="{ open: false }" class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var nav = document.getElementById('main-nav');
-    if(nav) {
-        nav.style.position = 'sticky';
-        nav.style.top = '0';
-        nav.style.zIndex = '9999';
-        nav.style.width = '100%';
-    }
-});
-</script>
+<nav x-data="{ open: false }" id="main-nav" class="bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
     <!-- Primary Navigation Menu -->
     <div class="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12">
         <div class="flex justify-between items-center min-h-[4.25rem] sm:min-h-[4.5rem]">
