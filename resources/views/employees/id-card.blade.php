@@ -77,16 +77,16 @@
             padding: 2mm;
         }
 
-        /* Text: Departemen - w 1.92cm, h 0.18cm, x 3.06cm, y 3.01cm */
+        /* Text: Departemen - w 1.92cm, h 0.18cm, x 3.06cm, y 3.20cm (css top: 31.5mm) */
         .dept {
             position: absolute;
             left: 30.6mm;
-            top: 30.1mm;
-            width: 19.2mm;
+            top: 31.5mm;
+            width: 30mm;
             height: 1.8mm;
             font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7pt;
+            font-size: 4.5pt;
             line-height: 1;
             color: #000000;
             white-space: nowrap;
@@ -95,16 +95,16 @@
             z-index: 3;
         }
 
-        /* Text: Jabatan - w 1.35cm, h 0.18cm, x 3.06cm, y 3.69cm */
+        /* Text: Jabatan - w 1.35cm, h 0.18cm, x 3.06cm, y 3.69cm (css top: 38.5mm) */
         .jabatan {
             position: absolute;
             left: 30.6mm;
-            top: 36.9mm;
-            width: 13.5mm;
+            top: 38.5mm;
+            width: 30mm;
             height: 1.8mm;
             font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7pt;
+            font-size: 4.5pt;
             line-height: 1;
             color: #000000;
             white-space: nowrap;
@@ -113,16 +113,16 @@
             z-index: 3;
         }
 
-        /* Text: Status Kerja - w 0.82cm, h 0.18cm, x 3.06cm, y 4.29cm */
+        /* Text: Status Kerja - w 0.82cm, h 0.18cm, x 3.06cm, y 4.29cm (css top: 44.5mm) */
         .status {
             position: absolute;
             left: 30.6mm;
-            top: 42.9mm;
-            width: 8.2mm;
+            top: 44.5mm;
+            width: 30mm;
             height: 1.8mm;
             font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7pt;
+            font-size: 4.5pt;
             line-height: 1;
             color: #000000;
             white-space: nowrap;
@@ -131,16 +131,16 @@
             z-index: 3;
         }
 
-        /* Text: Nama Karyawan - w 1.45cm, h 0.18cm, x 3.06cm, y 4.93cm */
+        /* Text: Nama Karyawan - w 1.45cm, h 0.18cm, x 3.06cm, y 4.93cm (css top: 51.5mm) */
         .name {
             position: absolute;
             left: 30.6mm;
-            top: 49.3mm;
-            width: 14.5mm;
+            top: 51.5mm;
+            width: 30mm;
             height: 1.8mm;
             font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7pt;
+            font-size: 4.5pt;
             line-height: 1;
             color: #000000;
             white-space: nowrap;
@@ -149,11 +149,11 @@
             z-index: 3;
         }
 
-        /* Kotak Barcode - w 1.53cm, h 1.53cm, x 3.5cm, y 6.82cm */
+        /* Kotak Barcode - w 1.53cm, h 1.53cm, x 3.5cm, y 7.82cm (css top: 72mm) */
         .qr {
             position: absolute;
             left: 35mm;
-            top: 68.2mm;
+            top: 72mm;
             width: 15.3mm;
             height: 15.3mm;
             z-index: 3;
@@ -164,16 +164,16 @@
             display: block;
         }
 
-        /* Text: NIP - w 1.03cm, h 0.18cm, x 3.06cm, y 5.58cm */
+        /* Text: NIP - w 1.03cm, h 0.18cm, x 3.06cm, y 5.58cm (css top: 58.1mm) */
         .nip {
             position: absolute;
             left: 30.6mm;
-            top: 55.8mm;
-            width: 10.3mm;
+            top: 58.1mm;
+            width: 30mm;
             height: 1.8mm;
             font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
             font-weight: 400;
-            font-size: 7pt;
+            font-size: 4.5pt;
             line-height: 1;
             color: #000000;
             white-space: nowrap;

@@ -3,25 +3,25 @@
 # persegi panjang untuk foto : 
 ukuran :
 lebar : 2.17 cm
-Tinggi : 3.27 cm
+Tinggi : 3.27 cm 
 
 posisi :
 x : 0.15 cm
-y : 2.64 cm
+y : 2.64 cm 
 
 # Posisi teks `Departemen`
 lebar : 1.92 cm
 tingg : 0.18 cm
 
 x : 3.06 cm
-y : 3.01 cm
+y : 3.20 cm (css top : 31.5mm)
 
 # Posisi teks `Jabatan`
 lebar : 1.35 cm
 tingg : 0.18 cm
 
 x : 3.06 cm
-y : 3.69 cm
+y : 3.69 cm (css top : 38.5mm)
 
 
 # Posisi teks `Status Kerja`
@@ -29,7 +29,7 @@ lebar : 0.82 cm
 tingg : 0.18 cm
 
 x : 3.06 cm
-y : 4.29 cm
+y : 4.29 cm (css top : 44.5mm)
 
 
 # Posisi teks `Nama Karyawan`
@@ -37,20 +37,22 @@ lebar : 1.45 cm
 tingg : 0.18 cm
 
 x : 3.06 cm
-y : 4.93 cm
+y : 4.93 cm (css top : 51.5mm)
 
 # Posisi teks `NIP`
 lebar : 1.03 cm
 tingg : 0.18 cm
 
 x : 3.06 cm
-y : 5.58 cm
+y : 5.58 cm (css top : 58.1mm)
 
 # Kotak Barcode
 lebar : 1.53 cm
 tingg : 1.53 cm
 
 x : 3.5 cm
-y : 6.82 cm
+y : 7.82 cm (css top : 72mm)
 
 semua font menggunakan Canva Sans Regular (`public\Fonts\Canva-Sans-Regular`)
+all font-size(css) : 4.5pt
+all width for text : 30mm
