@@ -20,7 +20,7 @@
     <body class="font-sans antialiased text-egg-900 text-lg leading-relaxed">
         <div class="min-h-screen bg-egg-50 flex flex-col">
             @include('layouts.navigation')
-            <div class="h-[4.5rem] print:hidden"></div>
+            <div class="h-[4.5rem]"></div>
 
             <!-- Page Heading -->
             @if (isset($header))
