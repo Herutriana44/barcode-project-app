@@ -21,7 +21,7 @@
                 'qrSvg' => $row['qrSvg'],
                 'barcodeSvg' => $row['labelBarcodeSvg'],
                 'labelQtyPcs' => $row['labelQtyPcs'] ?? null,
-                'quantityUseStatic' => true,
+                'quantityUseStatic' => false,
                 'headerCompanyName' => $labelHeaderCompanyName,
             ])
         @empty
