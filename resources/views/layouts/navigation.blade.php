@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="fixed-navbar bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
+<nav x-data="{ open: false }" class="fixed-navbar sticky top-0 z-50 bg-gradient-to-r from-egg-700 via-egg-600 to-egg-500 shadow-lg border-b border-egg-800/40">
     <!-- Primary Navigation Menu -->
     <div class="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12">
         <div class="flex justify-between items-center min-h-[4.25rem] sm:min-h-[4.5rem]">
