@@ -80,7 +80,7 @@
         /* Text: Departemen - w 1.92cm, h 0.18cm, x 3.06cm, y 3.20cm (css top: 31.5mm) */
         .dept {
             position: absolute;
-            left: 30.6mm;
+            left: 30.3mm;
             top: 31.5mm;
             width: 30mm;
             height: 1.8mm;
@@ -98,7 +98,7 @@
         /* Text: Jabatan - w 1.35cm, h 0.18cm, x 3.06cm, y 3.69cm (css top: 38.5mm) */
         .jabatan {
             position: absolute;
-            left: 30.6mm;
+            left: 30.3mm;
             top: 38.5mm;
             width: 30mm;
             height: 1.8mm;
@@ -116,7 +116,7 @@
         /* Text: Status Kerja - w 0.82cm, h 0.18cm, x 3.06cm, y 4.29cm (css top: 44.5mm) */
         .status {
             position: absolute;
-            left: 30.6mm;
+            left: 30.3mm;
             top: 44.5mm;
             width: 30mm;
             height: 1.8mm;
@@ -134,7 +134,7 @@
         /* Text: Nama Karyawan - w 1.45cm, h 0.18cm, x 3.06cm, y 4.93cm (css top: 51.5mm) */
         .name {
             position: absolute;
-            left: 30.6mm;
+            left: 30.3mm;
             top: 51.5mm;
             width: 30mm;
             height: 1.8mm;
