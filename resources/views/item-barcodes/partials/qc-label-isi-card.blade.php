@@ -24,7 +24,8 @@
 <article class="isi-card">
     <div class="isi-top">
         <div class="isi-no">{{ $itemBarcode->id }}</div>
-        <div class="isi-company">{{ strtoupper($companyName) }}</div>
+        <!-- <div class="isi-company">{{ strtoupper($companyName) }}</div> -->
+         <div class="isi-company">PT. TASM</div>
     </div>
 
     <div class="isi-body">

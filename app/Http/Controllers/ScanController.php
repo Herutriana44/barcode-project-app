@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyBarcode;
 use App\Models\ItemBarcode;
+use App\Models\Employee;
 use App\Services\FifoStockService;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,29 @@ class ScanController extends Controller
 
     public function show(Request $request, string $barcodeId)
     {
+        if (str_starts_with($barcodeId, 'EMP-')) {
+            $nip = str_replace('EMP-', '', $barcodeId);
+            $employee = Employee::where('nip', $nip)->first();
+
+            if (! $employee) {
+                if ($request->expectsJson()) {
+                    return response()->json(['error' => 'Karyawan tidak ditemukan'], 404);
+                }
+                return redirect()->route('scan.index')->with('error', 'Karyawan tidak ditemukan.');
+            }
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'type' => 'employee',
+                    'data' => [
+                        'employee' => $employee,
+                    ],
+                ]);
+            }
+            // Asumsi view 'scan.result-employee' akan dibuat
+            return view('scan.result-employee', compact('employee'));
+        }
+
         if (str_starts_with($barcodeId, 'IB-')) {
             $itemBarcode = ItemBarcode::with([
                 'item.company',
