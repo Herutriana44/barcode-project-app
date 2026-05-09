@@ -3,13 +3,23 @@
     $quantityUseStatic = $quantityUseStatic ?? false;
     $item = $itemBarcode->item;
     $companyName = $headerCompanyName ?? ($item->company->name ?? '—');
-    $beratStr = $item->berat !== null ? number_format((float) $item->berat, 2, '.', '') : '';
+    
+    // Asumsi berat saat ini di DB adalah dalam satuan gram, konversi ke kg
+    // Jika sudah KG, logika ini mungkin perlu disesuaikan.
+    // Jika input 1000g, jadi 1.00kg.
+    $beratGram = $item->berat !== null ? (float) $item->berat : 0;
+    $beratKg = $beratGram / 1000;
+    
+    // Hitung berat total per label berdasarkan qty label tersebut
+    $totalBeratLabel = $beratKg * ($labelQtyPcs ?? 1);
+    $beratStr = number_format($totalBeratLabel, 3, '.', '');
+    
     if ($quantityUseStatic) {
         $qtyStr = $item->static_qty !== null ? (string) (int) $item->static_qty : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
     } elseif ($labelQtyPcs !== null) {
         $qtyStr = (int) $labelQtyPcs > 0 ? (string) (int) $labelQtyPcs : '';
-        $qtySuffix = $qtyStr !== '' ? (((int) ($item->qty_sub_pack ?? 0) > 0) ? ' Pcs (per box)' : ' Pcs') : '';
+        $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
     } else {
         $qtyStr = $item->static_qty !== null ? (string) $item->static_qty : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
@@ -52,8 +62,8 @@
                         <td>: </td>
                     </tr>
                     <tr>
-                        <td class="fld-lbl">Berat per pack</td>
-                        <td>: {{ $beratStr }}{{ $beratStr !== '' ? ' ' : '' }}Kg</td>
+                        <td class="fld-lbl">Total Berat</td>
+                        <td>: {{ $beratStr }} Kg</td>
                     </tr>
                     <tr>
                         <td class="fld-lbl">Quantity</td>

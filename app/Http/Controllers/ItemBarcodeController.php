@@ -88,40 +88,47 @@ class ItemBarcodeController extends Controller
 
             $item = $ib->item;
             $staticQty = max(0, (int) ($item->static_qty ?? 0));
-            $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
-
-            if ($staticQty <= 0) {
-                $rows->push([
-                    'itemBarcode' => $ib,
-                    'labelBarcodeSvg' => $labelBarcodeSvg,
-                    'qrSvg' => $qrSvg,
-                    'labelQtyPcs' => null,
-                ]);
-
-                continue;
-            }
-
-            if ($sub > 0) {
-                $labelCount = (int) ceil($staticQty / $sub);
-                $labelCount = min($labelCount, 500);
-                $remaining = $staticQty;
-                for ($i = 0; $i < $labelCount; $i++) {
-                    $pcs = min($sub, $remaining);
-                    $remaining -= $pcs;
+            // Gunakan jumlah box dari input (misalnya request()->input('num_boxes')) 
+            // atau jika tidak ada, gunakan logika sub-pack saat ini sebagai default atau 1 jika tidak diset.
+            $numBoxes = (int) (request()->query('num_boxes', 0));
+            if ($numBoxes <= 0) {
+                // Fallback ke logika lama jika num_boxes tidak disediakan (menggunakan qty_sub_pack)
+                $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
+                if ($sub > 0) {
+                    $labelCount = (int) ceil($staticQty / $sub);
+                    $labelCount = min($labelCount, 500);
+                    $remaining = $staticQty;
+                    for ($i = 0; $i < $labelCount; $i++) {
+                        $pcs = min($sub, $remaining);
+                        $remaining -= $pcs;
+                        $rows->push([
+                            'itemBarcode' => $ib,
+                            'labelBarcodeSvg' => $labelBarcodeSvg,
+                            'qrSvg' => $qrSvg,
+                            'labelQtyPcs' => $pcs > 0 ? $pcs : $sub,
+                        ]);
+                    }
+                } else {
                     $rows->push([
                         'itemBarcode' => $ib,
                         'labelBarcodeSvg' => $labelBarcodeSvg,
                         'qrSvg' => $qrSvg,
-                        'labelQtyPcs' => $pcs > 0 ? $pcs : $sub,
+                        'labelQtyPcs' => $staticQty,
                     ]);
                 }
             } else {
-                $rows->push([
-                    'itemBarcode' => $ib,
-                    'labelBarcodeSvg' => $labelBarcodeSvg,
-                    'qrSvg' => $qrSvg,
-                    'labelQtyPcs' => $staticQty,
-                ]);
+                // Logika baru: Bagi staticQty ke dalam numBoxes
+                $pcsPerBox = (int) floor($staticQty / $numBoxes);
+                $remainder = $staticQty % $numBoxes;
+                for ($i = 0; $i < $numBoxes; $i++) {
+                    $pcs = $pcsPerBox + ($i < $remainder ? 1 : 0);
+                    $rows->push([
+                        'itemBarcode' => $ib,
+                        'labelBarcodeSvg' => $labelBarcodeSvg,
+                        'qrSvg' => $qrSvg,
+                        'labelQtyPcs' => $pcs,
+                    ]);
+                }
             }
         }
 
