@@ -412,8 +412,17 @@ final class InventorySpreadsheet
             $lineNum = $i + 2;
             $row = self::padRow($row, self::COMPANY_COLS);
             $companyName = self::str($row[0] ?? null);
+            $partName = self::str($row[1] ?? null);
+            $code = self::str($row[2] ?? null);
+            $qty = self::toInt($row[3] ?? 0);
+
+            if ($companyName === '' && $partName === '' && $code === '' && $qty === 0) {
+                continue;
+            }
 
             if ($companyName === '') {
+                $errors[] = "Baris {$lineNum}: nama_perusahaan wajib diisi.";
+
                 continue;
             }
 
@@ -425,11 +434,11 @@ final class InventorySpreadsheet
 
             $groups[$key]['rows'][] = [
                 'line' => $lineNum,
-                'part_name' => self::nullableStr($row[1] ?? null) ?? 'Barang Tanpa Nama',
+                'part_name' => self::nullableStr($row[1] ?? null),
                 'code' => self::nullableStr($row[2] ?? null),
-                'qty' => self::toInt($row[3] ?? 1),
-                'posisi_rak' => self::nullableStr($row[4] ?? null) ?? '-',
-                'tingkat' => self::nullableStr($row[5] ?? null) ?? '-',
+                'qty' => $qty,
+                'posisi_rak' => self::nullableStr($row[4] ?? null),
+                'tingkat' => self::nullableStr($row[5] ?? null),
                 'operator_mobil_nama' => self::str($row[6] ?? null),
                 'pengirim_nama' => self::str($row[7] ?? null),
                 'operator_forklift_nama' => self::str($row[8] ?? null),
@@ -437,16 +446,60 @@ final class InventorySpreadsheet
         }
 
         if ($order === []) {
-            return ['errors' => ['Tidak ada data perusahaan diimpor.'], 'imported' => 0];
+            if (count($errors) > 0) {
+                return ['errors' => $errors, 'imported' => 0];
+            }
+
+            return ['errors' => ['Tidak ada baris data yang diisi.'], 'imported' => 0];
+        }
+
+        if (count($errors) > 0) {
+            return ['errors' => $errors, 'imported' => 0];
         }
 
         $companyCount = 0;
+
+        foreach ($order as $key) {
+            $bundle = $groups[$key];
+            $validRows = array_values(array_filter(
+                $bundle['rows'],
+                fn (array $r) => $r['qty'] > 0
+            ));
+
+            if ($validRows === []) {
+                $errors[] = "Perusahaan \"{$bundle['display_name']}\": minimal satu baris dengan qty lebih dari 0.";
+
+                continue;
+            }
+
+            foreach ($bundle['rows'] as $r) {
+                foreach (['operator_mobil_nama' => $r['operator_mobil_nama'], 'pengirim_nama' => $r['pengirim_nama'], 'operator_forklift_nama' => $r['operator_forklift_nama']] as $label => $ename) {
+                    if ($ename !== '' && self::resolveEmployeeIdByName($ename) === null) {
+                        $errors[] = "Baris {$r['line']}: karyawan \"{$ename}\" tidak ditemukan ({$label}).";
+                    }
+                }
+            }
+        }
+
+        if (count($errors) > 0) {
+            return ['errors' => $errors, 'imported' => 0];
+        }
+
         DB::transaction(function () use ($order, $groups, &$companyCount) {
             foreach ($order as $key) {
                 $bundle = $groups[$key];
-                $company = Company::firstOrCreate(['name' => $bundle['display_name']]);
+                $validRows = array_values(array_filter(
+                    $bundle['rows'],
+                    fn (array $r) => $r['qty'] > 0
+                ));
 
-                foreach ($bundle['rows'] as $row) {
+                if ($validRows === []) {
+                    continue;
+                }
+
+                $company = Company::create(['name' => $bundle['display_name']]);
+
+                foreach ($validRows as $row) {
                     $itemCode = $row['code'];
                     if ($itemCode === null || $itemCode === '') {
                         $itemCode = 'CB-'.$company->id.'-'.uniqid();
@@ -471,10 +524,10 @@ final class InventorySpreadsheet
                     ]);
                 }
 
-                CompanyBarcode::firstOrCreate(
-                    ['company_id' => $company->id],
-                    ['barcode_id' => 'CB-'.$company->id.'-'.uniqid()]
-                );
+                CompanyBarcode::create([
+                    'company_id' => $company->id,
+                    'barcode_id' => 'CB-'.$company->id.'-'.uniqid(),
+                ]);
 
                 $companyCount++;
             }
@@ -483,7 +536,7 @@ final class InventorySpreadsheet
         return [
             'errors' => [],
             'imported' => $companyCount,
-            'message' => "{$companyCount} perusahaan berhasil diimpor/diperbarui.",
+            'message' => "{$companyCount} perusahaan (beserta barcode & stok baris) berhasil diimpor dari Excel.",
         ];
     }
 

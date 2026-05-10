@@ -22,17 +22,12 @@
             <p class="text-base text-egg-700 mb-4">Urutan: <strong>FIFO</strong> (terima FG lebih dulu di atas).</p>
             <div class="mb-4 flex flex-col sm:flex-row gap-2 sm:items-end sm:justify-between">
                 <form method="GET" action="{{ route('item-barcodes.index') }}" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <div class="w-full sm:w-60">
-                        <label class="block text-sm font-medium text-egg-800">Cari Part Name/Code</label>
-                        <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Cari..."
+                    <div class="w-full sm:w-96">
+                        <label class="block text-sm font-medium text-egg-800">Cari Part Code / Code Part</label>
+                        <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Contoh: 955985"
                             class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                     </div>
                     <div class="w-full sm:w-60">
-                        <label class="block text-sm font-medium text-egg-800">Customer</label>
-                        <input type="text" name="customer_filter" value="{{ $customerFilter ?? request('customer_filter') }}" placeholder="Cari customer..."
-                            class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
-                    </div>
-                    <div class="w-full sm:w-40">
                         <label class="block text-sm font-medium text-egg-800">Sort expired</label>
                         <select name="expired_sort" class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900">
                             <option value="">FIFO (default)</option>
@@ -40,9 +35,9 @@
                             <option value="valid_first" @selected(($expiredSort ?? request('expired_sort')) === 'valid_first')>Belum expired dulu</option>
                         </select>
                     </div>
-                    <div class="flex gap-2 items-end">
-                        <button type="submit" class="btn-egg-secondary text-sm px-4 py-2">Cari</button>
-                        <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm px-4 py-2">Reset</a>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn-egg-secondary text-sm">Cari</button>
+                        <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm">Reset</a>
                     </div>
                 </form>
                 <a href="{{ route('item-barcodes.labels', ($q ?? request('q')) ? ['q' => ($q ?? request('q'))] : []) }}"

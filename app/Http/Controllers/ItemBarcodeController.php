@@ -22,24 +22,17 @@ class ItemBarcodeController extends Controller
     {
         return Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
     }
-    public function index(Request $request)
+    public function index()
     {
-        $q = trim((string) $request->query('q', ''));
-        $customerFilter = trim((string) $request->query('customer_filter', ''));
-        $expiredSort = (string) $request->query('expired_sort', '');
+        $q = trim((string) request()->query('q', ''));
+        $expiredSort = (string) request()->query('expired_sort', '');
 
         $itemBarcodes = ItemBarcode::query()
             ->with(['item.company', 'itemReceiving'])
             ->join('items', 'items.id', '=', 'item_barcodes.item_id')
             ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
             ->when($q !== '', function ($query) use ($q) {
-                $query->where(function($sq) use ($q) {
-                    $sq->where('items.code', 'like', '%'.$q.'%')
-                       ->orWhere('items.part_name', 'like', '%'.$q.'%');
-                });
-            })
-            ->when($customerFilter !== '', function ($query) use ($customerFilter) {
-                $query->where('items.customer', 'like', '%'.$customerFilter.'%');
+                $query->where('items.code', 'like', '%'.$q.'%');
             })
             ->when($expiredSort === 'expired_first', function ($query) {
                 $query->orderByRaw("CASE WHEN items.tgl_expired IS NOT NULL AND items.tgl_expired < CURDATE() THEN 0 ELSE 1 END ASC");
@@ -51,10 +44,14 @@ class ItemBarcodeController extends Controller
             ->orderBy('item_receivings.id')
             ->orderBy('item_barcodes.id')
             ->select('item_barcodes.*')
-            ->paginate(15)
-            ->withQueryString();
+            ->paginate(15);
 
-        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'customerFilter', 'expiredSort'));
+        $appends = [];
+        if ($q !== '') $appends['q'] = $q;
+        if ($expiredSort !== '') $appends['expired_sort'] = $expiredSort;
+        if ($appends !== []) $itemBarcodes->appends($appends);
+
+        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort'));
     }
 
     /**
@@ -90,17 +87,17 @@ class ItemBarcodeController extends Controller
             $qrSvg = BarcodeQrCodes::qrSvgForScan($ib->barcode_id, 88, 2);
 
             $item = $ib->item;
-            $staticQty = max(0, (int) ($item->static_qty ?? 0));
+            $dynamicQty = max(0, (int) ($item->dynamic_qty ?? 0));
             // Gunakan jumlah box dari input (misalnya request()->input('num_boxes')) 
             // atau jika tidak ada, gunakan logika sub-pack saat ini sebagai default atau 1 jika tidak diset.
             $numBoxes = (int) (request()->query('num_boxes', 0));
             if ($numBoxes <= 0) {
-                // Fallback ke logika lama jika num_boxes tidak disediakan (menggunakan qty_sub_pack)
+                // Fallback ke logika permintaan user: dynamic_qty / qty_sub_pack
                 $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
                 if ($sub > 0) {
-                    $labelCount = (int) ceil($staticQty / $sub);
-                    $labelCount = min($labelCount, 500);
-                    $remaining = $staticQty;
+                    $labelCount = (int) ceil($dynamicQty / $sub);
+                    $labelCount = min($labelCount, 500); // safety limit
+                    $remaining = $dynamicQty;
                     for ($i = 0; $i < $labelCount; $i++) {
                         $pcs = min($sub, $remaining);
                         $remaining -= $pcs;
@@ -112,17 +109,27 @@ class ItemBarcodeController extends Controller
                         ]);
                     }
                 } else {
-                    $rows->push([
-                        'itemBarcode' => $ib,
-                        'labelBarcodeSvg' => $labelBarcodeSvg,
-                        'qrSvg' => $qrSvg,
-                        'labelQtyPcs' => $staticQty,
-                    ]);
+                    // Jika qty_sub_pack kosong, maka menggunakan dynamic_qty sebagai jumlah label
+                    $labelCount = min($dynamicQty, 500); // safety limit
+                    for ($i = 0; $i < $labelCount; $i++) {
+                        $rows->push([
+                            'itemBarcode' => $ib,
+                            'labelBarcodeSvg' => $labelBarcodeSvg,
+                            'qrSvg' => $qrSvg,
+                            'labelQtyPcs' => 1,
+                        ]);
+                    }
+                    if ($dynamicQty <= 0) {
+                        // Jika dynamic_qty juga 0, tetap tampilkan 1 label kosong? 
+                        // Sesuai logika "menggunakan dynamic_qty", jika 0 ya 0 label.
+                        // Tapi biasanya minimal 1 label jika barcode ada.
+                        // Kita ikuti saja dynamic_qty.
+                    }
                 }
             } else {
-                // Logika baru: Bagi staticQty ke dalam numBoxes
-                $pcsPerBox = (int) floor($staticQty / $numBoxes);
-                $remainder = $staticQty % $numBoxes;
+                // Logika numBoxes tetap ada jika dipanggil eksplisit via query param
+                $pcsPerBox = (int) floor($dynamicQty / $numBoxes);
+                $remainder = $dynamicQty % $numBoxes;
                 for ($i = 0; $i < $numBoxes; $i++) {
                     $pcs = $pcsPerBox + ($i < $remainder ? 1 : 0);
                     $rows->push([
