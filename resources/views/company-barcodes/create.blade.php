@@ -7,8 +7,7 @@
 
     @php
         $itemRows = old('items', [
-            ['part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => ''],
-            ['part_name' => '', 'code' => '', 'qty' => '', 'posisi_rak' => '', 'tingkat' => ''],
+            ['part_name' => 'A', 'code' => '12412412', 'qty' => '100', 'posisi_rak' => '', 'tingkat' => ''],
         ]);
     @endphp
     {{-- Kolom input karyawan per baris barang disembunyikan (permintaan). --}}
@@ -39,7 +38,7 @@
                         @enderror
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
                             <div>
                                 <h3 class="text-lg font-medium text-egg-900">Barang</h3>
@@ -125,7 +124,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="flex flex-wrap gap-4">
                         <button type="submit" class="btn-egg-primary">Generate Barcode</button>

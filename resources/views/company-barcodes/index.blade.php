@@ -20,6 +20,27 @@
                 <p class="mb-4 p-2 text-sm bg-red-50 border border-red-200 rounded text-red-800">{{ session('error') }}</p>
             @endif
             <p class="text-base text-egg-700 mb-4">Urutan: <strong>FIFO</strong> (entri lama dulu).</p>
+            <div class="mb-4 flex flex-col sm:flex-row gap-2 sm:items-end sm:justify-between">
+                <form method="GET" action="{{ route('company-barcodes.index') }}" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <div class="w-full sm:w-96">
+                        <label class="block text-sm font-medium text-egg-800">Cari Nama Perusahaan</label>
+                        <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Contoh: PT ABC"
+                            class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                    </div>
+                    <div class="w-full sm:w-60">
+                        <label class="block text-sm font-medium text-egg-800">Sort Jumlah Barang</label>
+                        <select name="item_count_sort" class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900">
+                            <option value="">Default</option>
+                            <option value="most" @selected(($itemCountSort ?? request('item_count_sort')) === 'most')>Terbanyak</option>
+                            <option value="least" @selected(($itemCountSort ?? request('item_count_sort')) === 'least')>Tersedikit</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn-egg-secondary text-sm">Cari</button>
+                        <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary text-sm">Reset</a>
+                    </div>
+                </form>
+            </div>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">
                 <div class="overflow-x-auto">

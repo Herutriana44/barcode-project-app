@@ -19,17 +19,32 @@ use Illuminate\Validation\ValidationException;
 
 class CompanyBarcodeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $companies = Company::query()
+        $q = $request->input('q', '');
+        $itemCountSort = $request->input('item_count_sort', '');
+
+        $query = Company::query()
             ->with([
                 'companyBarcodes' => fn ($q) => $q->oldest(),
             ])
-            ->withCount('companyItems')
-            ->orderBy('name')
-            ->paginate(15);
+            ->withCount('companyItems');
 
-        return view('company-barcodes.index', compact('companies'));
+        if ($q !== '') {
+            $query->where('name', 'like', "%{$q}%");
+        }
+
+        if ($itemCountSort === 'most') {
+            $query->orderByDesc('company_items_count');
+        } elseif ($itemCountSort === 'least') {
+            $query->orderBy('company_items_count');
+        } else {
+            $query->orderBy('name');
+        }
+
+        $companies = $query->paginate(15);
+
+        return view('company-barcodes.index', compact('companies', 'q', 'itemCountSort'));
     }
 
     public function create(Request $request)

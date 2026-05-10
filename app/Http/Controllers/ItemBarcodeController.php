@@ -26,6 +26,8 @@ class ItemBarcodeController extends Controller
     {
         $q = trim((string) request()->query('q', ''));
         $expiredSort = (string) request()->query('expired_sort', '');
+        $companyFilter = trim((string) request()->query('company', ''));
+        $partNameFilter = trim((string) request()->query('part_name', ''));
 
         $itemBarcodes = ItemBarcode::query()
             ->with(['item.company', 'itemReceiving'])
@@ -33,6 +35,12 @@ class ItemBarcodeController extends Controller
             ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where('items.code', 'like', '%'.$q.'%');
+            })
+            ->when($companyFilter !== '', function ($query) use ($companyFilter) {
+                $query->whereHas('item.company', fn ($q) => $q->where('name', 'like', '%'.$companyFilter.'%'));
+            })
+            ->when($partNameFilter !== '', function ($query) use ($partNameFilter) {
+                $query->where('items.part_name', 'like', '%'.$partNameFilter.'%');
             })
             ->when($expiredSort === 'expired_first', function ($query) {
                 $query->orderByRaw("CASE WHEN items.tgl_expired IS NOT NULL AND items.tgl_expired < CURDATE() THEN 0 ELSE 1 END ASC");
@@ -49,9 +57,11 @@ class ItemBarcodeController extends Controller
         $appends = [];
         if ($q !== '') $appends['q'] = $q;
         if ($expiredSort !== '') $appends['expired_sort'] = $expiredSort;
+        if ($companyFilter !== '') $appends['company'] = $companyFilter;
+        if ($partNameFilter !== '') $appends['part_name'] = $partNameFilter;
         if ($appends !== []) $itemBarcodes->appends($appends);
 
-        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort'));
+        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort', 'companyFilter', 'partNameFilter'));
     }
 
     /**

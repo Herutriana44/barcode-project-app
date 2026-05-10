@@ -20,30 +20,42 @@
                 <p class="mb-4 p-2 text-sm bg-red-50 border border-red-200 rounded text-red-800">{{ session('error') }}</p>
             @endif
             <p class="text-base text-egg-700 mb-4">Urutan: <strong>FIFO</strong> (terima FG lebih dulu di atas).</p>
-            <div class="mb-4 flex flex-col sm:flex-row gap-2 sm:items-end sm:justify-between">
-                <form method="GET" action="{{ route('item-barcodes.index') }}" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <div class="w-full sm:w-96">
-                        <label class="block text-sm font-medium text-egg-800">Cari Part Code / Code Part</label>
+            <div class="mb-4 flex flex-col gap-2">
+                <form method="GET" action="{{ route('item-barcodes.index') }}" class="flex flex-col sm:flex-row gap-2 flex-wrap sm:items-end">
+                    <div class="w-full sm:w-80">
+                        <label class="block text-sm font-medium text-egg-800">Cari Part Code</label>
                         <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Contoh: 955985"
                             class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                     </div>
+                    <div class="w-full sm:w-72">
+                        <label class="block text-sm font-medium text-egg-800">Part Name</label>
+                        <input type="text" name="part_name" value="{{ $partNameFilter ?? request('part_name') }}" placeholder="Cari nama part"
+                            class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                    </div>
+                    <div class="w-full sm:w-72">
+                        <label class="block text-sm font-medium text-egg-800">Perusahaan</label>
+                        <input type="text" name="company" value="{{ $companyFilter ?? request('company') }}" placeholder="Cari perusahaan"
+                            class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                    </div>
                     <div class="w-full sm:w-60">
-                        <label class="block text-sm font-medium text-egg-800">Sort expired</label>
+                        <label class="block text-sm font-medium text-egg-800">Sort Expired</label>
                         <select name="expired_sort" class="mt-1 block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900">
                             <option value="">FIFO (default)</option>
                             <option value="expired_first" @selected(($expiredSort ?? request('expired_sort')) === 'expired_first')>Expired dulu</option>
                             <option value="valid_first" @selected(($expiredSort ?? request('expired_sort')) === 'valid_first')>Belum expired dulu</option>
                         </select>
                     </div>
-                    <div class="flex gap-2">
-                        <button type="submit" class="btn-egg-secondary text-sm">Cari</button>
-                        <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm">Reset</a>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button type="submit" class="btn-egg-secondary text-sm flex-1 sm:flex-none">Cari</button>
+                        <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm flex-1 sm:flex-none text-center">Reset</a>
                     </div>
                 </form>
-                <a href="{{ route('item-barcodes.labels', ($q ?? request('q')) ? ['q' => ($q ?? request('q'))] : []) }}"
-                    class="btn-egg-secondary" target="_blank" rel="noopener">
-                    Cetak semua label (PDF)
-                </a>
+                <div class="flex justify-end">
+                    <a href="{{ route('item-barcodes.labels', ($q ?? request('q')) ? ['q' => ($q ?? request('q'))] : []) }}"
+                        class="btn-egg-secondary" target="_blank" rel="noopener">
+                        Cetak semua label (PDF)
+                    </a>
+                </div>
             </div>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">

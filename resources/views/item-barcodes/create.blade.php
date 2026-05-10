@@ -73,10 +73,10 @@
                                     <option value="">—</option>
                                 </select>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <label class="block text-base font-medium text-egg-800">Tingkat</label>
                                 <input type="text" name="tingkat" value="{{ old('tingkat') }}" class="mt-1 block w-full rounded-md border-egg-300">
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- <h4 class="text-lg font-bold text-egg-900 mt-6 mb-3">Material</h4>
