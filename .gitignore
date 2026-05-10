@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# ignore ~* files (backup files created by some editors)
+*~*

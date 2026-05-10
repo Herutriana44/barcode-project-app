@@ -8,12 +8,13 @@
     // Jika sudah KG, logika ini mungkin perlu disesuaikan.
     // Jika input 1000g, jadi 1.00kg.
     $beratGram = $item->berat !== null ? (float) $item->berat : 0;
-    $beratKg = $beratGram / 1000;
+    $beratKg = $beratGram;
     
     // Hitung berat total per label berdasarkan qty label tersebut
     $totalBeratLabel = $beratKg * ($labelQtyPcs ?? 1);
-    $beratStr = number_format($totalBeratLabel, 3, '.', '');
-    
+    $totalBeratLabel = $beratGram;
+    // $beratStr = number_format($totalBeratLabel, 3, '.', '');
+    $beratStr = $beratKg;
     if ($quantityUseStatic) {
         $qtyStr = $item->static_qty !== null ? (string) (int) $item->static_qty : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
