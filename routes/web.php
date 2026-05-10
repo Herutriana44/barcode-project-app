@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rak options (untuk dropdown per perusahaan/customer)
     Route::get('raks/options', [RakController::class, 'options'])->name('raks.options');
+    Route::get('raks/all-options', [RakController::class, 'allOptions'])->name('raks.all-options');
 
     // Scan
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');

@@ -51,8 +51,33 @@ class RakController extends Controller
     }
 
     /**
-     * @return array{string,int}|null
+     * Ambil semua opsi rak tanpa filter perusahaan.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
+    public function allOptions()
+    {
+        $rows = Rak::query()->pluck('code');
+
+        $allCodes = [];
+        foreach ($rows as $row) {
+            $parts = explode(',', (string) $row);
+            foreach ($parts as $part) {
+                $code = trim($part);
+                if ($code !== '') {
+                    $allCodes[] = $code;
+                }
+            }
+        }
+
+        $uniqueCodes = array_unique($allCodes);
+        sort($uniqueCodes);
+        $finalCodes = array_values($uniqueCodes);
+
+        return response()->json(['codes' => $finalCodes]);
+    }
+
+    /**
     private function parseRakCode(string $code): ?array
     {
         $s = strtoupper(trim($code));

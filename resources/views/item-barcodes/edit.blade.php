@@ -210,18 +210,31 @@
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
                 const keep = rakSelect.value || current;
                 rakSelect.innerHTML = '<option value="">—</option>';
-                codes.forEach(function (c) {
-                    const opt = document.createElement('option');
-                    opt.value = c;
-                    opt.textContent = c;
-                    rakSelect.appendChild(opt);
+
+                // keep variable string to list string
+                list_keep = keep.split(', ').map(s => s.trim()).filter(s => s);
+                list_keep.forEach(function(k) {
+                    if (!codes.includes(k)) {
+                        const opt = document.createElement('option');
+                        opt.value = k;
+                        opt.textContent = k;
+                        rakSelect.appendChild(opt);
+                    }
                 });
+
+                // codes.forEach(function (c) {
+                //     const opt = document.createElement('option');
+                //     opt.value = c;
+                //     opt.textContent = c;
+                //     rakSelect.appendChild(opt);
+                // });
+
                 if (keep) {
                     rakSelect.value = keep;
                     if (rakSelect.value !== keep) {
                         const opt = document.createElement('option');
                         opt.value = keep;
-                        opt.textContent = keep + ' (tidak tersedia)';
+                        opt.textContent = keep;
                         rakSelect.appendChild(opt);
                         rakSelect.value = keep;
                     }

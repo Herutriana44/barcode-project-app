@@ -213,22 +213,42 @@
                 return Array.isArray(json.codes) ? json.codes : [];
             }
 
+            async function fetchAllRakOptions() {
+                const url = `{{ route('raks.all-options') }}`;
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) return [];
+                const json = await res.json();
+                return Array.isArray(json.codes) ? json.codes : [];
+            }
+
             function applyOptions(codes) {
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
                 const keep = rakSelect.value || current;
                 rakSelect.innerHTML = '<option value="">—</option>';
+                // keep variable string to list string
+                list_keep = keep.split(', ').map(s => s.trim()).filter(s => s);
+                list_keep.forEach(function(k) {
+                    if (!codes.includes(k)) {
+                        const opt = document.createElement('option');
+                        opt.value = k;
+                        opt.textContent = k;
+                        rakSelect.appendChild(opt);
+                    }
+                });
+
                 codes.forEach(function (c) {
                     const opt = document.createElement('option');
                     opt.value = c;
                     opt.textContent = c;
                     rakSelect.appendChild(opt);
                 });
+
                 if (keep) {
                     rakSelect.value = keep;
                     if (rakSelect.value !== keep) {
                         const opt = document.createElement('option');
                         opt.value = keep;
-                        opt.textContent = keep + ' (tidak tersedia)';
+                        opt.textContent = keep;
                         rakSelect.appendChild(opt);
                         rakSelect.value = keep;
                     }
@@ -240,7 +260,8 @@
                 const name = (customerSelect.value || '').trim();
                 if (name === last) return;
                 last = name;
-                const codes = await fetchRakOptions(name);
+                // const codes = await fetchRakOptions(name);
+                const codes = await fetchAllRakOptions();
                 applyOptions(codes);
             }
 

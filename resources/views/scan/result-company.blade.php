@@ -12,7 +12,7 @@
 
                 <div class="overflow-x-auto">
             <div class="overflow-x-auto">
-                <table class="min-w-full text-base">
+                <!-- <table class="min-w-full text-base">
                     <thead>
                         <tr class="border-b border-egg-200">
                             <th class="text-left py-3 px-2 font-semibold">Nama Barang</th>
@@ -31,13 +31,13 @@
                                 <td class="py-3 px-2">{{ $ci->qty }}</td>
                                 <td class="py-3 px-2">{{ $ci->posisi_rak ?? '-' }}</td>
                                 <td class="py-3 px-2">{{ $ci->tingkat ?? '-' }}</td>
-                                <!-- <td class="py-3 px-2">{{ $ci->item->operatorMobil->name ?? '-' }}</td>
+                                <td class="py-3 px-2">{{ $ci->item->operatorMobil->name ?? '-' }}</td>
                                 <td class="py-3 px-2">{{ $ci->item->pengirim->name ?? '-' }}</td>
-                                <td class="py-3 px-2">{{ $ci->item->operatorForklift->name ?? '-' }}</td> -->
+                                <td class="py-3 px-2">{{ $ci->item->operatorForklift->name ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table> -->
                 </div>
 
                 <div class="mt-6">
