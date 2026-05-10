@@ -19,6 +19,13 @@
             @if (session('error'))
                 <p class="mb-4 p-2 text-sm bg-red-50 border border-red-200 rounded text-red-800">{{ session('error') }}</p>
             @endif
+            
+            <form action="{{ route('company-barcodes.index') }}" method="GET" class="mb-4 flex gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari perusahaan atau barang..." class="border border-egg-300 rounded-lg px-4 py-2 w-full max-w-sm">
+                <button type="submit" class="btn-egg-primary">Cari</button>
+                <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary">Reset</a>
+            </form>
+
             <p class="text-base text-egg-700 mb-4">Urutan: <strong>FIFO</strong> (entri lama dulu).</p>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">

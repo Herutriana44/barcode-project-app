@@ -22,17 +22,24 @@ class ItemBarcodeController extends Controller
     {
         return Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
     }
-    public function index()
+    public function index(Request $request)
     {
-        $q = trim((string) request()->query('q', ''));
-        $expiredSort = (string) request()->query('expired_sort', '');
+        $q = trim((string) $request->query('q', ''));
+        $customerFilter = trim((string) $request->query('customer_filter', ''));
+        $expiredSort = (string) $request->query('expired_sort', '');
 
         $itemBarcodes = ItemBarcode::query()
             ->with(['item.company', 'itemReceiving'])
             ->join('items', 'items.id', '=', 'item_barcodes.item_id')
             ->join('item_receivings', 'item_receivings.id', '=', 'item_barcodes.item_receiving_id')
             ->when($q !== '', function ($query) use ($q) {
-                $query->where('items.code', 'like', '%'.$q.'%');
+                $query->where(function($sq) use ($q) {
+                    $sq->where('items.code', 'like', '%'.$q.'%')
+                       ->orWhere('items.part_name', 'like', '%'.$q.'%');
+                });
+            })
+            ->when($customerFilter !== '', function ($query) use ($customerFilter) {
+                $query->where('items.customer', 'like', '%'.$customerFilter.'%');
             })
             ->when($expiredSort === 'expired_first', function ($query) {
                 $query->orderByRaw("CASE WHEN items.tgl_expired IS NOT NULL AND items.tgl_expired < CURDATE() THEN 0 ELSE 1 END ASC");
@@ -44,14 +51,10 @@ class ItemBarcodeController extends Controller
             ->orderBy('item_receivings.id')
             ->orderBy('item_barcodes.id')
             ->select('item_barcodes.*')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
-        $appends = [];
-        if ($q !== '') $appends['q'] = $q;
-        if ($expiredSort !== '') $appends['expired_sort'] = $expiredSort;
-        if ($appends !== []) $itemBarcodes->appends($appends);
-
-        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort'));
+        return view('item-barcodes.index', compact('itemBarcodes', 'q', 'customerFilter', 'expiredSort'));
     }
 
     /**

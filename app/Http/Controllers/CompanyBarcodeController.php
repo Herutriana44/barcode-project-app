@@ -19,15 +19,22 @@ use Illuminate\Validation\ValidationException;
 
 class CompanyBarcodeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $companies = Company::query()
             ->with([
                 'companyBarcodes' => fn ($q) => $q->oldest(),
             ])
             ->withCount('companyItems')
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('companyItems.item', function ($sq) use ($request) {
+                      $sq->where('part_name', 'like', '%' . $request->search . '%');
+                  });
+            })
             ->orderBy('name')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('company-barcodes.index', compact('companies'));
     }

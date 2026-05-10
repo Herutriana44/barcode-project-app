@@ -4,13 +4,9 @@
     $item = $itemBarcode->item;
     $companyName = $headerCompanyName ?? ($item->company->name ?? '—');
     
-    // Asumsi berat saat ini di DB adalah dalam satuan gram, konversi ke kg
-    // Jika sudah KG, logika ini mungkin perlu disesuaikan.
-    // Jika input 1000g, jadi 1.00kg.
     $beratGram = $item->berat !== null ? (float) $item->berat : 0;
     $beratKg = $beratGram / 1000;
     
-    // Hitung berat total per label berdasarkan qty label tersebut
     $totalBeratLabel = $beratKg * ($labelQtyPcs ?? 1);
     $beratStr = number_format($totalBeratLabel, 3, '.', '');
     
@@ -25,99 +21,31 @@
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
     }
 @endphp
-<article class="label-card">
-    <table class="label-table">
-        <colgroup>
-            <col class="c-logo" />
-            <col class="c-mid" />
-            <col class="c-side" />
-        </colgroup>
+<article class="label-card" style="font-size: 8pt; width: 95mm; padding: 2mm;">
+    <table class="label-table" style="width: 100%; border-collapse: collapse;">
         <tr>
-            <td class="label-logo-cell">
-                <img src="{{ asset('icon.png') }}" alt="" class="label-logo-img" />
-            </td>
-            <td class="label-company" colspan="2">{{ $companyName }}</td>
+            <td colspan="3" style="font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 1mm;">{{ $companyName }}</td>
         </tr>
         <tr>
-            <td class="label-fields-cell" colspan="2">
-                <table class="label-fields-inner">
-                    <tr>
-                        <td class="fld-lbl">Customer name</td>
-                        <td>: {{ $item->customer ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Part no</td>
-                        <td>: {{ $item->part_number ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Part name</td>
-                        <td>: {{ $item->part_name ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Model</td>
-                        <td>: {{ $item->model !== null && $item->model !== '' ? $item->model : '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Delivery date</td>
-                        <td>: </td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Total Berat</td>
-                        <td>: {{ $beratStr }} Kg</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Quantity</td>
-                        <td>: {{ $qtyStr }}{{ $qtySuffix }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Inspector name</td>
-                        <td>: {{ $item->inspector_name ?? '' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="fld-lbl">Checker</td>
-                        <td>: {{ $item->checker_name ?? '' }}</td>
-                    </tr>
+            <td style="width: 60%; vertical-align: top; padding-top: 1mm;">
+                <table style="width: 100%;">
+                    <tr><td style="width: 25mm;">Cust</td><td>: {{ $item->customer ?? '' }}</td></tr>
+                    <tr><td>Part No</td><td>: {{ $item->part_number ?? '' }}</td></tr>
+                    <tr><td>Part Nm</td><td>: {{ $item->part_name ?? '' }}</td></tr>
+                    <tr><td>Model</td><td>: {{ $item->model !== null && $item->model !== '' ? $item->model : '-' }}</td></tr>
+                    <tr><td>Berat</td><td>: {{ $beratStr }} Kg</td></tr>
+                    <tr><td>Qty</td><td>: {{ $qtyStr }}{{ $qtySuffix }}</td></tr>
                 </table>
             </td>
-            <td class="label-side-cell">
-                <table class="side-stack">
-                    <tr>
-                        <td>
-                            <span class="side-hdr">Code :</span>
-                            <span class="code-big">{{ $item->code ?? '' }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="qr-slot">
-                            <div class="side-hdr" style="text-align:left;margin-bottom:0.5mm;">QR (URL scan)</div>
-                            {!! $qrSvg !!}
-                        </td>
-                    </tr>
-                    @if(! empty($barcodeSvg))
-                    <tr>
-                        <td class="barcode-slot-mini overflow-x-auto max-w-full">
-                            <div class="side-hdr" style="text-align:left;margin-bottom:0.5mm;">Barcode (URL)</div>
-                            <div class="[&_svg]:max-w-full [&_svg]:h-auto">{!! $barcodeSvg !!}</div>
-                        </td>
-                    </tr>
-                    @endif
-                </table>
+            <td style="width: 40%; vertical-align: top; text-align: center;">
+                <div style="font-weight:bold;">{{ $item->code ?? '' }}</div>
+                <div class="[&_svg]:h-10">{!! $qrSvg !!}</div>
             </td>
         </tr>
-        <tr class="label-footer">
-            <td>
-                <span class="f-h">Prod. date</span>
-                {{ $item->tgl_produksi?->format('d/m/Y') ?? '' }}
-            </td>
-            <td>
-                <span class="f-h">Exp. date</span>
-                {{ $item->tgl_expired?->format('d/m/Y') ?? '' }}
-            </td>
-            <td>
-                <span class="f-h">Status part</span>
-                <span class="status-ok">OK</span>
+        <tr style="border-top: 1px solid #000;">
+            <td colspan="2" style="padding-top: 1mm; font-size: 7pt;">
+                Prod: {{ $item->tgl_produksi?->format('d/m/y') ?? '-' }} | Exp: {{ $item->tgl_expired?->format('d/m/y') ?? '-' }} | Status: OK
             </td>
         </tr>
     </table>
-    <div class="label-doc-rev">F-QC-038. Date/Rev : 22.04.24/01</div>
 </article>
