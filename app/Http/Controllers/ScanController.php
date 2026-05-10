@@ -79,10 +79,8 @@ class ScanController extends Controller
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {
-            $companyBarcode = CompanyBarcode::with([
-                'company.companyItems.item.operatorMobil',
-                'company.companyItems.item.pengirim',
-                'company.companyItems.item.operatorForklift',
+            $companyBarcode = CompanyBarcode::with([ 
+                'company.items.itemBarcodes',
             ])
                 ->where('barcode_id', $barcodeId)
                 ->first();
@@ -100,7 +98,7 @@ class ScanController extends Controller
                     'type' => 'company',
                     'data' => [
                         'company' => $companyBarcode->company,
-                        'company_items' => $companyBarcode->company->companyItems,
+                        'items' => $companyBarcode->company->items,
                     ],
                 ]);
             }

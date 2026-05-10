@@ -1,18 +1,1 @@
-revisi projek berikut:
-
-1. tambahkan seeder data karyawan dari file excel data karyawan dengan kolom No, Nama, `Nomor Induk Pegawai `, DEPARTEMEN, JABATAN, `STATUS `
-2. tambah warning expired ketika scan, "Warning: Expired items should be checked"
-3. tambahkan fitur sort barang antara expired atau belum
-4. untuk seeder rak, ganti metode dimana untuk mengambil data rak ini, bisa ambil data dari sheet `rak` yang terdapat 2 kolom yaitu `Perusahaan` dan `Rak`. dimana jika Customer perusahaan ketika di ubah bagian rak, hanya bisa memilih data yang ada di sheet ini misalnya berikut
-
-PT. KAWAI INDONESIA	A9
-PT. KAWAI INDONESIA	A10
-PT. KAWAI INDONESIA	A15
-PT. KAWAI INDONESIA	A20
-PT. KAWAI INDONESIA	C4
-PT. KAWAI INDONESIA	C6
-PT. KAWAI INDONESIA	C12
-PT. KAWAI INDONESIA	D1
-PT. KAWAI INDONESIA	D2
-
-berarti PT. KAWAI INDONESIA hanya bisa memilih rak no A9, A10, A15, dst
+revisi pada hasil scan QR company, dimana hasilnya menampilkan semua items(dan bisa di klik mengarah ke item-item barcodes) sesuai company. begitu juga di show atau detail company barcode, menampilkan semua tabel items. untuk yang ditampilkan adalah kolom customer(di frontend diubah menjadi company), part_name, model, berat, dll seperti pada item barcodes yang ditampilkan
