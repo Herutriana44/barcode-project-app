@@ -38,8 +38,8 @@
                         @enderror
                     </div>
 
-                    <!-- <div>
-                        <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+                    <div>
+                        <!-- <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
                             <div>
                                 <h3 class="text-lg font-medium text-egg-900">Barang</h3>
                                 <p class="text-sm text-egg-700 mt-1">Isi data barang secara manual. Kode boleh kosong (akan digenerate otomatis). Minimal satu baris dengan qty &gt; 0.</p>
@@ -47,13 +47,13 @@
                             <button type="button" id="add-item-row" class="btn-egg-secondary text-sm py-2 px-4 lg:min-h-0">
                                 + Tambah baris
                             </button>
-                        </div>
+                        </div> -->
 
-                        @error('items')
+                        <!-- @error('items')
                             <p class="text-red-600 text-sm mb-4">{{ $message }}</p>
-                        @enderror
+                        @enderror -->
 
-                        <div class="overflow-x-auto border border-egg-200 rounded-lg">
+                        <div class="overflow-x-auto border border-egg-200 rounded-lg" hidden>
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-sm">
                                 <thead class="bg-egg-50 text-egg-800">
@@ -124,7 +124,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div> -->
+                    </div>
 
                     <div class="flex flex-wrap gap-4">
                         <button type="submit" class="btn-egg-primary">Generate Barcode</button>
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <template id="item-row-template">
+    <!-- <template id="item-row-template">
         <tr class="item-row">
             <td class="py-1 px-2 align-top">
                 <input type="text" name="items[__I__][part_name]" value="" placeholder="Part name / nama" class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1" />
@@ -158,7 +158,7 @@
                 <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-0.5" title="Hapus baris" aria-label="Hapus baris">&times;</button>
             </td>
         </tr>
-    </template>
+    </template> -->
 
     <script>
         (function () {
