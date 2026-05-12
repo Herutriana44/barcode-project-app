@@ -53,8 +53,6 @@
                     </div>
                     <p class="text-center text-lg font-mono mb-4 font-medium text-egg-900">{{ $companyBarcode->barcode_id }}</p>
 
-                    <h3 class="font-bold text-2xl mb-4">{{ $companyBarcode->company->name }}</h3>
-
                     <div class="py-8 w-full">
         <div class="max-w-5xl mx-auto w-full">
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
