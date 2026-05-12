@@ -76,7 +76,10 @@
                         $detailItem = $itemBarcode->item;
                         $detailSubPack = (int) ($detailItem->qty_sub_pack ?? 0);
                         $detailQtyPcs = (int) ($detailItem->dynamic_qty ?? $detailItem->qty ?? 0);
+                        $detailQtyPcsStatic = (int) ($detailItem->static_qty ?? $detailItem->qty ?? 0);
                         $detailBoxApprox = ($detailSubPack > 0 && $detailQtyPcs > 0) ? (int) ceil($detailQtyPcs / $detailSubPack) : null;
+                        $staticBoxApprox =($detailSubPack > 0 && $detailQtyPcsStatic > 0 ) ? (int) ceil($detailQtyPcsStatic / $detailSubPack) : 0;
+                        $nowBoxApprox = $staticBoxApprox - $detailBoxApprox;
                     @endphp
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-base">
                         <div><span class="font-medium">Customer:</span> {{ $detailItem->customer ?? '-' }}</div>
@@ -85,7 +88,7 @@
                         <div><span class="font-medium">Model:</span> {{ $detailItem->model ?? '-' }}</div>
                         <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div>
                         <div><span class="font-medium">Qty sub pack / isi per box (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
-                        <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $detailBoxApprox !== null ? $detailBoxApprox.' box' : '-' }}</div>
+                        <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $nowBoxApprox !== null ? $nowBoxApprox.' box' : '-' }}</div>
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>
                         <div><span class="font-medium">Berat packaging (gram):</span> {{ $detailItem->berat_packaging_gram !== null ? $detailItem->berat_packaging_gram : '-' }}</div>
