@@ -64,6 +64,40 @@ class ItemBarcodeController extends Controller
         return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort', 'companyFilter', 'partNameFilter'));
     }
 
+    public function labelPerBox(ItemBarcode $itemBarcode)
+    {
+        $itemBarcode->load([
+            'item.company',
+            'itemReceiving',
+        ]);
+
+        $item = $itemBarcode->item;
+        $dynamicQty = max(0, (int) ($item->dynamic_qty ?? 0));
+        $sub = max(1, (int) ($item->qty_sub_pack ?? 1));
+
+        $labelCount = (int) ceil($dynamicQty / $sub);
+        $labelCount = min($labelCount, 500); // safety limit
+
+        $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
+        $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
+
+        $rows = collect();
+        $remaining = $dynamicQty;
+        for ($i = 0; $i < $labelCount; $i++) {
+            $pcs = min($sub, $remaining);
+            $remaining -= $pcs;
+            $rows->push([
+                'itemBarcode' => $itemBarcode,
+                'labelBarcodeSvg' => $labelBarcodeSvg,
+                'qrSvg' => $qrSvg,
+                'labelQtyPcs' => $pcs > 0 ? $pcs : $sub,
+            ]);
+        }
+
+        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
+        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
+    }
+
     /**
      * Label cetak: semua barcode barang + data + QR (tampilan seperti kertas).
      */

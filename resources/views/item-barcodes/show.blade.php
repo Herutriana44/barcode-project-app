@@ -40,8 +40,9 @@
                         'headerCompanyName' => $labelHeaderCompanyName,
                     ])
                 </div>
-                <div class="mt-4 no-print">
+                <div class="mt-4 no-print flex gap-2">
                     <a href="{{ route('item-barcodes.label-isi', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Label Per Isi</a>
+                    <a href="{{ route('item-barcodes.label-per-box', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-primary">Cetak Label Per Box</a>
                 </div>
             </section>
 
