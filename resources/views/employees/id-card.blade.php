@@ -1,3 +1,4 @@
+%%writefile resources/views/employees/id-card.blade.php
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -122,36 +123,42 @@
         }
 
         .text-field {
-            position: absolute;
-            left: 30.3mm;
-            width: 20mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            line-height: 1.15;
-            color: #000000;
-            white-space: pre-line;
-            word-break: break-word;
-            z-index: 3;
-        }
+    position: absolute;
+    left: 30.3mm;
+    width: 20mm;
+    height: 4.5mm; /* tinggi tetap */
+    overflow: hidden; /* text tidak mendorong element lain */
+
+    font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.05;
+    color: #000000;
+
+    white-space: pre-line;
+    word-break: break-word;
+
+    display: block;
+    z-index: 3;
+}
 
         .dept {
-            top: 31.5mm;
+            top: 30mm;
         }
 
         .jabatan {
-            top: 38.5mm;
+            top: 37mm;
         }
 
         .status {
-            top: 44.5mm;
+            top: 43mm;
         }
 
         .name {
-            top: 51.5mm;
+            top: 50mm;
         }
 
         .nip {
-            top: 58.1mm;
+            top: 57mm;
         }
 
         .qr {
