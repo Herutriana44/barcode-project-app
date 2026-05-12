@@ -4,8 +4,43 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ID Card — {{ $employee->name }}</title>
+
+    @php
+        function formatText($text, $limit = 18)
+        {
+            $text = $text ?? '-';
+
+            if (mb_strlen($text) > $limit) {
+                $splitPos = mb_strrpos(mb_substr($text, 0, $limit), ' ');
+
+                if ($splitPos !== false) {
+                    $text =
+                        mb_substr($text, 0, $splitPos) .
+                        "\n" .
+                        mb_substr($text, $splitPos + 1);
+                } else {
+                    $text =
+                        mb_substr($text, 0, $limit) .
+                        "\n" .
+                        mb_substr($text, $limit);
+                }
+            }
+
+            return $text;
+        }
+
+        function fontSize($text, $default = '4.5pt')
+        {
+            return mb_strlen($text) > 18 ? '3.8pt' : $default;
+        }
+    @endphp
+
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         @font-face {
             font-family: "Canva Sans";
@@ -20,14 +55,23 @@
             background: #e8e4dc;
             padding: 12px;
         }
+
         @page {
             size: 53mm 90mm;
             margin: 0;
         }
+
         @media print {
-            body { background: #fff; padding: 0; }
-            .no-print { display: none !important; }
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
         }
+
         .card {
             width: 53mm;
             height: 90mm;
@@ -37,7 +81,6 @@
             border: 0;
         }
 
-        /* Template image - layer paling belakang */
         .bg-img {
             position: absolute;
             inset: 0;
@@ -48,7 +91,6 @@
             z-index: 0;
         }
 
-        /* Foto persegi panjang: 2.17cm x 3.27cm, x 0.15cm, y 2.64cm */
         .photo {
             position: absolute;
             left: 1.5mm;
@@ -59,12 +101,14 @@
             background: #d9d9d9;
             z-index: 1;
         }
+
         .photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
         }
+
         .photo .no-photo {
             width: 100%;
             height: 100%;
@@ -77,79 +121,39 @@
             padding: 2mm;
         }
 
-        /* Text: Departemen - w 1.92cm, h 0.18cm, x 3.06cm, y 3.20cm (css top: 31.5mm) */
+        .text-field {
+            position: absolute;
+            left: 30.3mm;
+            width: 20mm;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
+            font-weight: 400;
+            line-height: 1.15;
+            color: #000000;
+            white-space: pre-line;
+            word-break: break-word;
+            z-index: 3;
+        }
+
         .dept {
-            position: absolute;
-            left: 30.3mm;
             top: 31.5mm;
-            width: 30mm;
-            height: 1.8mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            font-size: 4.5pt;
-            line-height: 1;
-            color: #000000;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            z-index: 3;
         }
 
-        /* Text: Jabatan - w 1.35cm, h 0.18cm, x 3.06cm, y 3.69cm (css top: 38.5mm) */
         .jabatan {
-            position: absolute;
-            left: 30.3mm;
             top: 38.5mm;
-            width: 30mm;
-            height: 1.8mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            font-size: 4.5pt;
-            line-height: 1;
-            color: #000000;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            z-index: 3;
         }
 
-        /* Text: Status Kerja - w 0.82cm, h 0.18cm, x 3.06cm, y 4.29cm (css top: 44.5mm) */
         .status {
-            position: absolute;
-            left: 30.3mm;
             top: 44.5mm;
-            width: 30mm;
-            height: 1.8mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            font-size: 4.5pt;
-            line-height: 1;
-            color: #000000;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            z-index: 3;
         }
 
-        /* Text: Nama Karyawan - w 1.45cm, h 0.18cm, x 3.06cm, y 4.93cm (css top: 51.5mm) */
         .name {
-            position: absolute;
-            left: 30.3mm;
             top: 51.5mm;
-            width: 30mm;
-            height: 1.8mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            font-size: 4.5pt;
-            line-height: 1;
-            color: #000000;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            z-index: 3;
         }
 
-        /* Kotak Barcode - w 1.53cm, h 1.53cm, x 3.5cm, y 7.82cm (css top: 72mm) */
+        .nip {
+            top: 58.1mm;
+        }
+
         .qr {
             position: absolute;
             left: 35mm;
@@ -158,31 +162,13 @@
             height: 15.3mm;
             z-index: 3;
         }
+
         .qr svg {
             width: 100%;
             height: 100%;
             display: block;
         }
 
-        /* Text: NIP - w 1.03cm, h 0.18cm, x 3.06cm, y 5.58cm (css top: 58.1mm) */
-        .nip {
-            position: absolute;
-            left: 30.6mm;
-            top: 58.1mm;
-            width: 30mm;
-            height: 1.8mm;
-            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-            font-weight: 400;
-            font-size: 4.5pt;
-            line-height: 1;
-            color: #000000;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            z-index: 3;
-        }
-
-        /* Fallback jika template image tidak tersedia */
         .fallback {
             position: absolute;
             inset: 0;
@@ -194,6 +180,7 @@
         .toolbar {
             margin-bottom: 10px;
         }
+
         .toolbar button {
             padding: 8px 14px;
             border-radius: 8px;
@@ -205,28 +192,70 @@
     </style>
 </head>
 <body>
-    <div class="toolbar no-print">
-        <button type="button" onclick="window.print()">Cetak (9 × 5,3 cm)</button>
+
+<div class="toolbar no-print">
+    <button type="button" onclick="window.print()">
+        Cetak (9 × 5,3 cm)
+    </button>
+</div>
+
+<div class="card">
+    <div class="fallback" aria-hidden="true"></div>
+
+    <img
+        class="bg-img"
+        src="{{ asset(str_replace(' ', '%20', 'DESAIN 2.png')) }}"
+        alt=""
+        aria-hidden="true"
+    />
+
+    <div class="photo">
+        @if ($employee->photoPublicUrl())
+            <img src="{{ $employee->photoPublicUrl() }}" alt="" />
+        @else
+            <div class="no-photo">Foto</div>
+        @endif
     </div>
 
-    <div class="card">
-        <div class="fallback" aria-hidden="true"></div>
-        <img class="bg-img" src="{{ asset(str_replace(' ', '%20', 'DESAIN 2.png')) }}" alt="" aria-hidden="true" />
-
-        <div class="photo">
-            @if ($employee->photoPublicUrl())
-                <img src="{{ $employee->photoPublicUrl() }}" alt="" />
-            @else
-                <div class="no-photo">Foto</div>
-            @endif
-        </div>
-
-        <div class="dept">{{ $employee->departemen ?? 'Departemen' }}</div>
-        <div class="jabatan">{{ $employee->jabatan ?? 'Jabatan' }}</div>
-        <div class="status">{{ $employee->status ?? 'Status' }}</div>
-        <div class="name">{{ $employee->name }}</div>
-        <div class="qr">{!! $qrSvg !!}</div>
-        <div class="nip">{{ $employee->nip }}</div>
+    <div
+        class="text-field dept"
+        style="font-size: {{ fontSize($employee->departemen ?? '') }};"
+    >
+        {{ formatText($employee->departemen ?? 'Departemen') }}
     </div>
+
+    <div
+        class="text-field jabatan"
+        style="font-size: {{ fontSize($employee->jabatan ?? '') }};"
+    >
+        {{ formatText($employee->jabatan ?? 'Jabatan') }}
+    </div>
+
+    <div
+        class="text-field status"
+        style="font-size: {{ fontSize($employee->status ?? '') }};"
+    >
+        {{ formatText($employee->status ?? 'Status') }}
+    </div>
+
+    <div
+        class="text-field name"
+        style="font-size: {{ fontSize($employee->name ?? '') }};"
+    >
+        {{ formatText($employee->name ?? 'Nama') }}
+    </div>
+
+    <div
+        class="text-field nip"
+        style="font-size: {{ fontSize($employee->nip ?? '') }};"
+    >
+        {{ formatText($employee->nip ?? '-') }}
+    </div>
+
+    <div class="qr">
+        {!! $qrSvg !!}
+    </div>
+</div>
+
 </body>
 </html>
