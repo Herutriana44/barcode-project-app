@@ -1,4 +1,4 @@
-%%writefile resources/views/employees/id-card.blade.php
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
