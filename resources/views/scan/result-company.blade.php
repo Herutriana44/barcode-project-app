@@ -16,12 +16,12 @@
                             <tr class="border-b border-egg-200">
                                 <th class="text-left py-3 px-2 font-semibold">Company</th>
                                 <th class="text-left py-3 px-2 font-semibold">Part Name</th>
-                                <th class="text-left py-3 px-2 font-semibold">Part Number</th>
+                                <th class="text-left py-3 px-2 font-semibold">Part Code</th>
                                 <th class="text-left py-3 px-2 font-semibold">Model</th>
                                 <th class="text-left py-3 px-2 font-semibold">Berat (Kg)</th>
                                 <th class="text-left py-3 px-2 font-semibold">Qty</th>
                                 <th class="text-left py-3 px-2 font-semibold">Posisi Rak</th>
-                                <th class="text-left py-3 px-2 font-semibold">Tingkat</th>
+                                <!-- <th class="text-left py-3 px-2 font-semibold">Tingkat</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -40,7 +40,7 @@
                                     <td class="py-3 px-2">{{ $item->berat !== null ? $item->berat : '-' }}</td>
                                     <td class="py-3 px-2">{{ $item->dynamic_qty ?? $item->qty ?? '-' }}</td>
                                     <td class="py-3 px-2">{{ $item->posisi_rak ?? '-' }}</td>
-                                    <td class="py-3 px-2">{{ $item->tingkat ?? '-' }}</td>
+                                    <!-- <td class="py-3 px-2">{{ $item->tingkat ?? '-' }}</td> -->
                                 </tr>
                             @endforeach
                         </tbody>
