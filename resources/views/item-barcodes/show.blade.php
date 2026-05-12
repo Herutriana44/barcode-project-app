@@ -93,7 +93,7 @@
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>
                         <div><span class="font-medium">Berat packaging (gram):</span> {{ $detailItem->berat_packaging_gram !== null ? $detailItem->berat_packaging_gram : '-' }}</div>
-                        <div><span class="font-medium">Berat per pcs (gram):</span> {{ $detailItem->berat_per_pcs_gram !== null ? $detailItem->berat_per_pcs_gram : '-' }}</div>
+                        <div><span class="font-medium">Berat per pcs (gram):</span> {{ $detailItem->berat_per_pcs_gram !== null ? number_format((float)$detailItem->berat_per_pcs_gram, 2, '.', '') : '-' }}</div>
                         <div><span class="font-medium">Inspector:</span> {{ $detailItem->inspector_name ?? '-' }}</div>
                         <div><span class="font-medium">Checker:</span> {{ $detailItem->checker_name ?? '-' }}</div>
                         <div class="col-span-2">

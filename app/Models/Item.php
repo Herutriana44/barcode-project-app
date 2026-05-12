@@ -48,7 +48,7 @@ class Item extends Model
         'dynamic_qty' => 'integer',
         'qty_sub_pack' => 'integer',
         'berat_packaging_gram' => 'integer',
-        'berat_per_pcs_gram' => 'integer',
+        'berat_per_pcs_gram' => 'decimal:2',
     ];
 
     public function company()
