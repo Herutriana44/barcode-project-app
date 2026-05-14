@@ -90,7 +90,7 @@
                         <div><span class="font-medium">Part Number:</span> {{ $detailItem->part_number ?? '-' }}</div>
                         <div><span class="font-medium">Model:</span> {{ $detailItem->model ?? '-' }}</div>
                         <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div>
-                        <div><span class="font-medium">Qty sub pack / isi per box (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
+                        <div><span class="font-medium">Qty sub pack (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
                         <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $nowBoxApprox !== null ? $nowBoxApprox.' box' : '-' }}</div>
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>

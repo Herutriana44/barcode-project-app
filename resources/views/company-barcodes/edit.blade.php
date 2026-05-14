@@ -49,7 +49,7 @@
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-
+<!-- 
                     <div>
                         <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
                             <div>
@@ -137,7 +137,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="flex flex-wrap gap-4">
                         <button type="submit" class="btn-egg-primary">Simpan perubahan</button>

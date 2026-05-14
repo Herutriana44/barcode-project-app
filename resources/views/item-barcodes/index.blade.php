@@ -63,7 +63,7 @@
                     <table class="min-w-full divide-y divide-egg-200 text-base">
                         <thead>
                             <tr>
-                                <th class="px-3 py-3 text-left font-semibold text-egg-800 uppercase tracking-wide">Barcode ID</th>
+                                <th class="px-3 py-3 text-left font-semibold text-egg-800 uppercase tracking-wide">Barcode ID</th> 
                                 <th class="px-3 py-3 text-left font-semibold text-egg-800 uppercase tracking-wide">Part Name</th>
                                 <th class="px-3 py-3 text-left font-semibold text-egg-800 uppercase tracking-wide">Code</th>
                                 <th class="px-3 py-3 text-left font-semibold text-egg-800 uppercase tracking-wide">Perusahaan</th>
