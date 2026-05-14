@@ -80,7 +80,7 @@
                         $detailQtyPcsStatic = (int) ($detailItem->static_qty ?? $detailItem->qty ?? 0);
                         $detailBoxApprox = ($detailSubPack > 0 && $detailQtyPcs > 0) ? (int) ceil($detailQtyPcs / $detailSubPack) : null;
                         $staticBoxApprox =($detailSubPack > 0 && $detailQtyPcsStatic > 0 ) ? (int) ceil($detailQtyPcsStatic / $detailSubPack) : 0;
-                        $nowBoxApprox = $staticBoxApprox - $detailBoxApprox;
+                        $nowBoxApprox = abs($staticBoxApprox - $detailBoxApprox);
                     @endphp
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-base">
                         <div><span class="font-medium">Customer:</span> {{ $detailItem->customer ?? '-' }}</div>

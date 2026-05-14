@@ -134,7 +134,7 @@ class ItemBarcodeController extends Controller
             $dynamicQty = max(0, (int) ($item->dynamic_qty ?? 0));
             // Gunakan jumlah box dari input (misalnya request()->input('num_boxes')) 
             // atau jika tidak ada, gunakan logika sub-pack saat ini sebagai default atau 1 jika tidak diset.
-            $numBoxes = (int) (request()->query('num_boxes', 0));
+            $numBoxes = abs((int) (request()->query('num_boxes', 0)));
             if ($numBoxes <= 0) {
                 // Fallback ke logika permintaan user: dynamic_qty / qty_sub_pack
                 $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
