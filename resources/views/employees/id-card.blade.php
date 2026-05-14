@@ -200,9 +200,28 @@
 </head>
 <body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    function downloadJpg() {
+        const card = document.querySelector('.card');
+        html2canvas(card, {
+            scale: 2, // Meningkatkan resolusi agar hasil tidak pecah
+            useCORS: true
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'ID-Card-{{ $employee->nip }}.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+        });
+    }
+</script>
+
 <div class="toolbar no-print">
     <button type="button" onclick="window.print()">
         Cetak (9 × 5,3 cm)
+    </button>
+    <button type="button" onclick="downloadJpg()">
+        Download JPG
     </button>
 </div>
 
