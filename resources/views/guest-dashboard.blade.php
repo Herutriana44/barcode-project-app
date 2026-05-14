@@ -70,7 +70,7 @@
                     {{ config('app.description') }}
                 </p>
                 <p class="mt-4 text-lg text-egg-600 max-w-3xl mx-auto leading-relaxed">
-                    Modul barcode: generate label, kelompokkan per perusahaan, dan scan untuk melihat detail—setelah masuk ke akun Anda.
+                    Modul barcode: generate label, kelompokkan per perusahaan, dan scan untuk melihat detail setelah masuk ke akun Anda.
                 </p>
                 <div class="mt-6 flex flex-wrap justify-center gap-3">
                     <a href="{{ route('login') }}" class="btn-egg-primary min-w-[10rem]">
