@@ -22,7 +22,7 @@
         $qtyStr = (int) $labelQtyPcs > 0 ? (string) (int) $labelQtyPcs : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
     } else {
-        $qtyStr = $item->static_qty !== null ? (string) $item->static_qty : '';
+        $qtyStr = $item->static_qty !== null ? (string) (int) $item->static_qty : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
     }
 @endphp

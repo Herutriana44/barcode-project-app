@@ -72,17 +72,17 @@ class ItemBarcodeController extends Controller
         ]);
 
         $item = $itemBarcode->item;
-        $dynamicQty = max(0, (int) ($item->dynamic_qty ?? 0));
+        $staticQty = max(0, (int) ($item->static_qty ?? 0));
         $sub = max(1, (int) ($item->qty_sub_pack ?? 1));
 
-        $labelCount = (int) ceil($dynamicQty / $sub);
+        $labelCount = (int) ceil($staticQty / $sub);
         $labelCount = min($labelCount, 500); // safety limit
 
         $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
         $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
 
         $rows = collect();
-        $remaining = $dynamicQty;
+        $remaining = $staticQty;
         for ($i = 0; $i < $labelCount; $i++) {
             $pcs = min($sub, $remaining);
             $remaining -= $pcs;
@@ -131,17 +131,17 @@ class ItemBarcodeController extends Controller
             $qrSvg = BarcodeQrCodes::qrSvgForScan($ib->barcode_id, 88, 2);
 
             $item = $ib->item;
-            $dynamicQty = max(0, (int) ($item->dynamic_qty ?? 0));
+            $staticQty = max(0, (int) ($item->static_qty ?? 0));
             // Gunakan jumlah box dari input (misalnya request()->input('num_boxes')) 
             // atau jika tidak ada, gunakan logika sub-pack saat ini sebagai default atau 1 jika tidak diset.
             $numBoxes = abs((int) (request()->query('num_boxes', 0)));
             if ($numBoxes <= 0) {
-                // Fallback ke logika permintaan user: dynamic_qty / qty_sub_pack
+                // Fallback ke logika permintaan user: static_qty / qty_sub_pack
                 $sub = max(0, (int) ($item->qty_sub_pack ?? 0));
                 if ($sub > 0) {
-                    $labelCount = (int) ceil($dynamicQty / $sub);
+                    $labelCount = (int) ceil($staticQty / $sub);
                     $labelCount = min($labelCount, 500); // safety limit
-                    $remaining = $dynamicQty;
+                    $remaining = $staticQty;
                     for ($i = 0; $i < $labelCount; $i++) {
                         $pcs = min($sub, $remaining);
                         $remaining -= $pcs;
@@ -153,8 +153,8 @@ class ItemBarcodeController extends Controller
                         ]);
                     }
                 } else {
-                    // Jika qty_sub_pack kosong, maka menggunakan dynamic_qty sebagai jumlah label
-                    $labelCount = min($dynamicQty, 500); // safety limit
+                    // Jika qty_sub_pack kosong, maka menggunakan static_qty sebagai jumlah label
+                    $labelCount = min($staticQty, 500); // safety limit
                     for ($i = 0; $i < $labelCount; $i++) {
                         $rows->push([
                             'itemBarcode' => $ib,
@@ -163,17 +163,11 @@ class ItemBarcodeController extends Controller
                             'labelQtyPcs' => 1,
                         ]);
                     }
-                    if ($dynamicQty <= 0) {
-                        // Jika dynamic_qty juga 0, tetap tampilkan 1 label kosong? 
-                        // Sesuai logika "menggunakan dynamic_qty", jika 0 ya 0 label.
-                        // Tapi biasanya minimal 1 label jika barcode ada.
-                        // Kita ikuti saja dynamic_qty.
-                    }
                 }
             } else {
                 // Logika numBoxes tetap ada jika dipanggil eksplisit via query param
-                $pcsPerBox = (int) floor($dynamicQty / $numBoxes);
-                $remainder = $dynamicQty % $numBoxes;
+                $pcsPerBox = (int) floor($staticQty / $numBoxes);
+                $remainder = $staticQty % $numBoxes;
                 for ($i = 0; $i < $numBoxes; $i++) {
                     $pcs = $pcsPerBox + ($i < $remainder ? 1 : 0);
                     $rows->push([
