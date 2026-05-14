@@ -38,12 +38,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('item-barcodes/{itemBarcode}/label-isi', [ItemBarcodeController::class, 'labelIsi'])->name('item-barcodes.label-isi');
     Route::get('item-barcodes/{itemBarcode}/label-per-box', [ItemBarcodeController::class, 'labelPerBox'])->name('item-barcodes.label-per-box');
     Route::patch('item-barcodes/{itemBarcode}/checker', [ItemBarcodeController::class, 'updateChecker'])->name('item-barcodes.checker');
+    Route::get('item-barcodes/{item_barcode}/download-qr', [ItemBarcodeController::class, 'downloadQr'])->name('item-barcodes.download-qr');
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan
     Route::get('employees/{employee}/photo', [EmployeeController::class, 'photo'])->name('employees.photo');
     Route::get('employees/{employee}/id-card', [EmployeeController::class, 'idCard'])->name('employees.id-card');
-    Route::resource('employees', EmployeeController::class);
+    Route::get('employees/{employee}/download-qr', [EmployeeController::class, 'downloadQr'])->name('employees.download-qr');
+    Route::get('/employees/download-template', [EmployeeController::class, 'downloadTemplateIdCard'])->name('employees.download-template');
+Route::resource('employees', EmployeeController::class);
 
     // Pengeluaran FIFO
     Route::get('stock-out', [StockOutController::class, 'create'])->name('stock-out.create');
@@ -54,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('company-barcodes/import', [CompanyBarcodeController::class, 'importForm'])->name('company-barcodes.import');
     Route::post('company-barcodes/import', [CompanyBarcodeController::class, 'importStore'])->name('company-barcodes.import.store');
     Route::post('company-barcodes/destroy-company/{id}', [CompanyBarcodeController::class, 'destroyCompany'])->name('company-barcodes.destroy-company');
+    Route::get('company-barcodes/{company_barcode}/download-qr', [CompanyBarcodeController::class, 'downloadQr'])->name('company-barcodes.download-qr');
     Route::resource('company-barcodes', CompanyBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Rak options (untuk dropdown per perusahaan/customer)

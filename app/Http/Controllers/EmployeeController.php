@@ -67,6 +67,22 @@ class EmployeeController extends Controller
             ->with('success', 'Karyawan berhasil ditambahkan.');
     }
 
+    public function downloadQr(Employee $employee)
+    {
+        $data = \App\Support\EmployeeUrl::forProfile($employee);
+        
+        $qrCode = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($data)
+            ->size(300)
+            ->margin(10)
+            ->build();
+
+        return response($qrCode->getString())
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-employee-'.$employee->nip.'.png"');
+    }
+
     public function show(Employee $employee)
     {
         $profileUrl = EmployeeUrl::forProfile($employee);
@@ -83,6 +99,15 @@ class EmployeeController extends Controller
         }
 
         return Storage::disk('public')->response($employee->photo_path);
+    }
+
+    public function downloadTemplateIdCard()
+    {
+        $path = public_path('Tosca Modern Professional Store Manager ID Card_preview_rev_1.png');
+        if (!file_exists($path)) {
+            return back()->with('error', 'Template tidak ditemukan.');
+        }
+        return response()->download($path);
     }
 
     /**

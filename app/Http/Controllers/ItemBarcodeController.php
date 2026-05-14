@@ -492,6 +492,22 @@ class ItemBarcodeController extends Controller
             ->with('success', $result['message'] ?? 'Import selesai.');
     }
 
+    public function downloadQr(ItemBarcode $itemBarcode)
+    {
+        $data = \App\Support\ScanUrl::forBarcode($itemBarcode->barcode_id);
+        
+        $qrCode = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($data)
+            ->size(300)
+            ->margin(10)
+            ->build();
+
+        return response($qrCode->getString())
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-'.$itemBarcode->barcode_id.'.png"');
+    }
+
     public function show(ItemBarcode $itemBarcode)
     {
         $itemBarcode->load([

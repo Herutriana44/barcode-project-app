@@ -43,9 +43,10 @@
                 <div class="border-t border-egg-200 bg-egg-50 p-6 md:p-8">
                     <h4 class="text-lg font-semibold text-egg-900 mb-4">Barcode &amp; QR (arahkan ke halaman ini)</h4>
                     <div class="flex flex-wrap gap-8 items-end">
-                        <div class="bg-white p-3 rounded-lg border border-egg-200 shadow-sm">
+                        <div class="bg-white p-3 rounded-lg border border-egg-200 shadow-sm flex flex-col items-center">
                             {!! $qrSvg !!}
                             <p class="text-xs text-egg-600 mt-2 text-center">QR</p>
+                            <a href="{{ route('employees.download-qr', $employee) }}" class="btn-egg-secondary mt-2 text-xs">Download QR (PNG)</a>
                         </div>
                         <div class="bg-white p-3 rounded-lg border border-egg-200 shadow-sm overflow-x-auto max-w-full">
                             {!! $barcodeSvg !!}

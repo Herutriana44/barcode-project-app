@@ -62,6 +62,7 @@
                             <div class="qr-container w-[220px] max-w-full flex justify-center [&_svg]:max-w-full [&_svg]:h-auto">
                                 {!! $qrCodeSvg !!}
                             </div>
+                            <a href="{{ route('item-barcodes.download-qr', $itemBarcode) }}" class="btn-egg-secondary mt-2 text-sm">Download QR (PNG)</a>
                         </div>
                     </div>
                     <div class="no-print mb-6 max-w-2xl mx-auto">

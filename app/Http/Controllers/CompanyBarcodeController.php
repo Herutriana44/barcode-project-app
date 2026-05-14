@@ -172,6 +172,22 @@ class CompanyBarcodeController extends Controller
             ->with('success', $result['message'] ?? 'Import selesai.');
     }
 
+    public function downloadQr(CompanyBarcode $companyBarcode)
+    {
+        $data = \App\Support\ScanUrl::forBarcode($companyBarcode->barcode_id);
+        
+        $qrCode = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($data)
+            ->size(300)
+            ->margin(10)
+            ->build();
+
+        return response($qrCode->getString())
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-'.$companyBarcode->barcode_id.'.png"');
+    }
+
     public function show(CompanyBarcode $companyBarcode)
     {
         $companyBarcode->load([

@@ -2,7 +2,10 @@
     <x-slot name="header">
         <div class="flex flex-wrap justify-between items-center gap-2">
             <h2 class="font-bold text-3xl text-egg-900 leading-tight">Karyawan</h2>
-            <a href="{{ route('employees.create') }}" class="btn-egg-primary">Tambah</a>
+            <div class="flex gap-2">
+                <a href="{{ route('employees.download-template') }}" class="btn-egg-secondary">Download Template ID Card</a>
+                <a href="{{ route('employees.create') }}" class="btn-egg-primary">Tambah</a>
+            </div>
         </div>
     </x-slot>
 
