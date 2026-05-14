@@ -49,7 +49,6 @@
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-<!-- 
                     <div>
                         <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
                             <div>
@@ -71,7 +70,7 @@
                                 <thead class="bg-egg-50 text-egg-800">
                                     <tr>
                                         <th class="text-left py-1.5 px-2 font-semibold">Nama barang</th>
-                                        <th class="text-left py-1.5 px-2 font-semibold w-32">Kode</th>
+                                        <th class="text-left py-1.5 px-2 font-semibold w-32">Barcode</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-20">Qty *</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-24">Rak</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-24">Tingkat</th>
@@ -137,7 +136,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div> -->
+                    </div>
 
                     <div class="flex flex-wrap gap-4">
                         <button type="submit" class="btn-egg-primary">Simpan perubahan</button>

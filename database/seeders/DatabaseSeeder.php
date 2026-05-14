@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
             Fqc038CleanListPartSeeder::class,
             RakSeeder::class,
         ]);
+
+        \App\Models\Company::where('name', 'PT TEKUN ASAS SUMBER MAKMUR')->delete();
     }
 }
