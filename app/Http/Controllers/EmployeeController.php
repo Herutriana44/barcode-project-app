@@ -103,7 +103,7 @@ class EmployeeController extends Controller
 
     public function downloadTemplateIdCard()
     {
-        $path = public_path('Tosca Modern Professional Store Manager ID Card_preview_rev_1.png');
+        $path = public_path('DESAIN 2.png');
         if (!file_exists($path)) {
             return back()->with('error', 'Template tidak ditemukan.');
         }
