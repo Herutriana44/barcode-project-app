@@ -204,135 +204,20 @@ class CompanyBarcodeController extends Controller
 
     public function edit(CompanyBarcode $companyBarcode)
     {
-        $companyBarcode->load([
-            'company.companyItems.item.operatorMobil',
-            'company.companyItems.item.pengirim',
-            'company.companyItems.item.operatorForklift',
-        ]);
-
         return view('company-barcodes.edit', compact('companyBarcode'));
     }
 
     public function update(Request $request, CompanyBarcode $companyBarcode)
     {
-        $company = $companyBarcode->company;
-
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
-            'items' => 'required|array|min:1',
-            'items.*.company_item_id' => [
-                'nullable',
-                Rule::exists('company_items', 'id')->where('company_id', $company->id),
-            ],
-            'items.*.part_name' => 'nullable|string|max:255',
-            'items.*.code' => 'nullable|string|max:255',
-            'items.*.qty' => 'nullable|integer|min:0',
-            'items.*.posisi_rak' => 'nullable|string|max:255',
-            'items.*.tingkat' => 'nullable|string|max:255',
-            'items.*.operator_mobil_id' => 'nullable|exists:employees,id',
-            'items.*.pengirim_id' => 'nullable|exists:employees,id',
-            'items.*.operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
-        $rows = collect($validated['items'])->filter(fn ($r) => (int) ($r['qty'] ?? 0) > 0);
-        if ($rows->isEmpty()) {
-            return back()->withInput()->withErrors(['items' => 'Isi minimal satu barang dengan qty lebih dari 0.']);
-        }
-
-        $companyName = (string) $validated['company_name'];
-        $allowedRak = Rak::query()
-            ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower(trim($companyName))])
-            ->pluck('code')
-            ->map(fn ($v) => (string) $v)
-            ->all();
-
-        if (count($allowedRak) > 0) {
-            foreach ($rows as $i => $row) {
-                $rak = isset($row['posisi_rak']) ? trim((string) $row['posisi_rak']) : '';
-                if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
-                    return back()->withInput()->withErrors([
-                        "items.{$i}.posisi_rak" => "Rak \"{$rak}\" tidak valid untuk perusahaan \"{$companyName}\".",
-                    ]);
-                }
-            }
-        }
-
-        $keptCiIds = $rows->pluck('company_item_id')->filter()->map(fn ($id) => (int) $id)->values()->all();
-
-        DB::transaction(function () use ($company, $validated, $rows, $keptCiIds) {
-            $company->update(['name' => $validated['company_name']]);
-
-            $toRemoveQuery = CompanyItem::where('company_id', $company->id);
-            if (count($keptCiIds) > 0) {
-                $toRemoveQuery->whereNotIn('id', $keptCiIds);
-            }
-            $toRemove = $toRemoveQuery->get();
-
-            foreach ($toRemove as $ci) {
-                $item = $ci->item;
-                if ($item->itemBarcodes()->exists()) {
-                    throw ValidationException::withMessages([
-                        'items' => 'Tidak dapat menghapus baris barang yang memiliki barcode FG. Hapus barcode barang terlebih dahulu.',
-                    ]);
-                }
-                $ci->delete();
-                $this->deleteOrphanItemIfUnused($item);
-            }
-
-            foreach ($rows as $row) {
-                $qty = (int) $row['qty'];
-                $opMob = isset($row['operator_mobil_id']) && $row['operator_mobil_id'] !== '' ? (int) $row['operator_mobil_id'] : null;
-                $opPeng = isset($row['pengirim_id']) && $row['pengirim_id'] !== '' ? (int) $row['pengirim_id'] : null;
-                $opFork = isset($row['operator_forklift_id']) && $row['operator_forklift_id'] !== '' ? (int) $row['operator_forklift_id'] : null;
-
-                if (! empty($row['company_item_id'])) {
-                    $ci = CompanyItem::where('company_id', $company->id)->where('id', $row['company_item_id'])->firstOrFail();
-                    $item = $ci->item;
-                    $code = isset($row['code']) && $row['code'] !== '' ? $row['code'] : $item->code;
-                    if ($code === null || $code === '') {
-                        $code = 'CB-'.$company->id.'-'.uniqid();
-                    }
-                    $item->update([
-                        'operator_mobil_id' => $opMob,
-                        'pengirim_id' => $opPeng,
-                        'operator_forklift_id' => $opFork,
-                        'part_name' => isset($row['part_name']) && $row['part_name'] !== '' ? $row['part_name'] : null,
-                        'code' => $code,
-                    ]);
-                    $ci->update([
-                        'qty' => $qty,
-                        'posisi_rak' => isset($row['posisi_rak']) && $row['posisi_rak'] !== '' ? $row['posisi_rak'] : null,
-                        'tingkat' => isset($row['tingkat']) && $row['tingkat'] !== '' ? $row['tingkat'] : null,
-                    ]);
-                } else {
-                    $code = isset($row['code']) && $row['code'] !== '' ? $row['code'] : null;
-                    if ($code === null) {
-                        $code = 'CB-'.$company->id.'-'.uniqid();
-                    }
-
-                    $item = Item::create([
-                        'company_id' => $company->id,
-                        'operator_mobil_id' => $opMob,
-                        'pengirim_id' => $opPeng,
-                        'operator_forklift_id' => $opFork,
-                        'part_name' => isset($row['part_name']) && $row['part_name'] !== '' ? $row['part_name'] : null,
-                        'code' => $code,
-                        'qty' => 0,
-                    ]);
-
-                    CompanyItem::create([
-                        'company_id' => $company->id,
-                        'item_id' => $item->id,
-                        'qty' => $qty,
-                        'posisi_rak' => isset($row['posisi_rak']) && $row['posisi_rak'] !== '' ? $row['posisi_rak'] : null,
-                        'tingkat' => isset($row['tingkat']) && $row['tingkat'] !== '' ? $row['tingkat'] : null,
-                    ]);
-                }
-            }
-        });
+        $company = $companyBarcode->company;
+        $company->update(['name' => $validated['company_name']]);
 
         return redirect()->route('company-barcodes.show', $companyBarcode)
-            ->with('success', 'Data perusahaan diperbarui.');
+            ->with('success', 'Nama perusahaan berhasil diperbarui.');
     }
 
     public function destroy(CompanyBarcode $companyBarcode)
