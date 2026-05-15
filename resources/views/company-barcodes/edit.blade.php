@@ -73,7 +73,7 @@
                                         <th class="text-left py-1.5 px-2 font-semibold w-32">Barcode</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-20">Qty *</th>
                                         <th class="text-left py-1.5 px-2 font-semibold w-24">Rak</th>
-                                        <th class="text-left py-1.5 px-2 font-semibold w-24">Tingkat</th>
+                                        <!-- <th class="text-left py-1.5 px-2 font-semibold w-24">Tingkat</th> -->
                                         <th class="w-8 py-1.5 px-1"></th>
                                     </tr>
                                 </thead>
@@ -119,7 +119,7 @@
                                                     <option value="">—</option>
                                                 </select>
                                             </td>
-                                            <td class="py-1 px-2 align-top">
+                                            <!-- <td class="py-1 px-2 align-top">
                                                 <input
                                                     type="text"
                                                     name="items[{{ $idx }}][tingkat]"
@@ -127,7 +127,7 @@
                                                     placeholder="Tingkat"
                                                     class="w-full rounded border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500 py-1"
                                                 />
-                                            </td>
+                                            </td> -->
                                             <td class="py-1 px-1 align-top text-center">
                                                 <button type="button" class="remove-item-row text-egg-600 hover:text-red-600 p-0.5" title="Hapus baris" aria-label="Hapus baris">&times;</button>
                                             </td>
