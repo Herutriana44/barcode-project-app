@@ -90,7 +90,7 @@ class ItemBarcodeController extends Controller
                 'itemBarcode' => $itemBarcode,
                 'labelBarcodeSvg' => $labelBarcodeSvg,
                 'qrSvg' => $qrSvg,
-                'labelQtyPcs' => $pcs > 0 ? $pcs : $sub,
+                'labelQtyPcs' => $staticQty,
             ]);
         }
 
