@@ -214,7 +214,15 @@ class CompanyBarcodeController extends Controller
         ]);
 
         $company = $companyBarcode->company;
-        $company->update(['name' => $validated['company_name']]);
+        $oldName = $company->name;
+        $newName = $validated['company_name'];
+
+        if ($oldName !== $newName) {
+            DB::transaction(function () use ($company, $oldName, $newName) {
+                $company->update(['name' => $newName]);
+                Rak::where('company_name', $oldName)->update(['company_name' => $newName]);
+            });
+        }
 
         return redirect()->route('company-barcodes.show', $companyBarcode)
             ->with('success', 'Nama perusahaan berhasil diperbarui.');
