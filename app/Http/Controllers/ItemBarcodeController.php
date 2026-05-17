@@ -617,6 +617,6 @@ class ItemBarcodeController extends Controller
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
-        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
+        return view('item-barcodes.unique-item-label', compact('rows', 'labelHeaderCompanyName'));
     }
 }
