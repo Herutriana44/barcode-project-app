@@ -596,24 +596,25 @@ class ItemBarcodeController extends Controller
             ->with('success', 'Unique item berhasil dihapus.');
     }
 
-    public function printUniqueItemLabel(ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
+    public function printAllUniqueItemLabels(ItemBarcode $itemBarcode)
     {
         $itemBarcode->load([
             'item.company',
+            'item.uniqueItems',
             'itemReceiving',
         ]);
 
         $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
         $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
 
-        $rows = collect([
-            [
+        $rows = $itemBarcode->item->uniqueItems->map(function ($uniqueItem) use ($itemBarcode, $labelBarcodeSvg, $qrSvg) {
+            return [
                 'itemBarcode' => $itemBarcode,
                 'labelBarcodeSvg' => $labelBarcodeSvg,
                 'qrSvg' => $qrSvg,
                 'labelQtyPcs' => $uniqueItem->qty,
-            ]
-        ]);
+            ];
+        });
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
