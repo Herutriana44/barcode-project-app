@@ -39,7 +39,7 @@
                 $scanItem = $itemBarcode->item;
                 $subPackPcs = (int) ($scanItem->qty_sub_pack ?? 0);
                 $qtyPcs = (int) ($scanItem->dynamic_qty ?? $scanItem->qty ?? 0);
-                // $boxApprox = ($subPackPcs > 0 && $qtyPcs > 0) ? abs((int) ceil($qtyPcs / $subPackPcs)) : null;
+                $boxApprox = ($subPackPcs > 0 && $qtyPcs > 0) ? abs((int) ceil($qtyPcs / $subPackPcs)) : null;
             @endphp
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
