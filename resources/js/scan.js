@@ -10,15 +10,11 @@ function resolveScanNavigation(raw) {
         return null;
     }
 
-    const pathOnly = trimmed.match(/^\/?scan\/([^/?#]+)\/?$/i);
-    if (pathOnly) {
-        const id = decodeURIComponent(pathOnly[1]);
-        return '/scan/' + encodeURIComponent(id);
-    }
-
+    // Handle full URL input
     if (/^https?:\/\//i.test(trimmed)) {
         try {
             const u = new URL(trimmed);
+            // Check if URL matches /scan/{id}
             const m = u.pathname.match(/\/scan\/([^/]+)\/?$/);
             if (m) {
                 const id = decodeURIComponent(m[1]);
@@ -27,10 +23,18 @@ function resolveScanNavigation(raw) {
         } catch (e) {
             return null;
         }
-        return trimmed;
+        return null; // Not a scan URL
     }
 
-    if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-')) {
+    // Handle /scan/{id} path
+    const pathOnly = trimmed.match(/^\/?scan\/([^/?#]+)\/?$/i);
+    if (pathOnly) {
+        const id = decodeURIComponent(pathOnly[1]);
+        return '/scan/' + encodeURIComponent(id);
+    }
+
+    // Handle direct ID input
+    if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
         return '/scan/' + encodeURIComponent(trimmed);
     }
 
