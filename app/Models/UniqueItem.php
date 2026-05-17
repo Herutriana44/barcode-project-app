@@ -12,10 +12,12 @@ class UniqueItem extends Model
     protected $fillable = [
         'item_id',
         'qty',
+        'status_keluar',
     ];
 
     protected $casts = [
         'qty' => 'integer',
+        'status_keluar' => 'boolean',
     ];
 
     public function item()

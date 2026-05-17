@@ -152,7 +152,7 @@ class ScanController extends Controller
                 return redirect()->route('scan.index')->with('success', 'Barang berhasil keluar.');
             } else {
                 // Duplikasi
-                $newUniqueItem = $uniqueItem->replicate();
+                $newUniqueItem = $uniqueItem->replicate(['status_keluar']);
                 $newUniqueItem->status_keluar = false;
                 $newUniqueItem->save();
                 return redirect()->route('scan.index')->with('success', 'Barang masuk, unique item baru dibuat.');
