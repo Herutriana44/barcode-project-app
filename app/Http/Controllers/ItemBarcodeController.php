@@ -208,7 +208,7 @@ class ItemBarcodeController extends Controller
             $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 140, 2);
 
             $labels[] = [
-                'qtyInPack' => $q,
+                'qtyInPack' => $staticQty,
                 'qrSvg' => $qrSvg,
             ];
             if ($remaining <= 0) break;

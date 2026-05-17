@@ -10,8 +10,6 @@
     $qtyStr = $qtyInPack > 0 ? (string) $qtyInPack : '';
 
     $qtyStatic = $item->qty_static;
-    $qtyStatic = (int)  ($qtyStatic ?? 1);
-    $qtyStr = $qtyStatic > 0 ? (string) $qtyStatic : '';
     $beratGram = null;
     $bPack = $item->berat_packaging_gram;
     $bPcs = $item->berat_per_pcs_gram;
