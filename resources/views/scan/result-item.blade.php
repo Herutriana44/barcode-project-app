@@ -50,7 +50,7 @@
                     <div><span class="font-medium">Berat total (Kg):</span> {{ $scanItem->berat !== null ? $scanItem->berat : '-' }}</div>
                     <div><span class="font-medium">Berat packaging (gram):</span> {{ $scanItem->berat_packaging_gram !== null ? $scanItem->berat_packaging_gram : '-' }}</div>
                     <div><span class="font-medium">Berat per pcs (gram):</span> {{ $scanItem->berat_per_pcs_gram !== null ? $scanItem->berat_per_pcs_gram : '-' }}</div>
-                    <!-- <div><span class="font-medium">Qty total (pcs):</span> {{ $qtyPcs }}</div> -->
+                    <div><span class="font-medium">Qty total (pcs):</span> {{ $detailQtyPcsStatic }}</div>
                     <div><span class="font-medium">Qty sub pack:</span> {{ $subPackPcs > 0 ? $subPackPcs : '-' }}</div>
                     <!-- <div><span class="font-medium">jumlah box:</span> {{ $boxApprox !== null ? $boxApprox.' box' : '-' }}</div> -->
                      <div><span class="font-medium">Jumlah Box:</span> {{ ($itemBarcode->itemReceiving->jumlah_box ?? 0) + ($itemBarcode->item->uniqueItems->where('status_keluar', false)->count()) }}</div>
