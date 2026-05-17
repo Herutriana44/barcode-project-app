@@ -41,6 +41,17 @@ class ScanController extends Controller
         }
 
         if (str_starts_with($barcodeId, 'IB-')) {
+            $parts = explode('-', $barcodeId);
+            // Cek apakah ada ID unique item (format: IB-item_id-receiving_id-unique_id)
+            if (count($parts) === 4) {
+                $uniqueItemId = $parts[3];
+                $uniqueItem = \App\Models\UniqueItem::with('item')->find($uniqueItemId);
+                if (!$uniqueItem) {
+                    return redirect()->route('scan.index')->with('error', 'Unique Item tidak ditemukan.');
+                }
+                return view('scan.result-unique', compact('uniqueItem'));
+            }
+
             $itemBarcode = ItemBarcode::with([
                 'item.company',
                 'item.operatorMobil',
@@ -58,7 +69,6 @@ class ScanController extends Controller
 
                 return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
             }
-
             $fifoOlderStockWarning = FifoStockService::hasOlderBatchWithStock($itemBarcode);
             $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
 
