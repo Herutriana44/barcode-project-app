@@ -200,8 +200,8 @@ class ScanController extends Controller
         }
 
         $msg = $validated['direction'] === 'in'
-            ? 'Barang masuk: stok bertambah '.$qtyToDeduct.' unit ('.$validated['qty'].' box).'
-            : 'Barang keluar: pengurangan FIFO '.$qtyToDeduct.' unit ('.$validated['qty'].' box).';
+            ? 'Barang masuk: stok bertambah '.$validated['qty'].' box.'
+            : 'Barang keluar: pengurangan FIFO '.$validated['qty'].' box.';
 
         return redirect()
             ->route('scan.show', ['barcode_id' => $barcodeId])
