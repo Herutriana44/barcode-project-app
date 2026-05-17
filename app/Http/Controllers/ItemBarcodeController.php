@@ -108,6 +108,7 @@ class ItemBarcodeController extends Controller
         $item = $itemBarcode->item;
         $staticQty = max(0, (int) ($item->static_qty ?? 0));
         
+        // Input 'pages' dikali 10 untuk menentukan jumlah box (label) yang dicetak
         $pages = (int) $request->query('pages', 1);
         $totalLabels = $pages * 10;
 
