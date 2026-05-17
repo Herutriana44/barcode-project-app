@@ -40,6 +40,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('item-barcodes/{itemBarcode}/label-per-box', [ItemBarcodeController::class, 'labelPerBox'])->name('item-barcodes.label-per-box');
     Route::patch('item-barcodes/{itemBarcode}/checker', [ItemBarcodeController::class, 'updateChecker'])->name('item-barcodes.checker');
     Route::get('item-barcodes/{item_barcode}/download-qr', [ItemBarcodeController::class, 'downloadQr'])->name('item-barcodes.download-qr');
+    
+    // Unique Items
+    Route::post('item-barcodes/{itemBarcode}/unique-items', [ItemBarcodeController::class, 'storeUniqueItem'])->name('item-barcodes.unique-items.store');
+    Route::patch('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'updateUniqueItem'])->name('item-barcodes.unique-items.update');
+    Route::delete('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'destroyUniqueItem'])->name('item-barcodes.unique-items.destroy');
+    Route::get('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}/print', [ItemBarcodeController::class, 'printUniqueItemLabel'])->name('item-barcodes.unique-items.print');
+    
     Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
     // Karyawan

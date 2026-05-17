@@ -85,4 +85,9 @@ class Item extends Model
     {
         return $this->hasMany(CompanyItem::class);
     }
+
+    public function uniqueItems()
+    {
+        return $this->hasMany(UniqueItem::class);
+    }
 }

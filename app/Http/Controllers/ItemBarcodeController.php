@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Models\Rak;
+use App\Models\UniqueItem;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
@@ -542,6 +543,7 @@ class ItemBarcodeController extends Controller
             'item.operatorMobil',
             'item.pengirim',
             'item.operatorForklift',
+            'item.uniqueItems',
             'itemReceiving',
         ]);
         $scanUrl = ScanUrl::forBarcode($itemBarcode->barcode_id);
@@ -553,5 +555,68 @@ class ItemBarcodeController extends Controller
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
         return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
+    }
+
+    public function storeUniqueItem(Request $request, ItemBarcode $itemBarcode)
+    {
+        $validated = $request->validate([
+            'qty' => 'required|integer|min:1',
+        ]);
+
+        $itemBarcode->load('item');
+
+        UniqueItem::create([
+            'item_id' => $itemBarcode->item->id,
+            'qty' => $validated['qty'],
+        ]);
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', 'Unique item berhasil ditambahkan.');
+    }
+
+    public function updateUniqueItem(Request $request, ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
+    {
+        $validated = $request->validate([
+            'qty' => 'required|integer|min:1',
+        ]);
+
+        $uniqueItem->update([
+            'qty' => $validated['qty'],
+        ]);
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', 'Unique item berhasil diperbarui.');
+    }
+
+    public function destroyUniqueItem(ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
+    {
+        $uniqueItem->delete();
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', 'Unique item berhasil dihapus.');
+    }
+
+    public function printUniqueItemLabel(ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
+    {
+        $itemBarcode->load([
+            'item.company',
+            'itemReceiving',
+        ]);
+
+        $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
+        $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
+
+        $rows = collect([
+            [
+                'itemBarcode' => $itemBarcode,
+                'labelBarcodeSvg' => $labelBarcodeSvg,
+                'qrSvg' => $qrSvg,
+                'labelQtyPcs' => $uniqueItem->qty,
+            ]
+        ]);
+
+        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
+
+        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
     }
 }

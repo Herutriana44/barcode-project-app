@@ -131,6 +131,102 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Unique Items Section -->
+            <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">
+                <div class="border border-egg-200 p-6 rounded-xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-egg-900">Unique Items</h3>
+                        <button type="button" onclick="document.getElementById('add-unique-item-form').classList.toggle('hidden')" class="btn-egg-primary text-sm">
+                            + Tambah Unique Item
+                        </button>
+                    </div>
+
+                    <p class="text-sm text-egg-600 mb-4">
+                        Unique items digunakan untuk item yang sama namun dengan nilai berbeda (qty, berat, dll) yang memerlukan label terpisah.
+                    </p>
+
+                    <!-- Form Tambah Unique Item -->
+                    <div id="add-unique-item-form" class="hidden mb-6 p-4 bg-egg-50 rounded-lg border border-egg-200">
+                        <form action="{{ route('item-barcodes.unique-items.store', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-end">
+                            @csrf
+                            <div class="flex-1 w-full">
+                                <label class="block text-sm font-medium text-egg-800 mb-1">Qty (pcs)</label>
+                                <input type="number" name="qty" min="1" required
+                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" 
+                                    placeholder="Masukkan qty" />
+                                @error('qty')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="btn-egg-primary text-sm">Simpan</button>
+                                <button type="button" onclick="document.getElementById('add-unique-item-form').classList.add('hidden')" class="btn-egg-secondary text-sm">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- List Unique Items -->
+                    @if($itemBarcode->item->uniqueItems->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($itemBarcode->item->uniqueItems as $uniqueItem)
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm font-medium text-egg-700">Qty:</span>
+                                            <span class="text-base font-semibold text-egg-900">{{ $uniqueItem->qty }} pcs</span>
+                                        </div>
+                                        <div class="text-xs text-egg-500 mt-1">
+                                            Dibuat: {{ $uniqueItem->created_at->format('d/m/Y H:i') }}
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a href="{{ route('item-barcodes.unique-items.print', [$itemBarcode, $uniqueItem]) }}" 
+                                           target="_blank" 
+                                           class="btn-egg-primary text-sm">
+                                            Cetak Label
+                                        </a>
+                                        <button type="button" 
+                                                onclick="toggleEditForm({{ $uniqueItem->id }})" 
+                                                class="btn-egg-secondary text-sm">
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('item-barcodes.unique-items.destroy', [$itemBarcode, $uniqueItem]) }}" 
+                                              method="POST" 
+                                              class="inline"
+                                              onsubmit="return confirm('Hapus unique item ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Form Edit (Hidden by default) -->
+                                <div id="edit-form-{{ $uniqueItem->id }}" class="hidden p-4 bg-egg-50 rounded-lg border border-egg-200 -mt-3">
+                                    <form action="{{ route('item-barcodes.unique-items.update', [$itemBarcode, $uniqueItem]) }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-end">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="flex-1 w-full">
+                                            <label class="block text-sm font-medium text-egg-800 mb-1">Qty (pcs)</label>
+                                            <input type="number" name="qty" min="1" value="{{ $uniqueItem->qty }}" required
+                                                class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button type="submit" class="btn-egg-primary text-sm">Update</button>
+                                            <button type="button" onclick="toggleEditForm({{ $uniqueItem->id }})" class="btn-egg-secondary text-sm">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8 text-egg-500">
+                            <p>Belum ada unique item. Klik tombol "Tambah Unique Item" untuk menambahkan.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
     @push('scripts')
@@ -147,6 +243,13 @@
                     });
                 });
             });
+
+            function toggleEditForm(id) {
+                var form = document.getElementById('edit-form-' + id);
+                if (form) {
+                    form.classList.toggle('hidden');
+                }
+            }
         </script>
     @endpush
 </x-app-layout>
