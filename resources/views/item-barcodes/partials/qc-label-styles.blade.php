@@ -113,6 +113,25 @@
         padding: 0.5mm 1mm !important;
     }
 
+    .label-company {
+        padding: 0 !important; /* Hapus padding td agar tidak tabrakan */
+        height: 40px; /* Sesuai kebutuhan, atau biarkan mengikuti tinggi baris */
+    }
+
+    .inner-label {
+        display: flex;
+        justify-content: center; /* Center Horizontal */
+        align-items: center;     /* Center Vertikal */
+        height: 100%;            /* Penuhi seluruh tinggi td */
+        width: 100%;             /* Penuhi seluruh lebar td */
+        
+        /* Pindahkan styling teks ke sini */
+        font-weight: 700;
+        font-size: 6pt;
+        text-transform: uppercase;
+        padding: 0.5mm 1mm !important; 
+    }
+
     .label-fields-cell {
         padding: 0 !important;
     }

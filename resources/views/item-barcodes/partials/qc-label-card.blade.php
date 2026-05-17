@@ -37,7 +37,11 @@
             <td class="label-logo-cell">
                 <img src="{{ asset('icon.png') }}" alt="" class="label-logo-img" />
             </td>
-            <td class="label-company" colspan="2"><br><br>{{ $companyName }}</td>
+            <td class="label-company" colspan="2">
+                <div class="inner-label">
+                    {{ $companyName }}
+                </div>
+            </td>
         </tr>
         <tr>
             <td class="label-fields-cell" colspan="2">
