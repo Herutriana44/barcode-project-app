@@ -74,10 +74,10 @@
                         <td class="fld-lbl">Inspector name</td>
                         <td>: {{ $item->inspector_name ?? '' }}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td class="fld-lbl">Checker</td>
                         <td>: {{ $item->checker_name ?? '' }}</td>
-                    </tr>
+                    </tr> -->
                 </table>
             </td>
             <td class="label-side-cell">
