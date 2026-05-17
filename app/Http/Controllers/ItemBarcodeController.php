@@ -64,7 +64,7 @@ class ItemBarcodeController extends Controller
         return view('item-barcodes.index', compact('itemBarcodes', 'q', 'expiredSort', 'companyFilter', 'partNameFilter'));
     }
 
-    public function labelPerBox(ItemBarcode $itemBarcode)
+    public function labelPrintA4(Request $request, ItemBarcode $itemBarcode)
     {
         $itemBarcode->load([
             'item.company',
@@ -73,19 +73,15 @@ class ItemBarcodeController extends Controller
 
         $item = $itemBarcode->item;
         $staticQty = max(0, (int) ($item->static_qty ?? 0));
-        $sub = max(1, (int) ($item->qty_sub_pack ?? 1));
-
-        $labelCount = (int) ceil($staticQty / $sub);
-        $labelCount = min($labelCount, 500); // safety limit
+        
+        $pages = (int) $request->query('pages', 1);
+        $totalLabels = $pages * 6;
 
         $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
         $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
 
         $rows = collect();
-        $remaining = $staticQty;
-        for ($i = 0; $i < $labelCount; $i++) {
-            $pcs = min($sub, $remaining);
-            $remaining -= $pcs;
+        for ($i = 0; $i < $totalLabels; $i++) {
             $rows->push([
                 'itemBarcode' => $itemBarcode,
                 'labelBarcodeSvg' => $labelBarcodeSvg,
@@ -95,7 +91,7 @@ class ItemBarcodeController extends Controller
         }
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
-        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
+        return view('item-barcodes.labels-a4', compact('rows', 'labelHeaderCompanyName'));
     }
 
     /**
@@ -194,31 +190,28 @@ class ItemBarcodeController extends Controller
 
         $item = $itemBarcode->item;
         $staticQty = max(0, (int) ($item->static_qty ?? 0));
+
+        // Jika sub_pack diset, maka label per isi akan mengikuti qty_sub_pack.
+        // Jika tidak diset, maka 1 label berisi seluruh static_qty.
         $sub = (int) ($item->qty_sub_pack ?? 0);
+        $qtyPerLabel = $sub > 0 ? $sub : $staticQty;
 
-        // Satu label = satu box; isi box = qty_sub_pack (pcs). Tanpa sub pack: satu label untuk seluruh qty.
-        $qtyPerLabel = $sub > 0 ? $sub : max(1, $staticQty);
-        $labelCount = $staticQty > 0 ? (int) ceil($staticQty / $qtyPerLabel) : 1;
-
-        // Hindari render ribuan label secara tidak sengaja.
+        $labelCount = ($qtyPerLabel > 0) ? (int) ceil($staticQty / $qtyPerLabel) : 1;
         $labelCount = min($labelCount, 500);
 
         $labels = [];
-        $remaining = max(0, $staticQty);
+        $remaining = $staticQty;
         for ($i = 0; $i < $labelCount; $i++) {
-            $q = $qtyPerLabel;
-            if ($sub > 0 && $remaining > 0) {
-                $q = min($qtyPerLabel, $remaining);
-            }
-            $remaining = max(0, $remaining - $q);
+            $q = ($sub > 0) ? min($qtyPerLabel, $remaining) : $staticQty;
+            $remaining -= $q;
 
-            // Pakai QR Code (sesuai permintaan label per isi).
             $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 140, 2);
 
             $labels[] = [
                 'qtyInPack' => $q,
                 'qrSvg' => $qrSvg,
             ];
+            if ($remaining <= 0) break;
         }
 
         return view('item-barcodes.label-isi', compact('itemBarcode', 'labels'));

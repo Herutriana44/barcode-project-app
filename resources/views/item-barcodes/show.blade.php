@@ -43,6 +43,10 @@
                 <div class="mt-4 no-print flex gap-2">
                     <a href="{{ route('item-barcodes.label-isi', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Label Per Isi</a>
                     <a href="{{ route('item-barcodes.label-per-box', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-primary">Cetak Label Per Box</a>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="a4-pages" value="1" min="1" class="w-16 rounded border-egg-300 py-1 px-2 text-sm">
+                        <a href="#" onclick="this.href='{{ route('item-barcodes.label-print-a4', $itemBarcode) }}?pages=' + document.getElementById('a4-pages').value;" target="_blank" rel="noopener" class="btn-egg-primary">Cetak A4 (6/page)</a>
+                    </div>
                 </div>
             </section>
 
@@ -89,7 +93,7 @@
                         <div><span class="font-medium">Part Name:</span> {{ $detailItem->part_name ?? '-' }}</div>
                         <div><span class="font-medium">Part Number:</span> {{ $detailItem->part_number ?? '-' }}</div>
                         <div><span class="font-medium">Model:</span> {{ $detailItem->model ?? '-' }}</div>
-                        <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div>
+                        <!-- <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div> -->
                         <div><span class="font-medium">Qty sub pack (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
                         <div><span class="font-medium">Perkiraan jumlah box:</span> {{ $nowBoxApprox !== null ? $nowBoxApprox.' box' : '-' }}</div>
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
