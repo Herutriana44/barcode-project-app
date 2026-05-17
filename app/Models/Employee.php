@@ -49,4 +49,14 @@ class Employee extends Model
     {
         return $this->hasMany(Item::class, 'operator_forklift_id');
     }
+
+    public function scanSessions()
+    {
+        return $this->hasMany(EmployeeScanSession::class);
+    }
+
+    public function latestScanSession()
+    {
+        return $this->hasOne(EmployeeScanSession::class)->latestOfMany('scanned_at');
+    }
 }

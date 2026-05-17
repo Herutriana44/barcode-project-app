@@ -14,6 +14,7 @@ class Item extends Model
         'operator_mobil_id',
         'pengirim_id',
         'operator_forklift_id',
+        'scanned_by_employee_id',
         'customer',
         'part_name',
         'part_number',
@@ -89,5 +90,10 @@ class Item extends Model
     public function uniqueItems()
     {
         return $this->hasMany(UniqueItem::class);
+    }
+
+    public function scannedByEmployee()
+    {
+        return $this->belongsTo(Employee::class, 'scanned_by_employee_id');
     }
 }

@@ -334,6 +334,7 @@ class ItemBarcodeController extends Controller
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
             'pengirim_id' => $validated['pengirim_id'] ?? null,
             'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
+            'scanned_by_employee_id' => session('active_employee_id'),
             'customer' => $validated['customer'] ?? null,
             'part_name' => $validated['part_name'] ?? null,
             'part_number' => $validated['part_number'] ?? null,
@@ -367,6 +368,7 @@ class ItemBarcodeController extends Controller
             'item_id' => $item->id,
             'item_receiving_id' => $receiving->id,
             'barcode_id' => $barcodeId,
+            'scanned_by_employee_id' => session('active_employee_id'),
         ]);
 
         return redirect()->route('item-barcodes.show', $itemBarcode)

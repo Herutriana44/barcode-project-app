@@ -20,13 +20,16 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
+                        {{ __('Scan Karyawan') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('item-barcodes.index')" :active="request()->routeIs('item-barcodes.*')">
                         {{ __('Barcode Barang') }}
                     </x-nav-link>
                     <x-nav-link :href="route('company-barcodes.index')" :active="request()->routeIs('company-barcodes.*')">
                         {{ __('Barcode Perusahaan') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*')">
+                    <x-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
                         {{ __('Scan') }}
                     </x-nav-link>
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
@@ -39,7 +42,29 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-4 shrink-0">
+            <div class="hidden sm:flex sm:items-center sm:ms-4 gap-3 shrink-0">
+
+                {{-- Badge karyawan aktif --}}
+                @if(session('active_employee_id'))
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/20 border border-green-400/40 text-white text-sm">
+                        <span class="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse"></span>
+                        <span class="font-medium truncate max-w-[10rem]">{{ session('active_employee_name') }}</span>
+                        <form method="POST" action="{{ route('scan-employee.destroy') }}" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" title="Akhiri sesi karyawan"
+                                    class="ml-1 text-green-200 hover:text-white transition text-base leading-none"
+                                    onclick="return confirm('Akhiri sesi karyawan?')">✕</button>
+                        </form>
+                    </div>
+                @else
+                    <a href="{{ route('scan-employee.index') }}"
+                       class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-100 hover:bg-amber-500/30 text-sm font-medium transition">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                        Scan Karyawan
+                    </a>
+                @endif
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-4 py-2.5 border border-white/25 text-base leading-5 font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 shadow-sm">
@@ -71,8 +96,6 @@
                     </x-slot>
                 </x-dropdown>
             </div>
-
-            <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden shrink-0">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-3 rounded-lg text-white hover:bg-white/15 focus:outline-none focus:bg-white/15 transition duration-150 ease-in-out">
                     <svg class="h-7 w-7" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -90,13 +113,21 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
+                {{ __('Scan Karyawan') }}
+                @if(session('active_employee_id'))
+                    <span class="ml-2 inline-flex items-center gap-1 text-xs text-green-300">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>{{ session('active_employee_name') }}
+                    </span>
+                @endif
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('item-barcodes.index')" :active="request()->routeIs('item-barcodes.*')">
                 {{ __('Barcode Barang') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('company-barcodes.index')" :active="request()->routeIs('company-barcodes.*')">
                 {{ __('Barcode Perusahaan') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*')">
+            <x-responsive-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
                 {{ __('Scan') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">

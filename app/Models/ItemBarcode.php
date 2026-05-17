@@ -13,6 +13,7 @@ class ItemBarcode extends Model
         'item_id',
         'item_receiving_id',
         'barcode_id',
+        'scanned_by_employee_id',
     ];
 
     public function item()
@@ -23,5 +24,10 @@ class ItemBarcode extends Model
     public function itemReceiving()
     {
         return $this->belongsTo(ItemReceiving::class);
+    }
+
+    public function scannedByEmployee()
+    {
+        return $this->belongsTo(Employee::class, 'scanned_by_employee_id');
     }
 }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\CompanyBarcode;
 use App\Models\ItemBarcode;
 use App\Models\Employee;
+use App\Models\EmployeeScanSession;
 use App\Services\FifoStockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ScanController extends Controller
@@ -29,6 +31,19 @@ class ScanController extends Controller
                 return redirect()->route('scan.index')->with('error', 'Karyawan tidak ditemukan.');
             }
 
+            // Catat sesi scan dan set session aktif
+            $scannedAt = Carbon::now();
+            EmployeeScanSession::create([
+                'employee_id' => $employee->id,
+                'scanned_at'  => $scannedAt,
+            ]);
+            session([
+                'active_employee_id'         => $employee->id,
+                'active_employee_name'       => $employee->name,
+                'active_employee_nip'        => $employee->nip,
+                'active_employee_scanned_at' => $scannedAt->toDateTimeString(),
+            ]);
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'type' => 'employee',
@@ -37,7 +52,6 @@ class ScanController extends Controller
                     ],
                 ]);
             }
-            // Asumsi view 'scan.result-employee' akan dibuat
             return view('scan.result-employee', compact('employee'));
         }
 

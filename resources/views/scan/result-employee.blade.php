@@ -1,35 +1,48 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Hasil Scan Karyawan
+        <h2 class="font-bold text-3xl text-egg-900 leading-tight">
+            {{ __('Hasil Scan - Karyawan') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex items-center space-x-6">
-                    @if($employee->photoPublicUrl())
-                        <img src="{{ $employee->photoPublicUrl() }}" alt="{{ $employee->name }}" class="w-32 h-32 rounded-full object-cover">
+    <div class="py-8 w-full">
+        <div class="max-w-xl mx-auto w-full space-y-6">
+
+            <div class="p-4 rounded-lg border border-green-300 bg-green-50 text-green-900 text-base" role="alert">
+                <p class="font-semibold">Sesi karyawan aktif</p>
+                <p class="mt-1 text-sm">
+                    Scan masuk: {{ session('active_employee_scanned_at') ? \Carbon\Carbon::parse(session('active_employee_scanned_at'))->format('d/m/Y H:i:s') : now()->format('d/m/Y H:i:s') }}
+                </p>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
+                <div class="flex items-center gap-6 mb-6">
+                    @if ($employee->photoPublicUrl())
+                        <img src="{{ $employee->photoPublicUrl() }}" alt="Foto {{ $employee->name }}"
+                             class="w-20 h-20 rounded-full object-cover border-2 border-egg-300 shrink-0" />
                     @else
-                        <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-                            No Photo
+                        <div class="w-20 h-20 rounded-full bg-egg-200 flex items-center justify-center text-3xl font-bold text-egg-600 shrink-0">
+                            {{ mb_strtoupper(mb_substr($employee->name, 0, 1)) }}
                         </div>
                     @endif
                     <div>
-                        <h3 class="text-2xl font-bold">{{ $employee->name }}</h3>
-                        <p class="text-gray-600">NIP: {{ $employee->nip }}</p>
-                        <p class="text-gray-600">Departemen: {{ $employee->departemen ?? '-' }}</p>
-                        <p class="text-gray-600">Jabatan: {{ $employee->jabatan ?? '-' }}</p>
-                        <p class="text-gray-600">Status: {{ $employee->status ?? '-' }}</p>
+                        <h3 class="text-2xl font-bold text-egg-900">{{ $employee->name }}</h3>
+                        <p class="text-egg-600">NIP: {{ $employee->nip }}</p>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <a href="{{ route('scan.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        Kembali ke Scan
-                    </a>
+
+                <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
+                    <div><span class="font-medium">Jabatan:</span> {{ $employee->jabatan ?? '-' }}</div>
+                    <div><span class="font-medium">Departemen:</span> {{ $employee->departemen ?? '-' }}</div>
+                    <div><span class="font-medium">Status:</span> {{ $employee->status ?? '-' }}</div>
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                    <a href="{{ route('scan.index') }}" class="btn-egg-primary">Lanjut Scan Barang</a>
+                    <a href="{{ route('dashboard') }}" class="btn-egg-secondary">Dashboard</a>
                 </div>
             </div>
+
         </div>
     </div>
 </x-app-layout>
