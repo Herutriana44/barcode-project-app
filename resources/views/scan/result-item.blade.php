@@ -60,7 +60,7 @@
                     <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Code:</span> {{ $itemBarcode->item->code ?? '-' }}</div>
                     <div><span class="font-medium">Posisi Rak:</span> {{ $itemBarcode->item->posisi_rak ?? '-' }}</div>
-                    <div><span class="font-medium">Pecahan:</span> {{ $itemBarcode->item->uniqueItems()->count() }}</div>
+                    <div><span class="font-medium">Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
                     <!-- <div><span class="font-medium">Tingkat:</span> {{ $itemBarcode->item->tingkat ?? '-' }}</div> -->
                     <div><span class="font-medium">Perusahaan:</span> <!-- {{ $itemBarcode->item->company->name ?? '-' }} --> PT TEKUN ASAS SUMBER MAKMUR</div>
                     <!-- <div class="col-span-2 border-t pt-2 mt-2"><span class="font-medium">Transfer Slip:</span> {{ $itemBarcode->itemReceiving->transfer_slip_no ?? '-' }}</div>
