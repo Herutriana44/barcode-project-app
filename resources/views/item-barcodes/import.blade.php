@@ -15,12 +15,10 @@
         <div class="bg-white shadow-md border border-egg-200 rounded-xl p-6 space-y-4 text-base">
             <p class="text-egg-700">
                 Unggah berkas <strong>.xlsx</strong> sesuai template. Setiap baris (selain header) menjadi satu <strong>barcode barang (FG)</strong> seperti menu buat manual.
-                Kolom <strong>nama_perusahaan</strong> harus sama persis dengan nama perusahaan yang sudah ada di sistem (cek daftar saat buat barang).
-                Karyawan diisi dengan <strong>nama</strong> yang terdaftar (opsional).
+                Kolom <strong>nama_perusahaan</strong> harus sama persis dengan nama perusahaan yang sudah ada di sistem.
             </p>
             <p class="text-sm text-egg-600">
-                Tanggal boleh teks (<code>YYYY-MM-DD</code> atau format umum) atau angka serial Excel. <code>jenis_bahan</code>: kosong, SPCC, atau SESE.
-                Kolom akhir template (opsional): <code>qty_sub_pack</code>, <code>berat_packaging_gram</code>, <code>berat_per_pcs_gram</code>.
+                Data yang tidak diisi (seperti kolom komentar di template) akan diisi secara otomatis dengan nilai default oleh sistem.
             </p>
 
             @if ($errors->any())

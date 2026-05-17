@@ -14,11 +14,10 @@
     <div class="py-8 w-full max-w-3xl mx-auto">
         <div class="bg-white shadow-md border border-egg-200 rounded-xl p-6 space-y-4 text-base">
             <p class="text-egg-700">
-                Unggah berkas <strong>.xlsx</strong> sesuai template. Baris dengan <strong>nama_perusahaan</strong> yang sama digabung menjadi <strong>satu perusahaan</strong> dengan beberapa barang stok, lalu dibuat satu <strong>barcode perusahaan</strong> (sama seperti alur buat manual).
-                Tiap grup perusahaan wajib punya minimal satu baris dengan <strong>qty &gt; 0</strong>.
+                Unggah berkas <strong>.xlsx</strong> sesuai template. Setiap baris menjadi satu perusahaan baru atau menambah data ke perusahaan yang sudah ada.
             </p>
             <p class="text-sm text-egg-600">
-                Kolom <code>code</code> boleh dikosongkan (akan digenerate). Karyawan: isi <strong>nama</strong> yang terdaftar (opsional).
+                Data yang tidak diisi (seperti kolom komentar di template) akan diisi secara otomatis dengan nilai default oleh sistem.
             </p>
 
             @if ($errors->any())

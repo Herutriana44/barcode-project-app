@@ -87,8 +87,8 @@ final class InventorySpreadsheet
             // '',
             // '',
             24,
-            120,
-            45,
+            0,
+            0,
         ];
     }
 
@@ -113,11 +113,11 @@ final class InventorySpreadsheet
     {
         return [
             'PT Contoh Import',
-            // 'Barang contoh',
-            // '',
-            // 50,
-            // 'R1',
-            // '2',
+            // 'Barang default',
+            // 'CB-001',
+            // 0,
+            // '-',
+            // '-',
             // '',
             // '',
             // '',
@@ -264,12 +264,12 @@ final class InventorySpreadsheet
                 continue;
             }
 
-            $opMobName = self::str($row[21] ?? null);
-            $opPengName = self::str($row[22] ?? null);
-            $opForkName = self::str($row[23] ?? null);
-            $qtySubPack = self::toNullableInt($row[24] ?? null);
-            $beratPackagingG = self::toNullableInt($row[25] ?? null);
-            $beratPerPcsG = self::toNullableInt($row[26] ?? null);
+            $opMobName = self::str($row[21] ?? '');
+            $opPengName = self::str($row[22] ?? '');
+            $opForkName = self::str($row[23] ?? '');
+            $qtySubPack = self::toNullableInt($row[24] ?? 1);
+            $beratPackagingG = self::toNullableInt($row[25] ?? 0);
+            $beratPerPcsG = self::toNullableInt($row[26] ?? 0);
 
             foreach (['operator_mobil' => $opMobName, 'pengirim' => $opPengName, 'operator_forklift' => $opForkName] as $label => $ename) {
                 if ($ename !== '' && self::resolveEmployeeIdByName($ename) === null) {
@@ -312,21 +312,21 @@ final class InventorySpreadsheet
                 'tgl_expired' => $dExp,
                 'code' => $code,
                 'posisi_rak' => self::nullableStr($row[11] ?? null),
-                'tingkat' => self::nullableStr($row[12] ?? null),
-                'ukuran_material' => self::nullableStr($row[13] ?? null),
-                'jenis_bahan' => $jb,
-                'quantity_material' => self::toNullableInt($row[15] ?? null),
-                'no_surat_jalan_material' => self::nullableStr($row[16] ?? null),
-                'tanggal_terima_material' => $dMat,
-                'transfer_slip_no' => self::nullableStr($row[18] ?? null),
-                'tanggal_terima_fg' => $dFg,
+                'tingkat' => self::nullableStr($row[12] ?? '-'),
+                'ukuran_material' => self::nullableStr($row[13] ?? '-'),
+                'jenis_bahan' => $jb ?? null,
+                'quantity_material' => self::toNullableInt($row[15] ?? 0),
+                'no_surat_jalan_material' => self::nullableStr($row[16] ?? '-'),
+                'tanggal_terima_material' => $dMat ?? date('Y-m-d'),
+                'transfer_slip_no' => self::nullableStr($row[18] ?? '-'),
+                'tanggal_terima_fg' => $dFg ?? date('Y-m-d'),
                 'jumlah_box' => self::toInt($row[20] ?? 0),
                 'operator_mobil_id' => self::resolveEmployeeIdByName($opMobName),
                 'pengirim_id' => self::resolveEmployeeIdByName($opPengName),
                 'operator_forklift_id' => self::resolveEmployeeIdByName($opForkName),
-                'qty_sub_pack' => $qtySubPack !== null && $qtySubPack > 0 ? $qtySubPack : null,
-                'berat_packaging_gram' => $beratPackagingG,
-                'berat_per_pcs_gram' => $beratPerPcsG,
+                'qty_sub_pack' => $qtySubPack !== null && $qtySubPack > 0 ? $qtySubPack : 1,
+                'berat_packaging_gram' => $beratPackagingG ?? 0,
+                'berat_per_pcs_gram' => $beratPerPcsG ?? 0,
             ];
         }
 
@@ -439,49 +439,44 @@ final class InventorySpreadsheet
 
         $companyCount = 0;
 
-        DB::transaction(function () use ($companies, &$companyCount) {
-            foreach ($companies as $companyName) {
-                $company = Company::create(['name' => $companyName]);
+        DB::transaction(function () use ($dataRows, &$companyCount) {
+            foreach ($dataRows as $i => $row) {
+                $lineNum = $i + 2;
+                $row = self::padRow($row, self::COMPANY_COLS);
+                $companyName = self::str($row[0] ?? null);
+                if ($companyName === '') continue;
 
-                // Create default item with qty > 0
-                $itemCode = 'CB-'.$company->id.'-'.uniqid();
+                $company = Company::firstOrCreate(['name' => $companyName]);
+
+                $partName = self::str($row[1] ?? 'Barang Default');
+                $code = self::str($row[2] ?? 'CB-'.$company->id.'-'.uniqid());
+                $qty = self::toInt($row[3] ?? 0);
+                $posisiRak = self::str($row[4] ?? '-');
+                $tingkat = self::str($row[5] ?? '-');
+                $opMob = self::str($row[6] ?? '');
+                $pengirim = self::str($row[7] ?? '');
+                $opFork = self::str($row[8] ?? '');
 
                 $item = Item::create([
                     'company_id' => $company->id,
-                    'operator_mobil_id' => null,
-                    'pengirim_id' => null,
-                    'operator_forklift_id' => null,
-                    'customer' => null,
-                    'part_name' => 'Default Item',
-                    'part_number' => null,
-                    'model' => null,
-                    'berat' => null,
-                    'qty' => 0,
-                    'static_qty' => 0,
-                    'dynamic_qty' => 0,
-                    'qty_sub_pack' => null,
-                    'berat_packaging_gram' => null,
-                    'berat_per_pcs_gram' => null,
-                    'inspector_name' => null,
-                    'checker_name' => null,
-                    'tgl_produksi' => null,
-                    'tgl_expired' => null,
-                    'code' => $itemCode,
-                    'posisi_rak' => null,
-                    'tingkat' => null,
-                    'ukuran_material' => null,
-                    'jenis_bahan' => null,
-                    'quantity_material' => null,
-                    'no_surat_jalan_material' => null,
-                    'tanggal_terima_material' => null,
+                    'operator_mobil_id' => self::resolveEmployeeIdByName($opMob),
+                    'pengirim_id' => self::resolveEmployeeIdByName($pengirim),
+                    'operator_forklift_id' => self::resolveEmployeeIdByName($opFork),
+                    'part_name' => $partName,
+                    'qty' => $qty,
+                    'static_qty' => $qty,
+                    'dynamic_qty' => $qty,
+                    'code' => $code,
+                    'posisi_rak' => $posisiRak,
+                    'tingkat' => $tingkat,
                 ]);
 
                 CompanyItem::create([
                     'company_id' => $company->id,
                     'item_id' => $item->id,
-                    'qty' => 1, // Default qty > 0
-                    'posisi_rak' => null,
-                    'tingkat' => null,
+                    'qty' => $qty,
+                    'posisi_rak' => $posisiRak,
+                    'tingkat' => $tingkat,
                 ]);
 
                 CompanyBarcode::create([
