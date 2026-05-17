@@ -96,7 +96,8 @@
                         <div><span class="font-medium">Model:</span> {{ $detailItem->model ?? '-' }}</div>
                         <!-- <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div> -->
                         <div><span class="font-medium">Qty sub pack (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
-                        <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div>
+                        <!-- <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div> -->
+                        <div><span class="font-medium">Jumlah Box:</span> {{ $nowBoxApprox > 0 ? $nowBoxApprox : '-' }}</div>
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>
                         <div><span class="font-medium">Berat packaging (gram):</span> {{ $detailItem->berat_packaging_gram !== null ? $detailItem->berat_packaging_gram : '-' }}</div>
