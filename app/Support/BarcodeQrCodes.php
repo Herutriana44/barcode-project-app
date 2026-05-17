@@ -22,6 +22,29 @@ final class BarcodeQrCodes
         return self::qrSvg(ScanUrl::forBarcode($barcodeId), $size, $margin);
     }
 
+    /**
+     * QR khusus unique label dengan kode format IB-{item_id}-{receiving_id}-{unique_id}.
+     * Payload QR adalah URL scan ke halaman unique item.
+     */
+    public static function qrSvgForUniqueItem(string $itemId, string $receivingId, string $uniqueItemId, int $size = 180, int $margin = 8): string
+    {
+        $uniqueBarcodeId = 'IB-'.$itemId.'-'.$receivingId.'-'.$uniqueItemId;
+
+        return self::qrSvg(ScanUrl::forBarcode($uniqueBarcodeId), $size, $margin);
+    }
+
+    /** Code 128 berisi kode unique item (IB-{item_id}-{receiving_id}-{unique_id}). */
+    public static function code128SvgForUniqueItem(string $itemId, string $receivingId, string $uniqueItemId, int $widthFactor = 2, int $height = 50): string
+    {
+        $uniqueBarcodeId = 'IB-'.$itemId.'-'.$receivingId.'-'.$uniqueItemId;
+        $url = ScanUrl::forBarcode($uniqueBarcodeId);
+        if (strlen($url) > 96) {
+            $widthFactor = 1;
+        }
+
+        return self::code128Svg($url, max(1, $widthFactor), $height);
+    }
+
     /** Code 128 berisi URL yang sama agar pemindai garis mengirim tautan penuh. */
     public static function code128SvgForScan(string $barcodeId, int $widthFactor = 2, int $height = 50): string
     {

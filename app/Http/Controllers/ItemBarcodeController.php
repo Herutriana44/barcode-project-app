@@ -603,8 +603,12 @@ class ItemBarcodeController extends Controller
             'itemReceiving',
         ]);
 
-        $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
-        $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
+        $itemId = (string) $itemBarcode->item->id;
+        $receivingId = (string) $itemBarcode->item_receiving_id;
+        $uniqueId = (string) $uniqueItem->id;
+
+        $labelBarcodeSvg = BarcodeQrCodes::code128SvgForUniqueItem($itemId, $receivingId, $uniqueId, 1, 28);
+        $qrSvg = BarcodeQrCodes::qrSvgForUniqueItem($itemId, $receivingId, $uniqueId, 88, 2);
 
         $rows = collect([
             [
@@ -612,6 +616,7 @@ class ItemBarcodeController extends Controller
                 'labelBarcodeSvg' => $labelBarcodeSvg,
                 'qrSvg' => $qrSvg,
                 'labelQtyPcs' => $uniqueItem->qty,
+                'uniqueItemId' => $uniqueId,
             ]
         ]);
 
@@ -628,15 +633,18 @@ class ItemBarcodeController extends Controller
             'itemReceiving',
         ]);
 
-        $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
-        $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
+        $itemId = (string) $itemBarcode->item->id;
+        $receivingId = (string) $itemBarcode->item_receiving_id;
 
-        $rows = $itemBarcode->item->uniqueItems->map(function ($uniqueItem) use ($itemBarcode, $labelBarcodeSvg, $qrSvg) {
+        $rows = $itemBarcode->item->uniqueItems->map(function ($uniqueItem) use ($itemBarcode, $itemId, $receivingId) {
+            $uniqueId = (string) $uniqueItem->id;
+
             return [
                 'itemBarcode' => $itemBarcode,
-                'labelBarcodeSvg' => $labelBarcodeSvg,
-                'qrSvg' => $qrSvg,
+                'labelBarcodeSvg' => BarcodeQrCodes::code128SvgForUniqueItem($itemId, $receivingId, $uniqueId, 1, 28),
+                'qrSvg' => BarcodeQrCodes::qrSvgForUniqueItem($itemId, $receivingId, $uniqueId, 88, 2),
                 'labelQtyPcs' => $uniqueItem->qty,
+                'uniqueItemId' => $uniqueId,
             ];
         });
 

@@ -92,6 +92,11 @@
                         <td class="qr-slot">
                             <div class="side-hdr" style="text-align:left;margin-bottom:0.5mm;">QR (URL scan)</div>
                             {!! $qrSvg !!}
+                            @if(!empty($uniqueItemId))
+                                <div style="font-size:6pt;text-align:center;margin-top:0.5mm;word-break:break-all;color:#444;">
+                                    IB-{{ $item->id }}-{{ $itemBarcode->item_receiving_id }}-{{ $uniqueItemId }}
+                                </div>
+                            @endif
                         </td>
                     </tr>
                     @if(! empty($barcodeSvg))

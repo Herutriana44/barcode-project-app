@@ -23,6 +23,7 @@
                 'labelQtyPcs' => $row['labelQtyPcs'],
                 'quantityUseStatic' => false,
                 'headerCompanyName' => $labelHeaderCompanyName,
+                'uniqueItemId' => $row['uniqueItemId'] ?? null,
             ])
         @empty
             <p class="labels-empty">Tidak ada label.</p>
