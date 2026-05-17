@@ -33,27 +33,25 @@ final class BarcodeQrCodes
         return self::qrSvg(ScanUrl::forBarcode($uniqueBarcodeId), $size, $margin);
     }
 
-    /** Code 128 berisi kode unique item (IB-{item_id}-{receiving_id}-{unique_id}). */
+    /** Code 128 berisi kode unique item (IB-{item_id}-{receiving_id}-{unique_id}), bukan URL. */
     public static function code128SvgForUniqueItem(string $itemId, string $receivingId, string $uniqueItemId, int $widthFactor = 2, int $height = 50): string
     {
         $uniqueBarcodeId = 'IB-'.$itemId.'-'.$receivingId.'-'.$uniqueItemId;
-        $url = ScanUrl::forBarcode($uniqueBarcodeId);
-        if (strlen($url) > 96) {
+        if (strlen($uniqueBarcodeId) > 96) {
             $widthFactor = 1;
         }
 
-        return self::code128Svg($url, max(1, $widthFactor), $height);
+        return self::code128Svg($uniqueBarcodeId, max(1, $widthFactor), $height);
     }
 
-    /** Code 128 berisi URL yang sama agar pemindai garis mengirim tautan penuh. */
+    /** Code 128 berisi barcode_id barang (IB-{item_id}-{receiving_id}), bukan URL. */
     public static function code128SvgForScan(string $barcodeId, int $widthFactor = 2, int $height = 50): string
     {
-        $url = ScanUrl::forBarcode($barcodeId);
-        if (strlen($url) > 96) {
+        if (strlen($barcodeId) > 96) {
             $widthFactor = 1;
         }
 
-        return self::code128Svg($url, max(1, $widthFactor), $height);
+        return self::code128Svg($barcodeId, max(1, $widthFactor), $height);
     }
 
     /** QR isi URL profil karyawan. */
@@ -62,15 +60,15 @@ final class BarcodeQrCodes
         return self::qrSvg(EmployeeUrl::forProfile($employee), $size, $margin);
     }
 
-    /** Code 128 isi URL profil karyawan (panjang URL disesuaikan). */
+    /** Code 128 berisi NIP karyawan dalam format EMP-{nip}, bukan URL. */
     public static function code128SvgForEmployeeProfile(Employee $employee, int $widthFactor = 2, int $height = 44): string
     {
-        $url = EmployeeUrl::forProfile($employee);
-        if (strlen($url) > 80) {
+        $payload = 'EMP-'.$employee->nip;
+        if (strlen($payload) > 80) {
             $widthFactor = 1;
         }
 
-        return self::code128Svg($url, max(1, $widthFactor), $height);
+        return self::code128Svg($payload, max(1, $widthFactor), $height);
     }
 
     public static function qrSvg(string $payload, int $size = 180, int $margin = 8): string
