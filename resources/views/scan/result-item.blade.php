@@ -28,10 +28,18 @@
             @endif
 
             @php
+                $detailItem = $itemBarcode->item;
+                $detailSubPack = (int) ($detailItem->qty_sub_pack ?? 0);
+                $detailQtyPcs = (int) ($detailItem->dynamic_qty ?? $detailItem->qty ?? 0);
+                $detailQtyPcsStatic = (int) ($detailItem->static_qty ?? $detailItem->qty ?? 0);
+                $detailBoxApprox = ($detailSubPack > 0 && $detailQtyPcs > 0) ? (int) ceil($detailQtyPcs / $detailSubPack) : null;
+                $staticBoxApprox =($detailSubPack > 0 && $detailQtyPcsStatic > 0 ) ? (int) ceil($detailQtyPcsStatic / $detailSubPack) : 0;
+                $nowBoxApprox = max(0, $staticBoxApprox - $detailBoxApprox);
+                
                 $scanItem = $itemBarcode->item;
                 $subPackPcs = (int) ($scanItem->qty_sub_pack ?? 0);
                 $qtyPcs = (int) ($scanItem->dynamic_qty ?? $scanItem->qty ?? 0);
-                $boxApprox = ($subPackPcs > 0 && $qtyPcs > 0) ? abs((int) ceil($qtyPcs / $subPackPcs)) : null;
+                <!-- $boxApprox = ($subPackPcs > 0 && $qtyPcs > 0) ? abs((int) ceil($qtyPcs / $subPackPcs)) : null; -->
             @endphp
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">

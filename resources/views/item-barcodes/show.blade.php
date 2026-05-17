@@ -86,7 +86,7 @@
                         $detailQtyPcsStatic = (int) ($detailItem->static_qty ?? $detailItem->qty ?? 0);
                         $detailBoxApprox = ($detailSubPack > 0 && $detailQtyPcs > 0) ? (int) ceil($detailQtyPcs / $detailSubPack) : null;
                         $staticBoxApprox =($detailSubPack > 0 && $detailQtyPcsStatic > 0 ) ? (int) ceil($detailQtyPcsStatic / $detailSubPack) : 0;
-                        $nowBoxApprox = abs($staticBoxApprox - $detailBoxApprox);
+                        $nowBoxApprox = max(0, $staticBoxApprox - $detailBoxApprox);
                         $detailQtyPcs = abs($detailQtyPcsStatic - $detailQtyPcs);
                     @endphp
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-base">
