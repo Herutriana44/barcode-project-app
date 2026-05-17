@@ -166,9 +166,9 @@
                     </div>
 
                     <!-- List Unique Items -->
-                    @if($itemBarcode->item->uniqueItems->count() > 0)
+                    @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->count() > 0)
                         <div class="space-y-3">
-                            @foreach($itemBarcode->item->uniqueItems as $uniqueItem)
+                            @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $uniqueItem)
                                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2">

@@ -133,6 +133,12 @@ class ScanController extends Controller
                 ->with('error', 'Mutasi stok dari scan hanya untuk barcode barang (IB-…).');
         }
 
+        $parts = explode('-', $barcodeId);
+        $uniqueItem = null;
+        if (count($parts) === 4) {
+            $uniqueItem = \App\Models\UniqueItem::find($parts[3]);
+        }
+
         $validated = $request->validate([
             'direction' => 'required|in:in,out',
             'qty' => 'required|integer|min:1',
@@ -142,9 +148,23 @@ class ScanController extends Controller
             ->where('barcode_id', $barcodeId)
             ->first();
 
-        if (! $itemBarcode) {
+        if (! $itemBarcode && !$uniqueItem) {
             return redirect()->route('scan.index')
                 ->with('error', 'Barcode barang tidak ditemukan.');
+        }
+
+        // Jika ini adalah UniqueItem
+        if ($uniqueItem) {
+            if ($validated['direction'] === 'out') {
+                $uniqueItem->update(['status_keluar' => true]);
+                return redirect()->route('scan.index')->with('success', 'Barang berhasil keluar.');
+            } else {
+                // Duplikasi
+                $newUniqueItem = $uniqueItem->replicate();
+                $newUniqueItem->status_keluar = false;
+                $newUniqueItem->save();
+                return redirect()->route('scan.index')->with('success', 'Barang masuk, unique item baru dibuat.');
+            }
         }
 
         $item = $itemBarcode->item;

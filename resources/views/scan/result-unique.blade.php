@@ -38,14 +38,9 @@
                                 </label>
                             </div>
                         </fieldset>
-                        <div>
-                            <label for="scan_qty" class="block text-sm font-medium text-egg-800">Jumlah *</label>
-                            <input id="scan_qty" type="number" name="qty" value="1" min="1" step="1" required
-                                class="mt-1 block w-40 rounded-lg border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500" />
-                        </div>
-                        <button type="submit" class="btn-egg-primary">Simpan mutasi</button>
+                        <input type="hidden" name="qty" value="1">
+                        <button type="submit" class="w-full btn-egg-primary">Konfirmasi</button>
                     </form>
-                </div>
 
                 <div class="mt-6">
                     <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>
