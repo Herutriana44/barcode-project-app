@@ -104,7 +104,7 @@
                         <div><span class="font-medium">Berat per pcs (gram):</span> {{ $detailItem->berat_per_pcs_gram !== null ? number_format((float)$detailItem->berat_per_pcs_gram, 2, '.', '') : '-' }}</div>
                         <div><span class="font-medium">Inspector:</span> {{ $detailItem->inspector_name ?? '-' }}</div>
                         <div><span class="font-medium">Checker:</span> {{ $detailItem->checker_name ?? '-' }}</div>
-                        <div><span class="font-medium">Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
+                        <div><span class="font-medium">Jumlah Box Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
                         <div class="col-span-2">
                             <form action="{{ route('item-barcodes.checker', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-2 items-start sm:items-end">
                                 @csrf
