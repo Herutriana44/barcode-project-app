@@ -2,9 +2,9 @@
     /* Label QC kecil (mm) — dipakai halaman cetak massal & detail barang */
     :root {
         --label-w: 98mm;
-        --label-min-h: 72mm;
+        --label-min-h: 55mm;
         --label-border: 0.35mm solid #000;
-        --label-pad: 1.2mm;
+        --label-pad: 0.8mm;
         --font-label: Arial, Helvetica, "Liberation Sans", sans-serif;
     }
 
@@ -73,8 +73,8 @@
         border-collapse: collapse;
         table-layout: fixed;
         flex: 0 0 auto;
-        font-size: 6pt;
-        line-height: 1.25;
+        font-size: 5.5pt;
+        line-height: 1.2;
     }
 
     .label-table col.c-logo { width: 18%; }
@@ -84,21 +84,21 @@
     .label-table td {
         border: var(--label-border);
         vertical-align: top;
-        padding: 0.8mm 1mm;
+        padding: 0.5mm 0.8mm;
         word-wrap: break-word;
     }
 
     .label-logo-cell {
         text-align: center;
         vertical-align: middle;
-        padding: 0.5mm !important;
+        padding: 0.3mm !important;
     }
 
     .label-logo-img {
         display: block;
         margin: 0 auto;
-        max-width: 16mm;
-        max-height: 15mm;
+        max-width: 14mm;
+        max-height: 13mm;
         width: auto;
         height: auto;
         object-fit: contain;
@@ -108,9 +108,9 @@
         text-align: center;
         vertical-align: middle;
         font-weight: 700;
-        font-size: 7pt;
+        font-size: 6.5pt;
         text-transform: uppercase;
-        padding: 1.5mm 2mm !important;
+        padding: 1mm 1.5mm !important;
     }
 
     .label-fields-cell {
@@ -126,8 +126,8 @@
     .label-fields-inner td {
         border: none;
         border-bottom: var(--label-border);
-        padding: 0.65mm 1mm;
-        font-size: 6pt;
+        padding: 0.4mm 0.8mm;
+        font-size: 5.5pt;
     }
 
     .label-fields-inner tr:last-child td {
@@ -154,7 +154,7 @@
         border: none;
         border-bottom: var(--label-border);
         vertical-align: top;
-        padding: 0.6mm 1mm;
+        padding: 0.4mm 0.8mm;
     }
 
     .side-stack tr:last-child td {
@@ -162,17 +162,17 @@
     }
 
     .side-hdr {
-        font-size: 5pt;
+        font-size: 4.5pt;
         font-weight: 600;
     }
 
     .code-big {
         display: block;
         text-align: center;
-        font-size: 15pt;
+        font-size: 11pt;
         font-weight: 800;
-        line-height: 1.1;
-        padding: 0.6mm 0;
+        line-height: 1;
+        padding: 0.4mm 0;
     }
 
     .qr-slot {
@@ -183,8 +183,8 @@
     .qr-slot svg {
         display: block;
         margin: 0 auto;
-        max-width: 24mm;
-        max-height: 24mm;
+        max-width: 20mm;
+        max-height: 20mm;
         width: 100%;
         height: auto;
     }
@@ -192,30 +192,30 @@
     .label-footer td {
         text-align: center;
         vertical-align: middle;
-        font-size: 6pt;
-        padding: 1mm 1.2mm !important;
+        font-size: 5.5pt;
+        padding: 0.8mm 1mm !important;
     }
 
     .label-footer .f-h {
         font-weight: 600;
         display: block;
-        margin-bottom: 0.3mm;
+        margin-bottom: 0.2mm;
     }
 
     .label-footer .status-ok {
-        font-size: 11pt;
+        font-size: 9pt;
         font-weight: 800;
-        line-height: 1.1;
+        line-height: 1;
     }
 
     .label-doc-rev {
-        font-size: 5pt;
+        font-size: 4.5pt;
         color: #222;
-        margin-top: 0.8mm;
+        margin-top: 0.5mm;
         padding-left: 0.5mm;
-        padding-bottom: 0.3mm;
+        padding-bottom: 0.2mm;
         flex-shrink: 0;
-        line-height: 1.2;
+        line-height: 1.1;
     }
 
     .labels-empty {

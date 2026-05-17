@@ -109,7 +109,7 @@ class ItemBarcodeController extends Controller
         $staticQty = max(0, (int) ($item->static_qty ?? 0));
         
         $pages = (int) $request->query('pages', 1);
-        $totalLabels = $pages * 6;
+        $totalLabels = $pages * 10;
 
         $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
         $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);

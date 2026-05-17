@@ -30,7 +30,7 @@
                 'quantityUseStatic' => false,
                 'headerCompanyName' => $labelHeaderCompanyName,
             ])
-            @if(($loop->iteration % 6) == 0 && !$loop->last)
+            @if(($loop->iteration % 10) == 0 && !$loop->last)
                 <div class="page-break"></div>
             @endif
         @empty
