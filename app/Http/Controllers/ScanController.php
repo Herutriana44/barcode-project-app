@@ -133,10 +133,30 @@ class ScanController extends Controller
                 ->with('error', 'Mutasi stok dari scan hanya untuk barcode barang (IB-…).');
         }
 
+        // Cek apakah barcodeId adalah UniqueItem
         $parts = explode('-', $barcodeId);
         $uniqueItem = null;
         if (count($parts) === 4) {
             $uniqueItem = \App\Models\UniqueItem::find($parts[3]);
+        }
+
+        // Jika ini adalah UniqueItem, proses mutasi khusus
+        if ($uniqueItem) {
+            $validated = $request->validate([
+                'direction' => 'required|in:in,out',
+                'qty' => 'required|integer|min:1',
+            ]);
+            
+            if ($validated['direction'] === 'out') {
+                $uniqueItem->update(['status_keluar' => true]);
+                return redirect()->route('scan.index')->with('success', 'Barang berhasil keluar.');
+            } else {
+                // Duplikasi
+                $newUniqueItem = $uniqueItem->replicate();
+                $newUniqueItem->status_keluar = false;
+                $newUniqueItem->save();
+                return redirect()->route('scan.index')->with('success', 'Barang masuk, unique item baru dibuat.');
+            }
         }
 
         $validated = $request->validate([
@@ -148,23 +168,9 @@ class ScanController extends Controller
             ->where('barcode_id', $barcodeId)
             ->first();
 
-        if (! $itemBarcode && !$uniqueItem) {
+        if (! $itemBarcode) {
             return redirect()->route('scan.index')
                 ->with('error', 'Barcode barang tidak ditemukan.');
-        }
-
-        // Jika ini adalah UniqueItem
-        if ($uniqueItem) {
-            if ($validated['direction'] === 'out') {
-                $uniqueItem->update(['status_keluar' => true]);
-                return redirect()->route('scan.index')->with('success', 'Barang berhasil keluar.');
-            } else {
-                // Duplikasi
-                $newUniqueItem = $uniqueItem->replicate();
-                $newUniqueItem->status_keluar = false;
-                $newUniqueItem->save();
-                return redirect()->route('scan.index')->with('success', 'Barang masuk, unique item baru dibuat.');
-            }
         }
 
         $item = $itemBarcode->item;
