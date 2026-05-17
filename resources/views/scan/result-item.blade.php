@@ -53,7 +53,7 @@
                     <!-- <div><span class="font-medium">Qty total (pcs):</span> {{ $qtyPcs }}</div> -->
                     <div><span class="font-medium">Qty sub pack:</span> {{ $subPackPcs > 0 ? $subPackPcs : '-' }}</div>
                     <!-- <div><span class="font-medium">jumlah box:</span> {{ $boxApprox !== null ? $boxApprox.' box' : '-' }}</div> -->
-                     <div><span class="font-medium">Jumlah Box:</span> {{ ($itemBarcode->itemReceiving->jumlah_box) + ($itemBarcode->item->uniqueItems->where('status_keluar', false)->count()) }}</div>
+                     <div><span class="font-medium">Jumlah Box:</span> {{ ($itemBarcode->itemReceiving->jumlah_box ?? 0) + ($itemBarcode->item->uniqueItems->where('status_keluar', false)->count()) }}</div>
                     <div><span class="font-medium">Inspector:</span> {{ $scanItem->inspector_name ?? '-' }}</div>
                     <div><span class="font-medium">Checker:</span> {{ $scanItem->checker_name ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>

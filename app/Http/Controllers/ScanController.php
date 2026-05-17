@@ -7,6 +7,7 @@ use App\Models\ItemBarcode;
 use App\Models\Employee;
 use App\Services\FifoStockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ScanController extends Controller
 {
@@ -177,16 +178,20 @@ class ScanController extends Controller
         $qtyToDeduct = $validated['qty'] * ($item->qty_sub_pack ?? 1);
 
         try {
-            if ($validated['direction'] === 'in') {
-                FifoStockService::incrementItemQty((int) $item->id, (int) $qtyToDeduct);
-            } else {
-                FifoStockService::deductFromItems(
-                    (int) $item->company_id,
-                    (int) $qtyToDeduct,
-                    $item->part_number,
-                    $item->part_name
-                );
-            }
+            DB::transaction(function () use ($itemBarcode, $validated, $qtyToDeduct) {
+                if ($validated['direction'] === 'in') {
+                    FifoStockService::incrementItemQty((int) $itemBarcode->item_id, (int) $qtyToDeduct);
+                    $itemBarcode->itemReceiving->increment('jumlah_box', (int) $validated['qty']);
+                } else {
+                    FifoStockService::deductFromItems(
+                        (int) $itemBarcode->item->company_id,
+                        (int) $qtyToDeduct,
+                        $itemBarcode->item->part_number,
+                        $itemBarcode->item->part_name
+                    );
+                    $itemBarcode->itemReceiving->decrement('jumlah_box', (int) $validated['qty']);
+                }
+            });
         } catch (\InvalidArgumentException $e) {
             return redirect()
                 ->route('scan.show', ['barcode_id' => $barcodeId])
