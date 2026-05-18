@@ -147,9 +147,6 @@
             <x-responsive-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
                 {{ __('Scan') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
-                {{ __('Karyawan') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
                 {{ __('Scan Karyawan') }}
                 @if(session('active_employee_id'))
