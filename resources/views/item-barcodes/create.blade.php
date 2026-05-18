@@ -260,8 +260,7 @@
                 const name = (customerSelect.value || '').trim();
                 if (name === last) return;
                 last = name;
-                // const codes = await fetchRakOptions(name);
-                const codes = await fetchAllRakOptions();
+                const codes = await fetchRakOptions(name);
                 applyOptions(codes);
             }
 
