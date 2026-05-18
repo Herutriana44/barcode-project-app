@@ -60,11 +60,11 @@
                         </x-slot>
                     </x-dropdown>
 
+                    @if(auth()->user()->role === 'admin')
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                         {{ __('Karyawan') }}
                     </x-nav-link>
 
-                    @if(auth()->user()->role === 'admin')
                         <x-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
                             {{ __('Log Aktivitas') }}
                         </x-nav-link>
