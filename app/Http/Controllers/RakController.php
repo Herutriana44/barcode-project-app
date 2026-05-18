@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rak;
 use Illuminate\Http\Request;
 
 class RakController extends Controller
@@ -14,42 +15,46 @@ class RakController extends Controller
     public function options(Request $request)
     {
         $companyName = trim((string) $request->query('company_name', ''));
-        $path = base_path('perusahaan-rak.json');
-        
-        if (!file_exists($path)) {
+        if ($companyName === '') {
             return response()->json(['codes' => [], 'raw_data' => [], 'parsed_codes' => []]);
         }
 
-        $data = json_decode(file_get_contents($path), true);
-        
-        // Cari key yang cocok secara case-insensitive
-        $foundCodes = [];
-        foreach ($data as $key => $codes) {
-            if (mb_strtolower(trim($key)) === mb_strtolower($companyName)) {
-                $foundCodes = $codes;
-                break;
+        $row = Rak::query()
+            ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($companyName)])
+            ->first();
+
+        $codes = [];
+        if ($row && $row->code) {
+            $parts = explode(',', (string) $row->code);
+            foreach ($parts as $part) {
+                $code = trim($part);
+                if ($code !== '') {
+                    $codes[] = $code;
+                }
             }
         }
 
-        sort($foundCodes);
+        sort($codes);
         return response()->json([
-            'codes' => $foundCodes,
-            'raw_data' => $foundCodes,
-            'parsed_codes' => $foundCodes
+            'codes' => $codes,
+            'raw_data' => $codes,
+            'parsed_codes' => $codes
         ]);
     }
 
     public function allOptions()
     {
-        $path = base_path('perusahaan-rak.json');
-        if (!file_exists($path)) {
-            return response()->json(['codes' => []]);
-        }
+        $rows = Rak::query()->pluck('code');
 
-        $data = json_decode(file_get_contents($path), true);
         $allCodes = [];
-        foreach ($data as $codes) {
-            $allCodes = array_merge($allCodes, $codes);
+        foreach ($rows as $row) {
+            $parts = explode(',', (string) $row);
+            foreach ($parts as $part) {
+                $code = trim($part);
+                if ($code !== '') {
+                    $allCodes[] = $code;
+                }
+            }
         }
 
         $uniqueCodes = array_unique($allCodes);
