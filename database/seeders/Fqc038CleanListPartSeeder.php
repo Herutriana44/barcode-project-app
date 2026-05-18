@@ -53,6 +53,9 @@ final class Fqc038CleanListPartSeeder extends Seeder
         }
 
         $reader->close();
+
+        // Hapus perusahaan "PT TEKUN ASAS SUMBER MAKMUR" setelah selesai import
+        Company::query()->where('name', self::WAREHOUSE_COMPANY_NAME)->delete();
     }
 
     /**

@@ -35,9 +35,9 @@
                             <option value="least" @selected(($itemCountSort ?? request('item_count_sort')) === 'least')>Tersedikit</option>
                         </select>
                     </div>
-                    <div class="flex gap-2">
-                        <button type="submit" class="btn-egg-secondary text-sm">Cari</button>
-                        <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary text-sm">Reset</a>
+                    <div class="flex gap-2 items-end">
+                        <button type="submit" class="btn-egg-secondary text-sm h-[42px] px-4 py-2">Cari</button>
+                        <a href="{{ route('company-barcodes.index') }}" class="btn-egg-secondary text-sm h-[42px] px-4 py-2 flex items-center">Reset</a>
                     </div>
                 </form>
             </div>
