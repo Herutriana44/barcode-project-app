@@ -17,6 +17,17 @@
                     @csrf
                     @method('PUT')
 
+                    @if ($errors->any())
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Ada kesalahan!</strong>
+                            <ul class="mt-2 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="border-b pb-4">
                         <h3 class="text-xl font-bold text-egg-900 mb-4">2A: Info Label Barang</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
