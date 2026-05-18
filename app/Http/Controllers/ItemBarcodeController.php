@@ -341,11 +341,9 @@ class ItemBarcodeController extends Controller
             'dynamic_qty' => $validated['qty'],
             'inspector_name' => $validated['inspector_name'] ?? null,
             'tgl_produksi' => $validated['tgl_produksi'] ?? null,
-            'tgl_expired' => ($validated['tgl_expired'] ?? null) ?: (
-                ($validated['tgl_produksi'] ?? null) 
+            'tgl_expired' => ($validated['tgl_produksi']) 
                 ? Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d') 
-                : Carbon::now()->addMonths(3)->format('Y-m-d')
-            ),
+                : Carbon::now()->addMonths(3)->format('Y-m-d'),
             'code' => $validated['code'],
             'posisi_rak' => $validated['posisi_rak'] ?? null,
             'tingkat' => $validated['tingkat'] ?? null,
@@ -451,7 +449,9 @@ class ItemBarcodeController extends Controller
                 'inspector_name' => $validated['inspector_name'] ?? null,
                 'tgl_produksi' => $validated['tgl_produksi'] ?? null,
                 'tgl_produksi' => $validated['tgl_produksi'] ?? null,
-                'tgl_expired' => ($validated['tgl_expired']) ? $validated['tgl_expired'] : (($validated['tgl_produksi']) ? Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d') : null),
+                'tgl_expired' => ($validated['tgl_produksi']) 
+                    ? Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d') 
+                    : Carbon::now()->addMonths(3)->format('Y-m-d'),
                 'code' => $validated['code'],
                 'posisi_rak' => $validated['posisi_rak'] ?? null,
                 'tingkat' => $validated['tingkat'] ?? null,
