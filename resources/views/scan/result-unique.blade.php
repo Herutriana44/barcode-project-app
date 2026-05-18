@@ -19,6 +19,7 @@
                     <div><span class="font-medium">Qty:</span> {{ $uniqueItem->qty ?? 0 }} Pcs</div>
                     <div><span class="font-medium">Unique ID:</span> {{ $uniqueItem->id }}</div>
                     <div><span class="font-medium">Code:</span> {{ $uniqueItem->item->code ?? '-' }}</div>
+                    <div><span class="font-medium">Jumlah Box :</span> 1 </div>
                 </div>
 
                 <div class="mt-8 border-t border-egg-200 pt-6">
