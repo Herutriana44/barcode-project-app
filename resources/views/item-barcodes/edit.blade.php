@@ -208,13 +208,21 @@
             async function fetchRakOptions(companyName) {
                 const name = (companyName || '').trim();
                 if (!name) return [];
-                const url = `{{ route('raks.options') }}?company_name=${encodeURIComponent(name)}`;
-                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) return [];
-                const json = await res.json();
-                console.log('Rak Debug - Raw Data:', json.raw_data);
-                console.log('Rak Debug - Parsed Codes:', json.parsed_codes);
-                return Array.isArray(json.codes) ? json.codes : [];
+                
+                try {
+                    const response = await fetch('/perusahaan-rak.json');
+                    const data = await response.json();
+                    
+                    for (const key in data) {
+                        if (key.toLowerCase() === name.toLowerCase()) {
+                            return data[key];
+                        }
+                    }
+                    return [];
+                } catch (e) {
+                    console.error('Failed to fetch rak data:', e);
+                    return [];
+                }
             }
 
             function applyOptions(codes) {
