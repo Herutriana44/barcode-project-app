@@ -38,7 +38,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
             return;
         }
 
-        // $warehouse = Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
+        $warehouse = Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
 
         $reader = new Reader;
         $reader->open($path);
@@ -48,7 +48,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 continue;
             }
 
-            // $this->seedSheet($sheet->getRowIterator(), $warehouse);
+            $this->seedSheet($sheet->getRowIterator(), $warehouse);
             break;
         }
 
