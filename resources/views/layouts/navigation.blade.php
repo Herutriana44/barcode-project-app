@@ -20,9 +20,6 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
-                        {{ __('Scan Karyawan') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('item-barcodes.index')" :active="request()->routeIs('item-barcodes.*')">
                         {{ __('Barcode Barang') }}
                     </x-nav-link>
@@ -34,6 +31,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                         {{ __('Karyawan') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
+                        {{ __('Scan Karyawan') }}
                     </x-nav-link>
                     <!-- <x-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                         {{ __('FIFO Keluar') }}
@@ -113,14 +113,6 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
-                {{ __('Scan Karyawan') }}
-                @if(session('active_employee_id'))
-                    <span class="ml-2 inline-flex items-center gap-1 text-xs text-green-300">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>{{ session('active_employee_name') }}
-                    </span>
-                @endif
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('item-barcodes.index')" :active="request()->routeIs('item-barcodes.*')">
                 {{ __('Barcode Barang') }}
             </x-responsive-nav-link>
@@ -132,6 +124,14 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                 {{ __('Karyawan') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
+                {{ __('Scan Karyawan') }}
+                @if(session('active_employee_id'))
+                    <span class="ml-2 inline-flex items-center gap-1 text-xs text-green-300">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>{{ session('active_employee_name') }}
+                    </span>
+                @endif
             </x-responsive-nav-link>
             <!-- <x-responsive-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                 {{ __('FIFO Keluar') }}

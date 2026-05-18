@@ -14,6 +14,11 @@ class RequireActiveEmployee
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Jika user adalah admin, izinkan akses langsung tanpa scan karyawan
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return $next($request);
+        }
+
         if (! session()->has('active_employee_id')) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Scan karyawan terlebih dahulu.'], 403);

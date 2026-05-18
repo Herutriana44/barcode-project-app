@@ -107,7 +107,7 @@
                 const camId = cameras[cameras.length - 1].id; // prefer back camera
                 scanner.start(
                     camId,
-                    { fps: 10, qrbox: { width: 250, height: 150 } },
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
                     (decodedText) => {
                         scanner.stop().catch(() => {});
                         // Ekstrak NIP dari URL scan jika perlu
