@@ -188,11 +188,13 @@
             });
 
             produksi.addEventListener('input', function () {
-                if (expired.value && expired.dataset.auto !== '1') return;
                 const base = parseYmd(produksi.value);
                 if (!base) return;
-                expired.value = toYmd(addMonthsSafe(base, 3));
-                expired.dataset.auto = '1';
+
+                if (!expired.value || expired.dataset.auto === '1') {
+                    expired.value = toYmd(addMonthsSafe(base, 3));
+                    expired.dataset.auto = '1';
+                }
             });
         })();
     </script>

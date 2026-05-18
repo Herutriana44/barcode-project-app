@@ -208,11 +208,16 @@
             });
 
             produksi.addEventListener('input', function () {
-                if (expired.value && expired.dataset.auto !== '1') return;
                 const base = parseYmd(produksi.value);
                 if (!base) return;
-                expired.value = toYmd(addMonthsSafe(base, 3));
-                expired.dataset.auto = '1';
+                
+                // Selalu update jika produksi berubah, kecuali jika user sudah mengisi expired secara manual sebelumnya.
+                // Jika ingin selalu mengikuti, hapus pengecekan dataset.auto.
+                // Untuk memastikan responsif, kita update jika expired kosong atau auto.
+                if (!expired.value || expired.dataset.auto === '1') {
+                    expired.value = toYmd(addMonthsSafe(base, 3));
+                    expired.dataset.auto = '1';
+                }
             });
         })();
     </script>
