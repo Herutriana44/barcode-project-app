@@ -222,22 +222,20 @@
                     }
                 });
 
-                // codes.forEach(function (c) {
-                //     const opt = document.createElement('option');
-                //     opt.value = c;
-                //     opt.textContent = c;
-                //     rakSelect.appendChild(opt);
-                // });
+                codes.forEach(function (c) {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    if (c === keep) opt.selected = true;
+                    rakSelect.appendChild(opt);
+                });
 
-                if (keep) {
-                    rakSelect.value = keep;
-                    if (rakSelect.value !== keep) {
-                        const opt = document.createElement('option');
-                        opt.value = keep;
-                        opt.textContent = keep;
-                        rakSelect.appendChild(opt);
-                        rakSelect.value = keep;
-                    }
+                if (keep && !codes.includes(keep)) {
+                    const opt = document.createElement('option');
+                    opt.value = keep;
+                    opt.textContent = keep;
+                    opt.selected = true;
+                    rakSelect.appendChild(opt);
                 }
             }
 
