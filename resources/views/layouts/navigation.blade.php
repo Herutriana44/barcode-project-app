@@ -139,6 +139,11 @@
                     </span>
                 @endif
             </x-responsive-nav-link>
+            @if(auth()->user()->role === 'admin')
+                <x-responsive-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
+                    {{ __('Log Aktivitas') }}
+                </x-responsive-nav-link>
+            @endif
             <!-- <x-responsive-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                 {{ __('FIFO Keluar') }}
             </x-responsive-nav-link> -->
