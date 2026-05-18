@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rak;
 use Illuminate\Http\Request;
 
 class RakController extends Controller
