@@ -114,11 +114,6 @@ class ItemBarcodeController extends Controller
         $pages = (int) $request->query('pages', 1);
         $totalLabels = $pages * 10;
 
-        // Simpan jumlah box ke database
-        $itemBarcode->itemReceiving->update([
-            'jumlah_box' => $totalLabels
-        ]);
-
         $labelBarcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id, 1, 28);
         $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 88, 2);
 
