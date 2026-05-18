@@ -168,15 +168,18 @@ class ScanController extends Controller
                 'qty' => 'required|integer|min:1',
             ]);
             
+            $approachingExpiry = $uniqueItem->expired_date && $uniqueItem->expired_date->isBetween(\Carbon\Carbon::now(), \Carbon\Carbon::now()->addDays(30));
+            $warningMessage = $approachingExpiry ? 'Terdapat box pecahan yang mendekati expired, disarankan keluarkan dulu box pecahan. ' : '';
+            
             if ($validated['direction'] === 'out') {
                 $uniqueItem->update(['status_keluar' => true]);
-                return redirect()->route('scan.index')->with('success', 'Barang berhasil keluar.');
+                return redirect()->route('scan.index')->with('success', $warningMessage . 'Barang berhasil keluar.');
             } else {
                 // Duplikasi
                 $newUniqueItem = $uniqueItem->replicate(['status_keluar']);
                 $newUniqueItem->status_keluar = false;
                 $newUniqueItem->save();
-                return redirect()->route('scan.index')->with('success', 'Barang masuk, unique item baru dibuat.');
+                return redirect()->route('scan.index')->with('success', $warningMessage . 'Barang masuk, unique item baru dibuat.');
             }
         }
 
