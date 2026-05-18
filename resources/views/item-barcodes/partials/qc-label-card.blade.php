@@ -117,11 +117,11 @@
         <tr class="label-footer">
             <td>
                 <span class="f-h">Prod. date</span>
-                {{ $item->tgl_produksi?->format('d/m/Y') ?? '' }}
+                {{ ($uniqueProductionDate ?? $item->tgl_produksi)?->format('d/m/Y') ?? '' }}
             </td>
             <td>
                 <span class="f-h">Exp. date</span>
-                {{ $item->tgl_expired?->format('d/m/Y') ?? '' }}
+                {{ ($uniqueExpiryDate ?? $item->tgl_expired)?->format('d/m/Y') ?? '' }}
             </td>
             <td>
                 <span class="f-h">Status part</span>

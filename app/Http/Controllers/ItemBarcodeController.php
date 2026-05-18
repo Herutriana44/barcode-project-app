@@ -637,6 +637,8 @@ class ItemBarcodeController extends Controller
                 'qrSvg' => $qrSvg,
                 'labelQtyPcs' => $uniqueItem->qty,
                 'uniqueItemId' => $uniqueId,
+                'productionDate' => $uniqueItem->production_date ? \Carbon\Carbon::parse($uniqueItem->production_date) : null,
+                'expiryDate' => $uniqueItem->expired_date ? \Carbon\Carbon::parse($uniqueItem->expired_date) : null,
             ]
         ]);
 
@@ -665,6 +667,8 @@ class ItemBarcodeController extends Controller
                 'qrSvg' => BarcodeQrCodes::qrSvgForUniqueItem($itemId, $receivingId, $uniqueId, 88, 2),
                 'labelQtyPcs' => $uniqueItem->qty,
                 'uniqueItemId' => $uniqueId,
+                'productionDate' => $uniqueItem->production_date ? \Carbon\Carbon::parse($uniqueItem->production_date) : null,
+                'expiryDate' => $uniqueItem->expired_date ? \Carbon\Carbon::parse($uniqueItem->expired_date) : null,
             ];
         });
 

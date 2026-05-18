@@ -17,14 +17,17 @@
         @forelse($rows as $row)
             {{-- quantityUseStatic = false agar qty dari unique item yang dipakai, bukan static_qty --}}
             @include('item-barcodes.partials.qc-label-card', [
-                'itemBarcode' => $row['itemBarcode'],
-                'qrSvg' => $row['qrSvg'],
-                'barcodeSvg' => $row['labelBarcodeSvg'],
-                'labelQtyPcs' => $row['labelQtyPcs'],
-                'quantityUseStatic' => false,
-                'headerCompanyName' => $labelHeaderCompanyName,
-                'uniqueItemId' => $row['uniqueItemId'] ?? null,
+            'itemBarcode' => $row['itemBarcode'],
+            'qrSvg' => $row['qrSvg'],
+            'barcodeSvg' => $row['labelBarcodeSvg'],
+            'labelQtyPcs' => $row['labelQtyPcs'],
+            'quantityUseStatic' => false,
+            'headerCompanyName' => $labelHeaderCompanyName,
+            'uniqueItemId' => $row['uniqueItemId'] ?? null,
+            'uniqueProductionDate' => $row['productionDate'] ?? null,
+            'uniqueExpiryDate' => $row['expiryDate'] ?? null,
             ])
+
         @empty
             <p class="labels-empty">Tidak ada label.</p>
         @endforelse
