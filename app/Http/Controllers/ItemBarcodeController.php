@@ -436,7 +436,7 @@ class ItemBarcodeController extends Controller
         }
 
         DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany) {
-        $dataToUpdate = [
+            $itemBarcode->item->update([
                 'company_id' => $warehouseCompany->id,
                 'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
                 'pengirim_id' => $validated['pengirim_id'] ?? null,
@@ -450,11 +450,7 @@ class ItemBarcodeController extends Controller
                 'static_qty' => $validated['qty'],
                 'inspector_name' => $validated['inspector_name'] ?? null,
                 'tgl_produksi' => $validated['tgl_produksi'] ?? null,
-                'tgl_expired' => ($validated['tgl_expired'] ?? null) ?: (
-                    ($validated['tgl_produksi'] ?? null) 
-                    ? Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d') 
-                    : null
-                ),
+                'tgl_expired' => ($validated['tgl_expired']) ? $validated['tgl_expired'] : Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d'),
                 'code' => $validated['code'],
                 'posisi_rak' => $validated['posisi_rak'] ?? null,
                 'tingkat' => $validated['tingkat'] ?? null,
@@ -463,10 +459,7 @@ class ItemBarcodeController extends Controller
                 'quantity_material' => $validated['quantity_material'] ?? null,
                 'no_surat_jalan_material' => $validated['no_surat_jalan_material'] ?? null,
                 'tanggal_terima_material' => $validated['tanggal_terima_material'] ?? null,
-            ];
-            
-            \Illuminate\Support\Facades\Log::info('Updating item with data:', $dataToUpdate);
-            $itemBarcode->item->update($dataToUpdate);
+            ]);
 
             $itemBarcode->itemReceiving->update([
                 'transfer_slip_no' => $validated['transfer_slip_no'] ?? null,
