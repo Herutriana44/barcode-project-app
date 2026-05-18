@@ -18,12 +18,15 @@
                 </div>
             @endif
 
-            @php
-                $isExpired = $itemBarcode->item->tgl_expired?->isPast() ?? false;
-            @endphp
-            @if ($isExpired)
+            @if ($expiredWarning ?? false)
                 <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
-                    <p class="font-semibold">Warning: Expired items should be checked</p>
+                    <p class="font-semibold">Peringatan: Barang Expired!</p>
+                    <p class="mt-1">Barang ini sudah melewati masa expired. Harap lakukan pemeriksaan lebih lanjut.</p>
+                </div>
+            @elseif ($approachingExpiry ?? false)
+                <div class="p-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-900 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Barang Hampir Expired!</p>
+                    <p class="mt-1">Barang ini akan expired dalam 30 hari ke depan. Disarankan untuk segera dikeluarkan (FIFO).</p>
                 </div>
             @endif
 

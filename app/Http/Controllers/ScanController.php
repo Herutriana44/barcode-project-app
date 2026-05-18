@@ -64,7 +64,11 @@ class ScanController extends Controller
                 if (!$uniqueItem) {
                     return redirect()->route('scan.index')->with('error', 'Unique Item tidak ditemukan.');
                 }
-                return view('scan.result-unique', compact('uniqueItem'));
+                
+                $expiredWarning = $uniqueItem->expired_date?->isPast() ?? false;
+                $approachingExpiry = $uniqueItem->expired_date && $uniqueItem->expired_date->isBetween(Carbon::now(), Carbon::now()->addDays(30));
+
+                return view('scan.result-unique', compact('uniqueItem', 'expiredWarning', 'approachingExpiry'));
             }
 
             $itemBarcode = ItemBarcode::with([
@@ -86,6 +90,7 @@ class ScanController extends Controller
             }
             $fifoOlderStockWarning = FifoStockService::hasOlderBatchWithStock($itemBarcode);
             $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
+            $approachingExpiry = $itemBarcode->item->tgl_expired && $itemBarcode->item->tgl_expired->isBetween(Carbon::now(), Carbon::now()->addDays(30));
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -96,11 +101,12 @@ class ScanController extends Controller
                         'company' => $itemBarcode->item->company,
                         'fifo_older_stock_warning' => $fifoOlderStockWarning,
                         'expired_warning' => $expiredWarning,
+                        'approaching_expiry' => $approachingExpiry,
                     ],
                 ]);
             }
 
-            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning'));
+            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry'));
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {

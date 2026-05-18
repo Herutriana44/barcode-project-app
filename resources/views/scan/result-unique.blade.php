@@ -11,6 +11,18 @@
                 <p class="p-3 text-sm bg-green-50 border border-green-200 rounded text-green-900">{{ session('success') }}</p>
             @endif
 
+            @if ($expiredWarning ?? false)
+                <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Barang Expired!</p>
+                    <p class="mt-1">Barang ini sudah melewati masa expired. Harap lakukan pemeriksaan lebih lanjut.</p>
+                </div>
+            @elseif ($approachingExpiry ?? false)
+                <div class="p-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-900 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Barang Hampir Expired!</p>
+                    <p class="mt-1">Barang ini akan expired dalam 30 hari ke depan. Disarankan untuk segera dikeluarkan (FIFO).</p>
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
                     <div><span class="font-medium">Customer:</span> {{ $uniqueItem->item->customer ?? '-' }}</div>
