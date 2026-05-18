@@ -226,7 +226,7 @@
                 const keep = rakSelect.value || current;
                 rakSelect.innerHTML = '<option value="">—</option>';
                 // keep variable string to list string
-                list_keep = keep.split(', ').map(s => s.trim()).filter(s => s);
+                list_keep = keep.split(',').map(s => s.trim()).filter(s => s);
                 list_keep.forEach(function(k) {
                     if (!codes.includes(k)) {
                         const opt = document.createElement('option');
