@@ -346,7 +346,7 @@ class ItemBarcodeController extends Controller
             'dynamic_qty' => $validated['qty'],
             'inspector_name' => $validated['inspector_name'] ?? null,
             'tgl_produksi' => $validated['tgl_produksi'] ?? null,
-            'tgl_expired' => $validated['tgl_expired'] ?? null,
+            'tgl_expired' => $validated['tgl_expired'] ?? Carbon::now()->addMonths(3),
             'code' => $validated['code'],
             'posisi_rak' => $validated['posisi_rak'] ?? null,
             'tingkat' => $validated['tingkat'] ?? null,

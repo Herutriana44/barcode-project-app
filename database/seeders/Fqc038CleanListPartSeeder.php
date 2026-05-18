@@ -139,7 +139,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
             }
 
             $prodDate = $this->asDate($assoc['prod_date'] ?? null) ?? Carbon::today();
-            $expDate = $this->asDate($assoc['exp_date'] ?? null) ?? (clone $prodDate)->addMonthsNoOverflow(3);
+            $expDate = $this->asDate($assoc['exp_date'] ?? null) ?? (clone $prodDate)->addMonths(3);
 
             $model = $this->asString($assoc['model'] ?? null);
             if ($model === '-' || $model === '—') {
@@ -204,7 +204,7 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 $qtyForItem = is_int($qtyPack) ? $qtyPack : 0;
 
                 $prodDate = $r['prod_date'] instanceof Carbon ? $r['prod_date'] : Carbon::today();
-                $expDate = $r['exp_date'] instanceof Carbon ? $r['exp_date'] : (clone $prodDate)->addMonthsNoOverflow(3);
+                $expDate = $r['exp_date'] instanceof Carbon ? $r['exp_date'] : (clone $prodDate)->addMonths(3);
 
                 // Konsisten dengan modul barcode perusahaan:
                 // - item.company_id = perusahaan (customer)
