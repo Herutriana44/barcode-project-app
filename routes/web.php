@@ -22,10 +22,18 @@ Route::get('/', function () {
         : view('guest-dashboard');
 })->name('home');
 
+use App\Http\Controllers\ActivityLogController;
+
+// ... (existing imports)
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
