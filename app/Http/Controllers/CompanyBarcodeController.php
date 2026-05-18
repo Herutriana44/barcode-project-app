@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Models\Rak;
+use App\Services\ActivityLogger;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
@@ -137,6 +138,8 @@ class CompanyBarcodeController extends Controller
                 ['barcode_id' => 'CB-'.$company->id.'-'.uniqid()]
             );
 
+            ActivityLogger::log('Perusahaan', 'Buat', 'Membuat barcode perusahaan: ' . $companyName);
+
             return redirect()->route('company-barcodes.show', $companyBarcode)
                 ->with('success', 'Barcode perusahaan berhasil dibuat.');
         });
@@ -222,6 +225,7 @@ class CompanyBarcodeController extends Controller
                 $company->update(['name' => $newName]);
                 Rak::where('company_name', $oldName)->update(['company_name' => $newName]);
             });
+            ActivityLogger::log('Perusahaan', 'Edit', 'Mengubah nama perusahaan dari ' . $oldName . ' menjadi ' . $newName);
         }
 
         return redirect()->route('company-barcodes.show', $companyBarcode)
@@ -248,6 +252,8 @@ class CompanyBarcodeController extends Controller
             $company->delete();
         });
 
+        ActivityLogger::log('Perusahaan', 'Hapus', 'Menghapus perusahaan: ' . $companyName);
+
         return redirect()->route('company-barcodes.index')
             ->with('success', 'Data perusahaan dan barcode terkait dihapus.');
     }
@@ -271,6 +277,8 @@ class CompanyBarcodeController extends Controller
             Item::whereIn('id', $itemIds)->delete();
             $company->delete();
         });
+
+        ActivityLogger::log('Perusahaan', 'Hapus', 'Menghapus perusahaan: ' . $name);
 
         return redirect()->route('company-barcodes.index')
             ->with('success', 'Data perusahaan dihapus.');

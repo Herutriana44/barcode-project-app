@@ -8,6 +8,7 @@ use App\Models\ItemBarcode;
 use App\Models\ItemReceiving;
 use App\Models\Rak;
 use App\Models\UniqueItem;
+use App\Services\ActivityLogger;
 use App\Support\BarcodeQrCodes;
 use App\Support\InventorySpreadsheet;
 use App\Support\ScanUrl;
@@ -371,6 +372,8 @@ class ItemBarcodeController extends Controller
             'scanned_by_employee_id' => session('active_employee_id'),
         ]);
 
+        ActivityLogger::log('Barang', 'Buat', 'Membuat barcode barang: ' . $barcodeId . ' (Part: ' . $item->part_name . ')');
+
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Barcode barang berhasil dibuat.');
     }
@@ -467,12 +470,17 @@ class ItemBarcodeController extends Controller
             ]);
         });
 
+        ActivityLogger::log('Barang', 'Edit', 'Mengedit barang dengan barcode: ' . $itemBarcode->barcode_id);
+
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Data barang diperbarui.');
     }
 
     public function destroy(ItemBarcode $itemBarcode)
     {
+        $barcodeId = $itemBarcode->barcode_id;
+        $partName = $itemBarcode->item->part_name;
+        
         $itemBarcode->load(['item', 'itemReceiving']);
 
         DB::transaction(function () use ($itemBarcode) {
@@ -487,6 +495,8 @@ class ItemBarcodeController extends Controller
             }
             $item->delete();
         });
+
+        ActivityLogger::log('Barang', 'Hapus', 'Menghapus barang: ' . $partName . ' (Barcode: ' . $barcodeId . ')');
 
         return redirect()->route('item-barcodes.index')
             ->with('success', 'Barcode barang dihapus.');
