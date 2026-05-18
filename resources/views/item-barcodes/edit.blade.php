@@ -84,14 +84,14 @@
                                 <input type="date" name="tgl_expired" value="{{ old('tgl_expired', $item->tgl_expired?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
                             <div>
-                                <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
-                                <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
-                                    class="mt-1 block w-full rounded-md border-egg-300 bg-white max-w-full whitespace-normal break-words">
-                                    <option value="" class="whitespace-normal break-words">—</option>
-                                    {{-- Saat opsi di-render lewat JavaScript/Looping, pastikan kelas ini juga ikut: --}}
-                                    {{-- <option value="1" class="whitespace-normal break-words">Nama Rak Yang Sangat Panjang Sekali Sampai Turun Ke Bawah</option> --}}
-                                </select>
-                            </div>
+                            <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
+                            <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
+                                class="mt-1 block w-full rounded-md border-egg-300 bg-white max-w-full whitespace-normal break-words">
+                                <option value="" class="whitespace-normal break-words">—</option>
+                                {{-- Saat opsi di-render lewat JavaScript/Looping, pastikan kelas ini juga ikut: --}}
+                                {{-- <option value="1" class="whitespace-normal break-words">Nama Rak Yang Sangat Panjang Sekali Sampai Turun Ke Bawah</option> --}}
+                            </select>
+                        </div>
                             <!-- <div>
                                 <label class="block text-base font-medium text-egg-800">Tingkat</label>
                                 <input type="text" name="tingkat" value="{{ old('tingkat', $item->tingkat) }}" class="mt-1 block w-full rounded-md border-egg-300">
@@ -187,6 +187,22 @@
                 return d;
             }
 
+            // Initialize auto state
+            function initAutoState() {
+                if (!produksi.value) return;
+                const base = parseYmd(produksi.value);
+                if (!base) return;
+                
+                const expected = toYmd(addMonthsSafe(base, 3));
+                if (!expired.value) {
+                    expired.value = expected;
+                    expired.dataset.auto = '1';
+                } else if (expired.value === expected) {
+                    expired.dataset.auto = '1';
+                }
+            }
+            initAutoState();
+
             expired.addEventListener('input', function () {
                 expired.dataset.auto = '0';
             });
@@ -245,17 +261,35 @@
 // Filter dan tambahkan opsi dari JSON
 codes.forEach(function (c) {
     const opt = document.createElement('option');
+    
     opt.value = c;
     opt.textContent = c;
+
+    keep1 = formatTextWithNewline(keep);
+    
     if (c === keep) opt.selected = true;
+    console.log("rak : ", keep1);
     rakSelect.appendChild(opt);
 });
+
+function formatTextWithNewline(text, maxItems = 6) {
+        if (!text.includes(',')) return text;
+        const items = text.split(',');
+        let result = [];
+        for (let i = 0; i < items.length; i += maxItems) {
+            let chunk = items.slice(i, i + maxItems).join(', ');
+            result.push(chunk);
+        }
+        return result.join(',\n   '); // \n untuk baris baru, spasi untuk indentasi agar rapi
+    }
+
+keep1 = formatTextWithNewline(keep);
 
 // Pastikan nilai database yang tersimpan tetap ada meskipun tidak di JSON
 if (keep && !codes.includes(keep)) {
     const opt = document.createElement('option');
     opt.value = keep;
-    opt.textContent = keep;
+    opt.textContent = keep1;
     opt.selected = true;
     rakSelect.appendChild(opt);
 }
