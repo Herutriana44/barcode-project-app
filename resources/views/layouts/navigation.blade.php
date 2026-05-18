@@ -159,6 +159,9 @@
                 @endif
             </x-responsive-nav-link>
             @if(auth()->user()->role === 'admin')
+            <x-responsive-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
+                                {{ __('Karyawan') }}
+                                            </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
                     {{ __('Log Aktivitas') }}
                 </x-responsive-nav-link>
