@@ -1,8 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-3xl text-egg-900 leading-tight">
-            {{ __('Log Aktivitas Karyawan') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-bold text-3xl text-egg-900 leading-tight">
+                {{ __('Log Aktivitas Karyawan') }}
+            </h2>
+            <a href="{{ route('activity-logs.export') }}" class="btn-egg-primary px-4 py-2 text-sm">
+                {{ __('Export ke Excel') }}
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-8 w-full">
