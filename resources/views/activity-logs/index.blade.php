@@ -7,8 +7,8 @@
 
     <div class="py-8 w-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-8">
-            <div class="bg-white shadow-sm border border-egg-200 sm:rounded-xl overflow-hidden">
-                <table class="w-full text-sm text-left">
+            <div class="bg-white shadow-sm border border-egg-200 sm:rounded-xl overflow-x-auto">
+                <table class="w-full text-sm text-left min-w-[800px]">
                     <thead class="text-xs text-egg-700 uppercase bg-egg-50">
                         <tr>
                             <th class="px-6 py-4">NIP</th>
@@ -17,6 +17,7 @@
                             <th class="px-6 py-4">Jabatan</th>
                             <th class="px-6 py-4">Di</th>
                             <th class="px-6 py-4">Activity</th>
+                            <th class="px-6 py-4">Deskripsi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-egg-200">
@@ -36,10 +37,11 @@
                                 <td class="px-6 py-4">{{ $log->employee->jabatan ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $log->target_type }}</td>
                                 <td class="px-6 py-4">{{ $log->activity }}</td>
+                                <td class="px-6 py-4 max-w-xs truncate" title="{{ $log->details }}">{{ $log->details }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
+                                <td colspan="7" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
                             </tr>
                         @endforelse
                     </tbody>
