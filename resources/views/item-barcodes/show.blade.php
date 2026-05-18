@@ -154,16 +154,25 @@
 
                     <!-- Form Tambah Unique Item -->
                     <div id="add-unique-item-form" class="hidden mb-6 p-4 bg-egg-50 rounded-lg border border-egg-200">
-                        <form action="{{ route('item-barcodes.unique-items.store', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-end">
+                        <form action="{{ route('item-barcodes.unique-items.store', $itemBarcode) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                             @csrf
-                            <div class="flex-1 w-full">
+                            <div>
                                 <label class="block text-sm font-medium text-egg-800 mb-1">Qty (pcs)</label>
                                 <input type="number" name="qty" min="1" required
                                     class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" 
-                                    placeholder="Masukkan qty" />
-                                @error('qty')<p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>@enderror
+                                    placeholder="Qty" />
                             </div>
-                            <div class="flex gap-2">
+                            <div>
+                                <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Produksi</label>
+                                <input type="date" name="production_date"
+                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Expired</label>
+                                <input type="date" name="expired_date"
+                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                            </div>
+                            <div class="col-span-1 sm:col-span-3 flex gap-2 justify-end">
                                 <button type="submit" class="btn-egg-primary text-sm">Simpan</button>
                                 <button type="button" onclick="document.getElementById('add-unique-item-form').classList.add('hidden')" class="btn-egg-secondary text-sm">Batal</button>
                             </div>
@@ -176,9 +185,10 @@
                             @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $uniqueItem)
                                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
                                     <div class="flex-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-medium text-egg-700">Qty:</span>
-                                            <span class="text-base font-semibold text-egg-900">{{ $uniqueItem->qty }} pcs</span>
+                                        <div class="flex gap-4">
+                                            <div><span class="text-sm font-medium text-egg-700">Qty:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->qty }}</span></div>
+                                            <div><span class="text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
+                                            <div><span class="text-sm font-medium text-egg-700">Exp:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span></div>
                                         </div>
                                         <div class="text-xs text-egg-500 mt-1">
                                             Dibuat: {{ $uniqueItem->created_at->format('d/m/Y H:i') }}
@@ -188,7 +198,7 @@
                                         <a href="{{ route('item-barcodes.unique-items.print', [$itemBarcode, $uniqueItem]) }}" 
                                            target="_blank" 
                                            class="btn-egg-primary text-sm">
-                                            Cetak Label
+                                            Cetak
                                         </a>
                                         <button type="button" 
                                                 onclick="toggleEditForm({{ $uniqueItem->id }})" 
@@ -210,15 +220,25 @@
 
                                 <!-- Form Edit (Hidden by default) -->
                                 <div id="edit-form-{{ $uniqueItem->id }}" class="hidden p-4 bg-egg-50 rounded-lg border border-egg-200 -mt-3">
-                                    <form action="{{ route('item-barcodes.unique-items.update', [$itemBarcode, $uniqueItem]) }}" method="POST" class="flex flex-col sm:flex-row gap-3 items-end">
+                                    <form action="{{ route('item-barcodes.unique-items.update', [$itemBarcode, $uniqueItem]) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                                         @csrf
                                         @method('PATCH')
-                                        <div class="flex-1 w-full">
+                                        <div>
                                             <label class="block text-sm font-medium text-egg-800 mb-1">Qty (pcs)</label>
                                             <input type="number" name="qty" min="1" value="{{ $uniqueItem->qty }}" required
                                                 class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                                         </div>
-                                        <div class="flex gap-2">
+                                        <div>
+                                            <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Produksi</label>
+                                            <input type="date" name="production_date" value="{{ $uniqueItem->production_date?->format('Y-m-d') }}"
+                                                class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Expired</label>
+                                            <input type="date" name="expired_date" value="{{ $uniqueItem->expired_date?->format('Y-m-d') }}"
+                                                class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                        </div>
+                                        <div class="col-span-1 sm:col-span-3 flex gap-2 justify-end">
                                             <button type="submit" class="btn-egg-primary text-sm">Update</button>
                                             <button type="button" onclick="toggleEditForm({{ $uniqueItem->id }})" class="btn-egg-secondary text-sm">Batal</button>
                                         </div>

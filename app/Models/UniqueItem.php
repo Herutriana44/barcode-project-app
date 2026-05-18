@@ -13,11 +13,15 @@ class UniqueItem extends Model
         'item_id',
         'qty',
         'status_keluar',
+        'production_date',
+        'expired_date',
     ];
 
     protected $casts = [
         'qty' => 'integer',
         'status_keluar' => 'boolean',
+        'production_date' => 'date',
+        'expired_date' => 'date',
     ];
 
     public function item()

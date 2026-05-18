@@ -568,6 +568,8 @@ class ItemBarcodeController extends Controller
     {
         $validated = $request->validate([
             'qty' => 'required|integer|min:1',
+            'production_date' => 'nullable|date',
+            'expired_date' => 'nullable|date',
         ]);
 
         $itemBarcode->load('item');
@@ -575,6 +577,8 @@ class ItemBarcodeController extends Controller
         UniqueItem::create([
             'item_id' => $itemBarcode->item->id,
             'qty' => $validated['qty'],
+            'production_date' => $validated['production_date'] ?? null,
+            'expired_date' => $validated['expired_date'] ?? null,
         ]);
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
@@ -585,10 +589,14 @@ class ItemBarcodeController extends Controller
     {
         $validated = $request->validate([
             'qty' => 'required|integer|min:1',
+            'production_date' => 'nullable|date',
+            'expired_date' => 'nullable|date',
         ]);
 
         $uniqueItem->update([
             'qty' => $validated['qty'],
+            'production_date' => $validated['production_date'] ?? null,
+            'expired_date' => $validated['expired_date'] ?? null,
         ]);
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
