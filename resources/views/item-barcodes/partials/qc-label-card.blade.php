@@ -130,5 +130,5 @@
       </td>
         </tr>
     </table>
-  <div class="label-doc-rev">F-QC-038. Date/Rev : 22.04.24/01</div>
+  <!-- <div class="label-doc-rev">F-QC-038. Date/Rev : 22.04.24/01</div> -->
 </article>

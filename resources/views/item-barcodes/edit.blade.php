@@ -86,8 +86,10 @@
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
                                 <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
-                                    class="mt-1 block w-full rounded-md border-egg-300 bg-white">
-                                    <option value="">—</option>
+                                    class="mt-1 block w-full rounded-md border-egg-300 bg-white max-w-full whitespace-normal break-words">
+                                    <option value="" class="whitespace-normal break-words">—</option>
+                                    {{-- Saat opsi di-render lewat JavaScript/Looping, pastikan kelas ini juga ikut: --}}
+                                    {{-- <option value="1" class="whitespace-normal break-words">Nama Rak Yang Sangat Panjang Sekali Sampai Turun Ke Bawah</option> --}}
                                 </select>
                             </div>
                             <!-- <div>

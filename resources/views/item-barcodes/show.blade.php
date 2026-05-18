@@ -121,7 +121,11 @@
                         <div><span class="font-medium">Tgl Produksi:</span> {{ $detailItem->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Expired:</span> {{ $detailItem->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
                         <div><span class="font-medium">Code:</span> {{ $detailItem->code ?? '-' }}</div>
-                        <div><span class="font-medium">Posisi Rak:</span> {{ $detailItem->posisi_rak ?? '-' }}</div>
+                        <div>
+                            <span class="font-medium">Posisi Rak:</span> 
+                            <span class="break-words">{!! $detailItem->posisi_rak ? nl2br(e($detailItem->posisi_rak)) : '-' !!}</span>
+                        </div>
+                        <!-- <div><span class="font-medium">Posisi Rak:</span> {{ $detailItem->posisi_rak ?? '-' }}</div> -->
                         <!-- <div><span class="font-medium">Tingkat:</span> {{ $detailItem->tingkat ?? '-' }}</div> -->
                         <!-- <div class="col-span-2 border-t pt-2 mt-2"><span class="font-medium">Transfer Slip:</span> {{ $itemBarcode->itemReceiving->transfer_slip_no ?? '-' }}</div>
                         <div><span class="font-medium">Tgl Terima FG:</span> {{ $itemBarcode->itemReceiving->tanggal_terima_fg?->format('d/m/Y') ?? '-' }}</div>
