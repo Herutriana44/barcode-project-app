@@ -23,33 +23,30 @@ class ScanController extends Controller
         $threshold = Carbon::now()->addDays(30);
         $now = Carbon::now();
 
+        // Use array to ensure consistent return structure even if empty
         $expiringItems = \App\Models\Item::whereNotNull('tgl_expired')
-            ->whereBetween('tgl_expired', [$now, $threshold])
+            ->where('tgl_expired', '>=', $now->toDateString())
+            ->where('tgl_expired', '<=', $threshold->toDateString())
             ->get();
 
         $expiringUniqueItems = \App\Models\UniqueItem::whereNotNull('expired_date')
-            ->whereBetween('expired_date', [$now, $threshold])
+            ->where('expired_date', '>=', $now->toDateString())
+            ->where('expired_date', '<=', $threshold->toDateString())
             ->where('status_keluar', false)
             ->get();
 
-        return ['items' => $expiringItems, 'uniqueItems' => $expiringUniqueItems];
+        return [
+            'items' => $expiringItems, 
+            'uniqueItems' => $expiringUniqueItems
+        ];
     }
 
     public function show(Request $request, string $barcodeId)
     {
         $expiringList = $this->getExpiringItemsList();
 
-        if (str_starts_with($barcodeId, 'EMP-')) {
-            // ... (keep existing employee logic)
-            // Need to handle the return view here as well, 
-            // but the user only asked for items and unique items results.
-            // I'll keep the logic as is for now and focus on item/unique-item cases.
-            // Actually, I should probably pass the expiringList to all views if possible.
-        }
-
         if (str_starts_with($barcodeId, 'IB-')) {
             $parts = explode('-', $barcodeId);
-            // Cek apakah ada ID unique item (format: IB-item_id-receiving_id-unique_id)
             if (count($parts) === 4) {
                 $uniqueItemId = $parts[3];
                 $uniqueItem = \App\Models\UniqueItem::with('item')->find($uniqueItemId);
@@ -65,39 +62,18 @@ class ScanController extends Controller
 
             $itemBarcode = ItemBarcode::with([
                 'item.company',
-                'item.operatorMobil',
-                'item.pengirim',
-                'item.operatorForklift',
                 'itemReceiving',
             ])
                 ->where('barcode_id', $barcodeId)
                 ->first();
 
             if (! $itemBarcode) {
-                if ($request->expectsJson()) {
-                    return response()->json(['error' => 'Barcode tidak ditemukan'], 404);
-                }
-
                 return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
             }
+            
             $fifoOlderStockWarning = FifoStockService::hasOlderBatchWithStock($itemBarcode);
             $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
             $approachingExpiry = $itemBarcode->item->tgl_expired && $itemBarcode->item->tgl_expired->isBetween(Carbon::now(), Carbon::now()->addDays(30));
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'type' => 'item',
-                    'data' => [
-                        'item' => $itemBarcode->item,
-                        'receiving' => $itemBarcode->itemReceiving,
-                        'company' => $itemBarcode->item->company,
-                        'fifo_older_stock_warning' => $fifoOlderStockWarning,
-                        'expired_warning' => $expiredWarning,
-                        'approaching_expiry' => $approachingExpiry,
-                        'expiring_list' => $expiringList,
-                    ],
-                ]);
-            }
 
             return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry', 'expiringList'));
         }
