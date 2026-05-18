@@ -436,7 +436,7 @@ class ItemBarcodeController extends Controller
         }
 
         DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany) {
-            $itemBarcode->item->update([
+        $dataToUpdate = [
                 'company_id' => $warehouseCompany->id,
                 'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
                 'pengirim_id' => $validated['pengirim_id'] ?? null,
@@ -446,7 +446,6 @@ class ItemBarcodeController extends Controller
                 'part_number' => $validated['part_number'] ?? null,
                 'model' => $validated['model'] ?? null,
                 'berat' => $validated['berat'] ?? null,
-                // qty input dianggap "isi per box" (static). Dynamic tidak diubah lewat edit form.
                 'qty' => $validated['qty'],
                 'static_qty' => $validated['qty'],
                 'inspector_name' => $validated['inspector_name'] ?? null,
@@ -464,7 +463,10 @@ class ItemBarcodeController extends Controller
                 'quantity_material' => $validated['quantity_material'] ?? null,
                 'no_surat_jalan_material' => $validated['no_surat_jalan_material'] ?? null,
                 'tanggal_terima_material' => $validated['tanggal_terima_material'] ?? null,
-            ]);
+            ];
+            
+            \Illuminate\Support\Facades\Log::info('Updating item with data:', $dataToUpdate);
+            $itemBarcode->item->update($dataToUpdate);
 
             $itemBarcode->itemReceiving->update([
                 'transfer_slip_no' => $validated['transfer_slip_no'] ?? null,
