@@ -35,6 +35,12 @@
                     <x-nav-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
                         {{ __('Scan Karyawan') }}
                     </x-nav-link>
+
+                    @if(auth()->user()->role === 'admin')
+                        <x-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
+                            {{ __('Log Aktivitas') }}
+                        </x-nav-link>
+                    @endif
                     <!-- <x-nav-link :href="route('stock-out.create')" :active="request()->routeIs('stock-out.*')">
                         {{ __('FIFO Keluar') }}
                     </x-nav-link> -->

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Services\ActivityLogger;
 use App\Support\BarcodeQrCodes;
 use App\Support\EmployeeUrl;
 use Illuminate\Http\Request;
@@ -62,6 +63,8 @@ class EmployeeController extends Controller
             'status' => $validated['status'] ?? null,
             'photo_path' => $photoPath,
         ]);
+
+        ActivityLogger::log('Karyawan', 'Buat', 'Membuat karyawan baru: ' . $validated['name'] . ' (NIP: ' . $validated['nip'] . ')');
 
         return redirect()->route('employees.index')
             ->with('success', 'Karyawan berhasil ditambahkan.');
@@ -161,16 +164,23 @@ class EmployeeController extends Controller
             'photo_path' => $photoPath,
         ]);
 
+        ActivityLogger::log('Karyawan', 'Edit', 'Mengedit karyawan: ' . $validated['name'] . ' (NIP: ' . $validated['nip'] . ')');
+
         return redirect()->route('employees.index')
             ->with('success', 'Data karyawan diperbarui.');
     }
 
     public function destroy(Employee $employee)
     {
+        $name = $employee->name;
+        $nip = $employee->nip;
+
         if ($employee->photo_path) {
             Storage::disk('public')->delete($employee->photo_path);
         }
         $employee->delete();
+
+        ActivityLogger::log('Karyawan', 'Hapus', 'Menghapus karyawan: ' . $name . ' (NIP: ' . $nip . ')');
 
         return redirect()->route('employees.index')
             ->with('success', 'Karyawan dihapus.');
