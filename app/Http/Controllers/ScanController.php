@@ -23,18 +23,20 @@ class ScanController extends Controller
         $threshold = Carbon::now()->addDays(30);
         $now = Carbon::now();
 
-        // Use array to ensure consistent return structure even if empty
+        // Mengambil semua item yang mendekati expired
         $expiringItems = \App\Models\Item::whereNotNull('tgl_expired')
             ->where('tgl_expired', '>=', $now->toDateString())
             ->where('tgl_expired', '<=', $threshold->toDateString())
             ->get();
 
+        // Mengambil semua unique item yang mendekati expired
         $expiringUniqueItems = \App\Models\UniqueItem::whereNotNull('expired_date')
             ->where('expired_date', '>=', $now->toDateString())
             ->where('expired_date', '<=', $threshold->toDateString())
             ->where('status_keluar', false)
             ->get();
 
+        // Menggabungkan keduanya agar view bisa menampilkan semua peringatan
         return [
             'items' => $expiringItems, 
             'uniqueItems' => $expiringUniqueItems
@@ -47,6 +49,8 @@ class ScanController extends Controller
 
         if (str_starts_with($barcodeId, 'IB-')) {
             $parts = explode('-', $barcodeId);
+            
+            // Logika Scan Unique Item
             if (count($parts) === 4) {
                 $uniqueItemId = $parts[3];
                 $uniqueItem = \App\Models\UniqueItem::with('item')->find($uniqueItemId);
@@ -60,6 +64,7 @@ class ScanController extends Controller
                 return view('scan.result-unique', compact('uniqueItem', 'expiredWarning', 'approachingExpiry', 'expiringList'));
             }
 
+            // Logika Scan Item Umum
             $itemBarcode = ItemBarcode::with([
                 'item.company',
                 'itemReceiving',

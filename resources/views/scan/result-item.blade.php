@@ -47,8 +47,6 @@
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
                     <div><span class="font-medium">Customer:</span> {{ $scanItem->customer ?? '-' }}</div>
-                    <div><span class="font-medium">Expired warning:</span> {{ $expiredWarning }}</div>
-                    <div><span class="font-medium">approachingExpiry:</span> {{ $approachingExpiry }}</div>
                     <div><span class="font-medium">Part Name:</span> {{ $scanItem->part_name ?? '-' }}</div>
                     <div><span class="font-medium">Part Number:</span> {{ $scanItem->part_number ?? '-' }}</div>
                     <div><span class="font-medium">Model:</span> {{ $scanItem->model ?? '-' }}</div>
