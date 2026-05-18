@@ -168,7 +168,13 @@ class ScanController extends Controller
                 'qty' => 'required|integer|min:1',
             ]);
             
-            $approachingExpiry = $uniqueItem->expired_date && $uniqueItem->expired_date->isBetween(\Carbon\Carbon::now(), \Carbon\Carbon::now()->addDays(30));
+            // Cek expiry date dari unique item, jika kosong cek dari parent item
+            $expiryDate = $uniqueItem->expired_date;
+            if (!$expiryDate && $uniqueItem->item) {
+                $expiryDate = $uniqueItem->item->tgl_expired;
+            }
+            
+            $approachingExpiry = $expiryDate && $expiryDate->isBetween(\Carbon\Carbon::now(), \Carbon\Carbon::now()->addDays(30));
             $warningMessage = $approachingExpiry ? 'Terdapat box pecahan yang mendekati expired, disarankan keluarkan dulu box pecahan. ' : '';
             
             if ($validated['direction'] === 'out') {
