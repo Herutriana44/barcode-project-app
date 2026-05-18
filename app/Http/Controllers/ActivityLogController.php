@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use OpenSpout\Writer\CSV\Writer;
+use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Common\Entity\Row;
 
 class ActivityLogController extends Controller
@@ -18,7 +18,7 @@ class ActivityLogController extends Controller
 
     public function export(): StreamedResponse
     {
-        $fileName = 'activity_logs_' . date('Y-m-d_His') . '.csv';
+        $fileName = 'activity_logs_' . date('Y-m-d_His') . '.xlsx';
 
         $response = new StreamedResponse(function () {
             $writer = new Writer();
@@ -44,7 +44,7 @@ class ActivityLogController extends Controller
 
             $writer->close();
         }, 200, [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ]);
 
