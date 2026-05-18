@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use OpenSpout\Writer\CSV\Writer;
+use OpenSpout\Common\Entity\Row;
 
 class ActivityLogController extends Controller
 {
@@ -23,20 +24,21 @@ class ActivityLogController extends Controller
             $writer = new Writer();
             $writer->openToFile('php://output');
 
-            $writer->addRow(['NIP', 'Nama', 'Departemen', 'Jabatan', 'Di', 'Activity', 'Deskripsi', 'Tanggal']);
+            $header = ['NIP', 'Nama', 'Departemen', 'Jabatan', 'Di', 'Activity', 'Deskripsi', 'Tanggal'];
+            $writer->addRow(Row::fromValues($header));
 
             ActivityLog::with(['user', 'employee'])->latest()->chunk(100, function ($logs) use ($writer) {
                 foreach ($logs as $log) {
-                    $writer->addRow([
-                        $log->employee->nip ?? '-',
-                        $log->employee->name ?? '-',
-                        $log->employee->departemen ?? '-',
-                        $log->employee->jabatan ?? '-',
-                        $log->target_type,
-                        $log->activity,
-                        $log->details,
-                        $log->created_at->format('d/m/Y H:i:s'),
-                    ]);
+                    $writer->addRow(Row::fromValues([
+                        (string) ($log->employee->nip ?? '-'),
+                        (string) ($log->employee->name ?? '-'),
+                        (string) ($log->employee->departemen ?? '-'),
+                        (string) ($log->employee->jabatan ?? '-'),
+                        (string) $log->target_type,
+                        (string) $log->activity,
+                        (string) $log->details,
+                        (string) $log->created_at->format('d/m/Y H:i:s'),
+                    ]));
                 }
             });
 
