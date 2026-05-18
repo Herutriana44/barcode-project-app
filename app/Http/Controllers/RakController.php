@@ -60,6 +60,8 @@ class RakController extends Controller
     }
 
     /**
+     * Parse rak code.
+     */
     private function parseRakCode(string $code): ?array
     {
         $s = strtoupper(trim($code));
