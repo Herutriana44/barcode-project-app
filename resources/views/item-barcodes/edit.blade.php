@@ -221,22 +221,23 @@
                         rakSelect.appendChild(opt);
                     }
                 });
+// Filter dan tambahkan opsi dari JSON
+codes.forEach(function (c) {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    if (c === keep) opt.selected = true;
+    rakSelect.appendChild(opt);
+});
 
-                codes.forEach(function (c) {
-                    const opt = document.createElement('option');
-                    opt.value = c;
-                    opt.textContent = c;
-                    if (c === keep) opt.selected = true;
-                    rakSelect.appendChild(opt);
-                });
-
-                if (keep && !codes.includes(keep)) {
-                    const opt = document.createElement('option');
-                    opt.value = keep;
-                    opt.textContent = keep;
-                    opt.selected = true;
-                    rakSelect.appendChild(opt);
-                }
+// Pastikan nilai database yang tersimpan tetap ada meskipun tidak di JSON
+if (keep && !codes.includes(keep)) {
+    const opt = document.createElement('option');
+    opt.value = keep;
+    opt.textContent = keep;
+    opt.selected = true;
+    rakSelect.appendChild(opt);
+}
             }
 
             let last = '';
