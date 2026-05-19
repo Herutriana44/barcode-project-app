@@ -38,10 +38,16 @@
                                             {{ $log->employee->nip }}
                                         </a>
                                     @else
-                                        -
+                                        <span class="text-red-600 font-bold">ADMIN</span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4">{{ $log->employee->name ?? '-' }}</td>
+                                <td class="px-6 py-4">
+                                    @if($log->employee)
+                                        {{ $log->employee->name }}
+                                    @else
+                                        <span class="text-egg-500 italic">{{ $log->user->email ?? 'N/A' }}</span>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4">{{ $log->employee->departemen ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $log->employee->jabatan ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $log->target_type }}</td>
