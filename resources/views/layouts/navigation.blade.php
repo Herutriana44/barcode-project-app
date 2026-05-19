@@ -20,7 +20,7 @@
 
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 rounded-md text-egg-100 hover:text-white focus:outline-none transition ease-in-out duration-150 {{ request()->routeIs('item-barcodes.*') || request()->routeIs('company-barcodes.*') ? 'text-white border-b-2 border-white' : '' }}">
+                            <button class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('item-barcodes.*') || request()->routeIs('company-barcodes.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-base font-medium transition duration-150 ease-in-out">
                                 <div>{{ __('Data Barcode') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -41,7 +41,7 @@
 
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 rounded-md text-egg-100 hover:text-white focus:outline-none transition ease-in-out duration-150 {{ request()->routeIs('scan.*') || request()->routeIs('scan-employee.*') ? 'text-white border-b-2 border-white' : '' }}">
+                            <button class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('scan.*') || request()->routeIs('scan-employee.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-base font-medium transition duration-150 ease-in-out">
                                 <div>{{ __('Fitur Scan') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -75,20 +75,20 @@
             <div class="hidden sm:flex sm:items-center sm:ms-4 gap-3 shrink-0">
                 {{-- Badge karyawan aktif --}}
                 @if(session('active_employee_id'))
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/20 border border-green-400/40 text-white text-sm">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-400/40 text-white text-base font-medium">
                         <span class="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse"></span>
-                        <span class="font-medium truncate max-w-[10rem]">{{ session('active_employee_name') }}</span>
+                        <span class="truncate max-w-[10rem]">{{ session('active_employee_name') }}</span>
                         <form method="POST" action="{{ route('scan-employee.destroy') }}" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" title="Akhiri sesi karyawan"
-                                    class="ml-1 text-green-200 hover:text-white transition text-base leading-none"
+                                    class="ml-1 text-green-200 hover:text-white transition text-lg leading-none"
                                     onclick="return confirm('Akhiri sesi karyawan?')">✕</button>
                         </form>
                     </div>
                 @else
                     <a href="{{ route('scan-employee.index') }}"
-                       class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-100 hover:bg-amber-500/30 text-sm font-medium transition">
+                       class="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-100 hover:bg-amber-500/30 text-base font-medium transition">
                         <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
                         Scan Karyawan
                     </a>
@@ -96,7 +96,7 @@
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-4 py-2.5 border border-white/25 text-base leading-5 font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 shadow-sm">
+                        <button class="inline-flex items-center px-4 py-2 border border-white/25 text-base font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 focus:outline-none transition ease-in-out duration-150 shadow-sm">
                             <div>{{ Auth::user()->name }}</div>
                             <div class="ms-2">
                                 <svg class="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
