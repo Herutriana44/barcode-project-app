@@ -201,11 +201,14 @@ class ScanController extends Controller
 
         try {
             DB::transaction(function () use ($itemBarcode, $validated, $qtyToDeduct) {
+                // Ensure the receiving model is fresh
+                $receiving = $itemBarcode->itemReceiving()->lockForUpdate()->first();
+                
                 if ($validated['direction'] === 'in') {
                     FifoStockService::incrementItemQty((int) $itemBarcode->item_id, (int) $qtyToDeduct);
                     
-                    $receiving = $itemBarcode->itemReceiving;
-                    $receiving->jumlah_box = (int) ($receiving->jumlah_box ?? 0) + (int) $validated['qty'];
+                    $currentBox = (int) ($receiving->jumlah_box ?? 0);
+                    $receiving->jumlah_box = $currentBox + (int) $validated['qty'];
                     $receiving->save();
                 } else {
                     FifoStockService::deductFromItems(
@@ -215,8 +218,8 @@ class ScanController extends Controller
                         $itemBarcode->item->part_name
                     );
                     
-                    $receiving = $itemBarcode->itemReceiving;
-                    $receiving->jumlah_box = max(0, (int) ($receiving->jumlah_box ?? 0) - (int) $validated['qty']);
+                    $currentBox = (int) ($receiving->jumlah_box ?? 0);
+                    $receiving->jumlah_box = max(0, $currentBox - (int) $validated['qty']);
                     $receiving->save();
                 }
             });
