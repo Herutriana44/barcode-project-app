@@ -10,6 +10,9 @@
             @if (session('success'))
                 <p class="p-3 text-sm bg-green-50 border border-green-200 rounded text-green-900">{{ session('success') }}</p>
             @endif
+            @if (session('error'))
+                <p class="p-3 text-sm bg-red-50 border border-red-200 rounded text-red-900">{{ session('error') }}</p>
+            @endif
 
             @if ($expiredWarning ?? false)
                 <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">

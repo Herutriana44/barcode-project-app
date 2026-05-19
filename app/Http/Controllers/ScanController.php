@@ -145,11 +145,20 @@ class ScanController extends Controller
             // Cek expiry date dari unique item, jika kosong cek dari parent item
             $expiryDate = $uniqueItem->expired_date;
             if (!$expiryDate && $uniqueItem->item) {
-                $expiryDate = $uniqueItem->item->tgl_expired;
+                $expiryDate = $uniqueItem->expired_date_from_item; // Assuming relation or property exists
             }
             
-            $approachingExpiry = $expiryDate && $expiryDate->isBetween(\Carbon\Carbon::now(), \Carbon\Carbon::now()->addDays(30));
-            $warningMessage = $approachingExpiry ? 'Terdapat box pecahan yang mendekati expired, disarankan keluarkan dulu box pecahan. ' : '';
+            $now = \Carbon\Carbon::now();
+            $fiveDaysAhead = $now->copy()->addDays(5);
+            
+            // Cek jika barang expired dalam 5 hari kedepan
+            if ($validated['direction'] === 'out' && $expiryDate && $expiryDate <= $fiveDaysAhead && $expiryDate >= $now) {
+                return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
+                    ->with('error', 'Barang mendekati expired (dalam 5 hari)! Tidak dapat dikeluarkan.');
+            }
+            
+            $approachingExpiry = $expiryDate && $expiryDate->isBetween($now, $now->copy()->addDays(5));
+            $warningMessage = $approachingExpiry ? 'Barang mendekati expired, harap segera diproses. ' : '';
             
             if ($validated['direction'] === 'out') {
                 $uniqueItem->update(['status_keluar' => true]);
@@ -175,6 +184,16 @@ class ScanController extends Controller
         if (! $itemBarcode) {
             return redirect()->route('scan.index')
                 ->with('error', 'Barcode barang tidak ditemukan.');
+        }
+        
+        // Cek expiry item umum
+        $expiryDate = $itemBarcode->item->tgl_expired;
+        $now = \Carbon\Carbon::now();
+        $fiveDaysAhead = $now->copy()->addDays(5);
+
+        if ($validated['direction'] === 'out' && $expiryDate && $expiryDate <= $fiveDaysAhead && $expiryDate >= $now) {
+            return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
+                ->with('error', 'Barang mendekati expired (dalam 5 hari)! Tidak dapat dikeluarkan.');
         }
 
         $item = $itemBarcode->item;
