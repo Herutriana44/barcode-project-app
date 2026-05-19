@@ -84,36 +84,44 @@
                     <div><span class="font-medium">Op. forklift:</span> {{ $itemBarcode->item->operatorForklift->name ?? '-' }}</div> -->
                 </div>
 
-                <div class="mt-8 border-t border-egg-200 pt-6">
-                    <h3 class="text-lg font-bold text-egg-900 mb-3">Mutasi stok (setelah scan)</h3>
-                    <p class="text-sm text-egg-600 mb-4">Pilih barang keluar (kurangi stok FIFO per part &amp; perusahaan) atau barang masuk (tambah qty pada baris barang ini), lalu isi jumlah wajib.</p>
+                @if (!($expiredWarning ?? false))
+                <div class="mt-8 pt-6 border-t-2 border-egg-200">
+                    <h3 class="text-lg font-bold text-egg-900 mb-3 uppercase tracking-wider">Mutasi stok (setelah scan)</h3>
+                    <p class="text-sm text-egg-600 mb-4">Pilih arah mutasi (keluar/masuk) dan masukkan jumlah box.</p>
 
-                    <form action="{{ route('scan.movement', ['barcode_id' => $itemBarcode->barcode_id]) }}" method="POST" class="space-y-4 max-w-md">
+                    <form action="{{ route('scan.movement', ['barcode_id' => $itemBarcode->barcode_id]) }}" method="POST" class="bg-egg-50 p-6 rounded-xl border border-egg-200 space-y-4 max-w-lg">
                         @csrf
                         <fieldset>
-                            <legend class="text-sm font-medium text-egg-800 mb-2">Arah</legend>
-                            <div class="flex flex-wrap gap-4 text-base">
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="direction" value="out" class="rounded-full border-egg-300 text-egg-700 focus:ring-egg-500" @checked(old('direction') === 'out') required />
-                                    Barang keluar
+                            <legend class="text-sm font-bold text-egg-800 mb-2 uppercase">Arah Mutasi</legend>
+                            <div class="flex gap-6">
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
+                                    <input type="radio" name="direction" value="out" class="text-red-600 focus:ring-red-500" @checked(old('direction') === 'out') required />
+                                    <span class="font-medium">Barang Keluar</span>
                                 </label>
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="direction" value="in" class="rounded-full border-egg-300 text-egg-700 focus:ring-egg-500" @checked(old('direction') === 'in') />
-                                    Barang masuk
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
+                                    <input type="radio" name="direction" value="in" class="text-green-600 focus:ring-green-500" @checked(old('direction') === 'in') />
+                                    <span class="font-medium">Barang Masuk</span>
                                 </label>
                             </div>
                         </fieldset>
                         <div>
-                            <label for="scan_qty" class="block text-sm font-medium text-egg-800">Jumlah Box *</label>
+                            <label for="scan_qty" class="block text-sm font-bold text-egg-800 mb-1">Jumlah Box</label>
                             <input id="scan_qty" type="number" name="qty" value="{{ old('qty', 1) }}" min="1" step="1" required
-                                class="mt-1 block w-40 rounded-lg border-egg-300 text-base shadow-sm focus:border-egg-500 focus:ring-egg-500" />
+                                class="w-full rounded-lg border-egg-300 shadow-sm focus:border-egg-500 focus:ring-egg-500" />
                             @error('qty')
                                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        <button type="submit" class="btn-egg-primary">Simpan mutasi</button>
+                        <button type="submit" class="w-full py-3 px-6 bg-egg-900 text-white font-bold rounded-lg hover:bg-egg-800 transition shadow">Simpan mutasi</button>
                     </form>
                 </div>
+                @else
+                    <div class="mt-8 pt-6 border-t-2 border-egg-200">
+                        <p class="text-red-600 font-bold p-4 bg-red-50 border border-red-200 rounded text-center">
+                            Barang sudah expired, mutasi dinonaktifkan.
+                        </p>
+                    </div>
+                @endif
 
                 <div class="mt-6">
                     <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>

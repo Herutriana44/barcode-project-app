@@ -44,6 +44,7 @@
                     <div><span class="font-medium">Jumlah Box Pecahan :</span> 1 </div>
                 </div>
 
+                @if (!($expiredWarning ?? false))
                 <div class="mt-8 border-t border-egg-200 pt-6">
                     <h3 class="text-lg font-bold text-egg-900 mb-3">Mutasi stok (Unique Item)</h3>
                     <form action="{{ route('scan.movement', ['barcode_id' => 'IB-'.$uniqueItem->item->id.'-'.$uniqueItem->item->itemReceivings()->first()?->id.'-'.$uniqueItem->id]) }}" method="POST" class="space-y-4 max-w-md">
@@ -64,7 +65,14 @@
                         <input type="hidden" name="qty" value="1">
                         <button type="submit" class="w-full btn-egg-primary">Konfirmasi</button>
                     </form>
-
+                </div>
+                @else
+                    <div class="mt-8 pt-6 border-t border-egg-200">
+                        <p class="text-red-600 font-bold p-4 bg-red-50 border border-red-200 rounded text-center">
+                            Barang sudah expired, mutasi dinonaktifkan.
+                        </p>
+                    </div>
+                @endif
                 <div class="mt-6">
                     <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>
                 </div>
