@@ -466,7 +466,7 @@ class ItemBarcodeController extends Controller
             $itemBarcode->itemReceiving->update([
                 'transfer_slip_no' => $validated['transfer_slip_no'] ?? null,
                 'tanggal_terima_fg' => $validated['tanggal_terima_fg'] ?? null,
-                'jumlah_box' => $validated['jumlah_box'] ?? 0,
+                'jumlah_box' => $request->has('jumlah_box') ? $validated['jumlah_box'] : $itemBarcode->itemReceiving->jumlah_box,
             ]);
         });
 
