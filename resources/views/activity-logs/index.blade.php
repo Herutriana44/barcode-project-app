@@ -16,6 +16,7 @@
                 <table class="w-full text-sm text-left min-w-[800px]">
                     <thead class="text-xs text-egg-700 uppercase bg-egg-50">
                         <tr>
+                            <th class="px-6 py-4">Waktu</th>
                             <th class="px-6 py-4">NIP</th>
                             <th class="px-6 py-4">Nama</th>
                             <th class="px-6 py-4">Departemen</th>
@@ -28,6 +29,9 @@
                     <tbody class="divide-y divide-egg-200">
                         @forelse ($logs as $log)
                             <tr>
+                                <td class="px-6 py-4 text-egg-600">
+                                    {{ $log->created_at->format('d/m/Y H:i:s') }}
+                                </td>
                                 <td class="px-6 py-4 font-mono text-egg-600">
                                     @if($log->employee)
                                         <a href="{{ route('employees.show', $log->employee->id) }}" class="text-egg-700 hover:text-egg-900 underline">
@@ -46,7 +50,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
+                                <td colspan="8" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
                             </tr>
                         @endforelse
                     </tbody>
