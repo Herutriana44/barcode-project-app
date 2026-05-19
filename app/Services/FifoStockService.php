@@ -54,8 +54,6 @@ final class FifoStockService
                     continue;
                 }
                 $item->decrement('dynamic_qty', $take);
-                // Backward compatibility: keep qty in sync (used by legacy views/exports)
-                $item->decrement('qty', $take);
                 $remaining -= $take;
             }
 
@@ -118,8 +116,6 @@ final class FifoStockService
         DB::transaction(function () use ($itemId, $qty) {
             $item = Item::query()->lockForUpdate()->findOrFail($itemId);
             $item->increment('dynamic_qty', $qty);
-            // Backward compatibility: keep qty in sync (used by legacy views/exports)
-            $item->increment('qty', $qty);
         });
     }
 
