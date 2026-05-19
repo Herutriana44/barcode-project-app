@@ -34,6 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['admin'])->group(function () {
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export');
+        Route::get('/activity-logs/{activityLog}/edit', [ActivityLogController::class, 'edit'])->name('activity-logs.edit');
+        Route::patch('/activity-logs/{activityLog}', [ActivityLogController::class, 'update'])->name('activity-logs.update');
+        Route::delete('/activity-logs/{activityLog}', [ActivityLogController::class, 'destroy'])->name('activity-logs.destroy');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

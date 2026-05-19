@@ -24,6 +24,7 @@
                             <th class="px-6 py-4">Di</th>
                             <th class="px-6 py-4">Activity</th>
                             <th class="px-6 py-4">Deskripsi</th>
+                            <th class="px-6 py-4">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-egg-200">
@@ -53,10 +54,18 @@
                                 <td class="px-6 py-4">{{ $log->target_type }}</td>
                                 <td class="px-6 py-4">{{ $log->activity }}</td>
                                 <td class="px-6 py-4 max-w-xs truncate" title="{{ $log->details }}">{{ $log->details }}</td>
+                                <td class="px-6 py-4 flex gap-2">
+                                    <a href="{{ route('activity-logs.edit', $log->id) }}" class="text-blue-600 hover:text-blue-900 underline">Edit</a>
+                                    <form action="{{ route('activity-logs.destroy', $log->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus log ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900 underline">Hapus</button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
+                                <td colspan="9" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
                             </tr>
                         @endforelse
                     </tbody>

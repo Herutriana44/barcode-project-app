@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use OpenSpout\Writer\XLSX\Writer;
@@ -14,6 +15,28 @@ class ActivityLogController extends Controller
     {
         $logs = ActivityLog::with(['user', 'employee'])->latest()->paginate(20);
         return view('activity-logs.index', compact('logs'));
+    }
+
+    public function edit(ActivityLog $activityLog): View
+    {
+        return view('activity-logs.edit', compact('activityLog'));
+    }
+
+    public function update(Request $request, ActivityLog $activityLog)
+    {
+        $validated = $request->validate([
+            'details' => 'nullable|string',
+        ]);
+
+        $activityLog->update($validated);
+
+        return redirect()->route('activity-logs.index')->with('success', 'Log aktivitas berhasil diperbarui.');
+    }
+
+    public function destroy(ActivityLog $activityLog)
+    {
+        $activityLog->delete();
+        return redirect()->route('activity-logs.index')->with('success', 'Log aktivitas berhasil dihapus.');
     }
 
     public function export(): StreamedResponse
