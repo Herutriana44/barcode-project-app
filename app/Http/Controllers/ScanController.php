@@ -167,6 +167,12 @@ class ScanController extends Controller
             $now = \Carbon\Carbon::now();
             $fiveDaysAhead = $now->copy()->addDays(5);
             
+            // Cek jika barang sudah expired
+            if ($expiryDate && $expiryDate->isPast()) {
+                return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
+                    ->with('error', 'Barang sudah expired! Tidak dapat melakukan mutasi.');
+            }
+            
             // Cek jika barang expired dalam 5 hari kedepan
             if ($validated['direction'] === 'out' && $expiryDate && $expiryDate <= $fiveDaysAhead && $expiryDate >= $now) {
                 return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
@@ -206,6 +212,12 @@ class ScanController extends Controller
         $expiryDate = $itemBarcode->item->tgl_expired;
         $now = \Carbon\Carbon::now();
         $fiveDaysAhead = $now->copy()->addDays(5);
+
+        // Cek jika barang sudah expired
+        if ($expiryDate && $expiryDate->isPast()) {
+            return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
+                ->with('error', 'Barang sudah expired! Tidak dapat melakukan mutasi.');
+        }
 
         if ($validated['direction'] === 'out' && $expiryDate && $expiryDate <= $fiveDaysAhead && $expiryDate >= $now) {
             return redirect()->route('scan.show', ['barcode_id' => $barcodeId])
