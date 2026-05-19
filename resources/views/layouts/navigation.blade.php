@@ -13,14 +13,14 @@
                     </a>
                 </div>
 
-                <div class="hidden flex-wrap gap-x-1 lg:gap-x-2 xl:gap-x-3 sm:-my-px sm:ms-4 lg:ms-8 sm:flex items-center h-[4.25rem] sm:h-[4.5rem]">
+                <div class="hidden flex-wrap gap-x-0.5 lg:gap-x-1 sm:-my-px sm:ms-2 lg:ms-4 sm:flex items-center h-[4.5rem]">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('item-barcodes.*') || request()->routeIs('company-barcodes.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-base font-medium transition duration-150 ease-in-out">
+                            <button class="inline-flex items-center px-3 py-2 border-b-2 {{ request()->routeIs('item-barcodes.*') || request()->routeIs('company-barcodes.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-sm lg:text-base font-medium whitespace-nowrap transition duration-150 ease-in-out">
                                 <div>{{ __('Data Barcode') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -41,7 +41,7 @@
 
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('scan.*') || request()->routeIs('scan-employee.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-base font-medium transition duration-150 ease-in-out">
+                            <button class="inline-flex items-center px-3 py-2 border-b-2 {{ request()->routeIs('scan.*') || request()->routeIs('scan-employee.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-sm lg:text-base font-medium whitespace-nowrap transition duration-150 ease-in-out">
                                 <div>{{ __('Fitur Scan') }}</div>
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
