@@ -1,7 +1,7 @@
 <style>
     /* Label QC kecil (mm) — dipakai halaman cetak massal & detail barang */
     :root {
-        --label-w: 95mm;
+        --label-w: 70mm;
         --label-min-h: 48mm;
         --label-border: 0.25mm solid #000;
         --label-pad: 0.5mm;

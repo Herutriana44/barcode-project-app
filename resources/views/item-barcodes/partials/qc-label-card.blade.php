@@ -126,8 +126,8 @@
             <td>
                 <span class="f-h">Status part</span>
                 <span class="status-ok">OK</span>
-      
-      </td>
+            
+            </td>
         </tr>
     </table>
   <!-- <div class="label-doc-rev">F-QC-038. Date/Rev : 22.04.24/01</div> -->
