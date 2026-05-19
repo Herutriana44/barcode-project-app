@@ -127,7 +127,7 @@
         
         /* Pindahkan styling teks ke sini */
         font-weight: 700;
-        font-size: 10pt;
+        font-size: 8pt;
         text-transform: uppercase;
         padding: 0.5mm 1mm !important; 
     }

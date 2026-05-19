@@ -36,10 +36,26 @@ class ScanController extends Controller
             ->where('status_keluar', false)
             ->get();
 
+        $totalCount = $expiringItems->count() + $expiringUniqueItems->count();
+        $earliestDate = null;
+        
+        if ($totalCount > 0) {
+            $allDates = collect();
+            foreach ($expiringItems as $item) {
+                $allDates->push($item->tgl_expired);
+            }
+            foreach ($expiringUniqueItems as $unique) {
+                $allDates->push($unique->expired_date);
+            }
+            $earliestDate = $allDates->min();
+        }
+
         // Menggabungkan keduanya agar view bisa menampilkan semua peringatan
         return [
             'items' => $expiringItems, 
-            'uniqueItems' => $expiringUniqueItems
+            'uniqueItems' => $expiringUniqueItems,
+            'totalCount' => $totalCount,
+            'earliestDate' => $earliestDate
         ];
     }
 
@@ -108,7 +124,7 @@ class ScanController extends Controller
                 ]);
             }
 
-            return view('scan.result-company', compact('companyBarcode'));
+            return view('scan.result-company', compact('companyBarcode', 'expiringList'));
         }
 
         if ($request->expectsJson()) {

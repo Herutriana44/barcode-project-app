@@ -14,6 +14,13 @@
                 <p class="p-3 text-sm bg-red-50 border border-red-200 rounded text-red-900">{{ session('error') }}</p>
             @endif
 
+            @if(isset($expiringList) && $expiringList['totalCount'] > 0)
+                <div class="p-4 rounded-lg border border-orange-400 bg-orange-100 text-orange-950 text-base leading-snug" role="alert">
+                    <p class="font-semibold text-red-600">Peringatan: Stok Mendekati Expired</p>
+                    <p class="mt-1 text-red-600 font-bold">warning : ada {{ $expiringList['totalCount'] }} barang yang mendekati masa expired tanggal {{ $expiringList['earliestDate'] ? $expiringList['earliestDate']->locale('id')->translatedFormat('d F') : '-' }}. tolong mendahulukan barang lama</p>
+                </div>
+            @endif
+
             @if ($expiredWarning ?? false)
                 <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
                     <p class="font-semibold">Peringatan: Barang Expired!</p>

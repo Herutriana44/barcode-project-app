@@ -103,14 +103,14 @@
                             @endif
                         </td>
                     </tr>
-                    @if(! empty($barcodeSvg))
+                    <!-- @if(! empty($barcodeSvg))
                     <tr>
                         <td class="barcode-slot-mini overflow-x-auto max-w-full">
                             <div class="side-hdr" style="text-align:left;margin-bottom:0.5mm;">Barcode (URL)</div>
                             <div class="[&_svg]:max-w-full [&_svg]:h-auto">{!! $barcodeSvg !!}</div>
                         </td>
                     </tr>
-                    @endif
+                    @endif -->
                 </table>
             </td>
         </tr>
