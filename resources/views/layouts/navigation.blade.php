@@ -54,9 +54,11 @@
                             <x-dropdown-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
                                 {{ __('Scan') }}
                             </x-dropdown-link>
+                            @if(auth()->user()->role !== 'admin')
                             <x-dropdown-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
                                 {{ __('Scan Karyawan') }}
                             </x-dropdown-link>
+                            @endif
                         </x-slot>
                     </x-dropdown>
 
@@ -74,6 +76,7 @@
 
             <div class="hidden sm:flex sm:items-center sm:ms-4 gap-3 shrink-0">
                 {{-- Badge karyawan aktif --}}
+                @if(auth()->user()->role != 'admin')
                 @if(session('active_employee_id'))
                     <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/20 border border-green-400/40 text-white text-base font-medium">
                         <span class="w-2 h-2 rounded-full bg-green-400 shrink-0 animate-pulse"></span>
@@ -92,6 +95,7 @@
                         <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
                         Scan Karyawan
                     </a>
+                @endif
                 @endif
 
                 <x-dropdown align="right" width="48">
