@@ -203,7 +203,10 @@ class ScanController extends Controller
             DB::transaction(function () use ($itemBarcode, $validated, $qtyToDeduct) {
                 if ($validated['direction'] === 'in') {
                     FifoStockService::incrementItemQty((int) $itemBarcode->item_id, (int) $qtyToDeduct);
-                    $itemBarcode->itemReceiving->increment('jumlah_box', (int) $validated['qty']);
+                    
+                    $receiving = $itemBarcode->itemReceiving;
+                    $receiving->jumlah_box = (int) ($receiving->jumlah_box ?? 0) + (int) $validated['qty'];
+                    $receiving->save();
                 } else {
                     FifoStockService::deductFromItems(
                         (int) $itemBarcode->item->company_id,
@@ -211,7 +214,10 @@ class ScanController extends Controller
                         $itemBarcode->item->part_number,
                         $itemBarcode->item->part_name
                     );
-                    $itemBarcode->itemReceiving->decrement('jumlah_box', (int) $validated['qty']);
+                    
+                    $receiving = $itemBarcode->itemReceiving;
+                    $receiving->jumlah_box = max(0, (int) ($receiving->jumlah_box ?? 0) - (int) $validated['qty']);
+                    $receiving->save();
                 }
             });
         } catch (\InvalidArgumentException $e) {
