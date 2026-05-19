@@ -434,7 +434,7 @@ class ItemBarcodeController extends Controller
             }
         }
 
-        DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany) {
+        DB::transaction(function () use ($itemBarcode, $validated, $warehouseCompany, $request) {
             $itemBarcode->item->update([
                 'company_id' => $warehouseCompany->id,
                 'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
