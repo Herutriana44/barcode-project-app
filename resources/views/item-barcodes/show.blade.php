@@ -142,10 +142,26 @@
                 <div class="border border-egg-200 p-6 rounded-xl">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-xl font-bold text-egg-900">Unique Items</h3>
-                        <a href="{{ route('item-barcodes.unique-items.print-all', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Semua Label</a>
-                        <button type="button" onclick="document.getElementById('add-unique-item-form').classList.toggle('hidden')" class="btn-egg-primary text-sm">
-                            + Tambah Unique Item
-                        </button>
+                        <div class="flex gap-2">
+                            <a href="{{ route('item-barcodes.unique-items.print-all', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Semua Label</a>
+                            <button type="button" onclick="document.getElementById('add-unique-item-form').classList.toggle('hidden')" class="btn-egg-primary text-sm">
+                                + Tambah Unique Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Generate Bulk Section -->
+                    <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <form action="{{ route('item-barcodes.unique-items.generate-bulk', $itemBarcode) }}" method="POST" class="flex flex-wrap items-end gap-3">
+                            @csrf
+                            <div>
+                                <label class="block text-sm font-medium text-egg-800 mb-1">Multiplier (n * 10 items)</label>
+                                <input type="number" name="n" min="1" required
+                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" 
+                                    placeholder="Masukkan n" />
+                            </div>
+                            <button type="submit" class="btn-egg-primary text-sm">Generate Bulk</button>
+                        </form>
                     </div>
 
                     <p class="text-sm text-egg-600 mb-4">

@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Unique Items
         Route::post('item-barcodes/{itemBarcode}/unique-items', [ItemBarcodeController::class, 'storeUniqueItem'])->name('item-barcodes.unique-items.store');
+        Route::post('item-barcodes/{itemBarcode}/unique-items/generate-bulk', [ItemBarcodeController::class, 'generateBulkUniqueItems'])->name('item-barcodes.unique-items.generate-bulk');
         Route::patch('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'updateUniqueItem'])->name('item-barcodes.unique-items.update');
         Route::delete('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'destroyUniqueItem'])->name('item-barcodes.unique-items.destroy');
         Route::get('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}/print', [ItemBarcodeController::class, 'printUniqueItemLabel'])->name('item-barcodes.unique-items.print');

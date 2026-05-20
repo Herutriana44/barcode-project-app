@@ -571,6 +571,30 @@ class ItemBarcodeController extends Controller
         return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
     }
 
+    public function generateBulkUniqueItems(Request $request, ItemBarcode $itemBarcode)
+    {
+        $validated = $request->validate([
+            'n' => 'required|integer|min:1',
+        ]);
+
+        $itemBarcode->load('item');
+        $item = $itemBarcode->item;
+        
+        $count = (int) $validated['n'] * 10;
+
+        for ($i = 0; $i < $count; $i++) {
+            UniqueItem::create([
+                'item_id' => $item->id,
+                'qty' => $item->qty, // Assuming item->qty is the default
+                'production_date' => $item->tgl_produksi,
+                'expired_date' => $item->tgl_expired,
+            ]);
+        }
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', $count . ' Unique items berhasil dibuat.');
+    }
+
     public function storeUniqueItem(Request $request, ItemBarcode $itemBarcode)
     {
         $validated = $request->validate([
