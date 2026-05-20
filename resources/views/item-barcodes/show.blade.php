@@ -54,13 +54,13 @@
             <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">
                 <div class="border border-egg-200 p-6 rounded-xl">
                     <div class="flex flex-col sm:flex-row flex-wrap items-start justify-center gap-8 mb-6">
-                        <div class="flex flex-col items-center w-full sm:w-auto">
+                        <!-- <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Barcode (Code 128)</span>
                             <p class="text-xs text-egg-600 text-center mb-2 max-w-md">Isi: URL scan — cocok untuk pemindai garis yang mengirim teks penuh.</p>
                             <div class="barcode-container overflow-x-auto max-w-full">
                                 {!! $barcodeSvg !!}
                             </div>
-                        </div>
+                        </div> -->
                         <div class="flex flex-col items-center w-full sm:w-auto">
                             <span class="text-sm font-semibold text-egg-700 mb-2 uppercase tracking-wide">Kode QR</span>
                             <p class="text-xs text-egg-600 text-center mb-2 max-w-md">Isi: URL yang sama — dibuka langsung di browser ponsel.</p>
