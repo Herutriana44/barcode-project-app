@@ -4,12 +4,17 @@
     $item = $itemBarcode->item;
     $companyName = $headerCompanyName ?? ($item->company->name ?? '—');
     
-    // Mengambil berat per pcs dalam gram (fallback ke 0 jika null)
-    $beratPcsGram = $item->berat_per_pcs_gram !== null ? (float) $item->berat_per_pcs_gram : 0;
+    // Asumsi berat saat ini di DB adalah dalam satuan gram, konversi ke kg
+    // Jika sudah KG, logika ini mungkin perlu disesuaikan.
+    // Jika input 1000g, jadi 1.00kg.
+    $beratGram = $item->berat !== null ? (float) $item->berat : 0;
+    $beratKg = $beratGram;
     
-    // Format berat untuk ditampilkan
-    $beratStr = number_format($beratPcsGram, 2, '.', '');
-    
+    // Hitung berat total per label berdasarkan qty label tersebut
+    $totalBeratLabel = $beratKg * ($labelQtyPcs ?? 1);
+    $totalBeratLabel = $beratGram;
+    // $beratStr = number_format($totalBeratLabel, 3, '.', '');
+    $beratStr = $beratKg;
     if ($quantityUseStatic) {
         $qtyStr = $item->static_qty !== null ? (string) (int) $item->static_qty : '';
         $qtySuffix = $qtyStr !== '' ? ' Pcs' : '';
@@ -62,8 +67,8 @@
                         <td>: </td>
                     </tr>
                     <tr>
-                        <td class="fld-lbl">Berat / Pcs</td>
-                        <td>: {{ $beratStr }} gram</td>
+                        <td class="fld-lbl">Total Berat</td>
+                        <td>: {{ $beratStr }} Kg</td>
                     </tr>
                     <tr>
                         <td class="fld-lbl">Quantity</td>
