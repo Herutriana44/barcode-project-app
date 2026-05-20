@@ -1,8 +1,8 @@
 <style>
     /* Label QC kecil (mm) — dipakai halaman cetak massal & detail barang */
     :root {
-        --label-w: 77mm;
-        --label-min-h: 52.8mm;
+        --label-w: 95mm;
+        --label-min-h: 57mm;
         --label-border: 0.25mm solid #000;
         --label-pad: 0.55mm;
         --font-label: Arial, Helvetica, "Liberation Sans", sans-serif;
