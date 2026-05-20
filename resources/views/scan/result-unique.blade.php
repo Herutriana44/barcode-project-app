@@ -33,46 +33,28 @@
                 </div>
             @endif
 
+            @php
+                $item = $uniqueItem->item;
+            @endphp
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 sm:rounded-xl p-8">
                 <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-base">
-                    <div><span class="font-medium">Customer:</span> {{ $uniqueItem->item->customer ?? '-' }}</div>
-                    <div><span class="font-medium">Part Name:</span> {{ $uniqueItem->item->part_name ?? '-' }}</div>
-                    <div><span class="font-medium">Part Number:</span> {{ $uniqueItem->item->part_number ?? '-' }}</div>
+                    <div><span class="font-medium">Customer:</span> {{ $item->customer ?? '-' }}</div>
+                    <div><span class="font-medium">Part Name:</span> {{ $item->part_name ?? '-' }}</div>
+                    <div><span class="font-medium">Part Number:</span> {{ $item->part_number ?? '-' }}</div>
+                    <div><span class="font-medium">Model:</span> {{ $item->model ?? '-' }}</div>
+                    <div><span class="font-medium">Berat total (Kg):</span> {{ $item->berat !== null ? $item->berat : '-' }}</div>
+                    <div><span class="font-medium">Berat packaging (gram):</span> {{ $item->berat_packaging_gram !== null ? $item->berat_packaging_gram : '-' }}</div>
+                    <div><span class="font-medium">Berat per pcs (gram):</span> {{ $item->berat_per_pcs_gram !== null ? $item->berat_per_pcs_gram : '-' }}</div>
                     <div><span class="font-medium">Qty:</span> {{ $uniqueItem->qty ?? 0 }} Pcs</div>
-                    <div><span class="font-medium">Unique ID:</span> {{ $uniqueItem->id }}</div>
-                    <div><span class="font-medium">Code:</span> {{ $uniqueItem->item->code ?? '-' }}</div>
-                    <div><span class="font-medium">Jumlah Box Pecahan :</span> 1 </div>
+                    <div><span class="font-medium">Inspector:</span> {{ $item->inspector_name ?? '-' }}</div>
+                    <div><span class="font-medium">Checker:</span> {{ $item->checker_name ?? '-' }}</div>
+                    <div><span class="font-medium">Tgl Produksi:</span> {{ $uniqueItem->production_date?->format('d/m/Y') ?? ($item->tgl_produksi?->format('d/m/Y') ?? '-') }}</div>
+                    <div><span class="font-medium">Tgl Expired:</span> {{ $uniqueItem->expired_date?->format('d/m/Y') ?? ($item->tgl_expired?->format('d/m/Y') ?? '-') }}</div>
+                    <div><span class="font-medium">Code:</span> {{ $item->code ?? '-' }}</div>
+                    <div><span class="font-medium">Posisi Rak:</span> {{ $item->posisi_rak ?? '-' }}</div>
+                    <div><span class="font-medium">Perusahaan:</span> PT TEKUN ASAS SUMBER MAKMUR</div>
                 </div>
 
-                @if (!($expiredWarning ?? false))
-                <div class="mt-8 border-t border-egg-200 pt-6">
-                    <h3 class="text-lg font-bold text-egg-900 mb-3">Mutasi stok (Unique Item)</h3>
-                    <form action="{{ route('scan.movement', ['barcode_id' => 'IB-'.$uniqueItem->item->id.'-'.$uniqueItem->item->itemReceivings()->first()?->id.'-'.$uniqueItem->id]) }}" method="POST" class="space-y-4 max-w-md">
-                        @csrf
-                        <fieldset>
-                            <legend class="text-sm font-medium text-egg-800 mb-2">Arah</legend>
-                            <div class="flex flex-wrap gap-4 text-base">
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="direction" value="out" class="rounded-full border-egg-300 text-egg-700 focus:ring-egg-500" required />
-                                    Barang keluar
-                                </label>
-                                <label class="inline-flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" name="direction" value="in" class="rounded-full border-egg-300 text-egg-700 focus:ring-egg-500" />
-                                    Barang masuk
-                                </label>
-                            </div>
-                        </fieldset>
-                        <input type="hidden" name="qty" value="1">
-                        <button type="submit" class="w-full btn-egg-primary">Konfirmasi</button>
-                    </form>
-                </div>
-                @else
-                    <div class="mt-8 pt-6 border-t border-egg-200">
-                        <p class="text-red-600 font-bold p-4 bg-red-50 border border-red-200 rounded text-center">
-                            Barang sudah expired, mutasi dinonaktifkan.
-                        </p>
-                    </div>
-                @endif
                 <div class="mt-6">
                     <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>
                 </div>
@@ -84,12 +66,19 @@
                     <ul class="list-disc list-inside space-y-2">
                         @foreach($expiringList['items'] as $expItem)
                             <li>
-                                <span class="font-medium">{{ $expItem->part_name }}</span> ({{ $expItem->tgl_expired->format('d/m/Y') }})
+                                <a href="{{ route('scan.show', ['barcode_id' => $expItem->itemBarcodes->first()?->barcode_id ?? '']) }}" class="text-blue-600 hover:underline">
+                                    <span class="font-medium">{{ $expItem->part_name }}</span> ({{ $expItem->tgl_expired->format('d/m/Y') }})
+                                </a>
                             </li>
                         @endforeach
                         @foreach($expiringList['uniqueItems'] as $expUnique)
+                            @php
+                                $barcodeId = 'IB-'.$expUnique->item->id.'-'.($expUnique->item->itemReceivings()->first()?->id ?? 0).'-'.$expUnique->id;
+                            @endphp
                             <li>
-                                <span class="font-medium">{{ $expUnique->item->part_name ?? 'Unique Item' }}</span> ({{ $expUnique->expired_date->format('d/m/Y') }})
+                                <a href="{{ route('scan.show', ['barcode_id' => $barcodeId]) }}" class="text-blue-600 hover:underline">
+                                    <span class="font-medium">{{ $expUnique->item->part_name ?? 'Unique Item' }}</span> ({{ $expUnique->expired_date?->format('d/m/Y') ?? '-' }})
+                                </a>
                             </li>
                         @endforeach
                     </ul>
