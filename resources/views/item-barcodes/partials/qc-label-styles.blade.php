@@ -176,6 +176,9 @@
         font-weight: 800;
         line-height: 1;
         padding: 0.22mm 0;
+        border-bottom: 0.25mm solid #000;
+        width: 80%;
+        margin: 0 auto;
     }
 
     .qr-slot {
@@ -186,8 +189,8 @@
     .qr-slot svg {
         display: block;
         margin: 0 auto;
-        max-width: 19.8mm;
-        max-height: 19.8mm;
+        max-width: 25mm;
+        max-height: 25mm;
         width: 100%;
         height: auto;
     }
