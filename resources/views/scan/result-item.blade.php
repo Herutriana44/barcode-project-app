@@ -93,14 +93,14 @@
                         @csrf
                         <fieldset>
                             <legend class="text-sm font-bold text-egg-800 mb-2 uppercase">Arah Mutasi</legend>
-                            <div class="flex gap-6">
+                            <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 flex-wrap">
                                 <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
                                     <input type="radio" name="direction" value="out" class="text-red-600 focus:ring-red-500" @checked(old('direction') === 'out') required />
-                                    <span class="font-medium">Barang Keluar</span>
+                                    <span class="font-medium whitespace-nowrap">Barang Keluar</span>
                                 </label>
                                 <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
                                     <input type="radio" name="direction" value="in" class="text-green-600 focus:ring-green-500" @checked(old('direction') === 'in') />
-                                    <span class="font-medium">Barang Masuk</span>
+                                    <span class="font-medium whitespace-nowrap">Barang Masuk</span>
                                 </label>
                             </div>
                         </fieldset>
