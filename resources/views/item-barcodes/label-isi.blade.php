@@ -19,7 +19,8 @@
 
         /* Card style: mengikuti tampilan contoh (table kiri + kotak barcode kanan) */
         .isi-card {
-            width: 95mm;
+            width: 50mm;
+            height: 40mm;
             border: 2px solid #222;
             border-radius: 2mm;
             background: #fff;
@@ -29,7 +30,7 @@
             display: grid;
             grid-template-columns: 18mm 1fr;
             border-bottom: 2px solid #222;
-            min-height: 14mm;
+            min-height: 8mm;
         }
         .isi-no {
             border-right: 2px solid #222;
@@ -37,43 +38,42 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 12pt;
+            font-size: 10pt;
         }
         .isi-company {
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 12pt;
+            font-size: 10pt;
             letter-spacing: 0.03em;
         }
         .isi-body {
             display: grid;
             /* Baris 1: part no + part name full width (di atas QR)
                Baris 2: field lain kiri + QR kanan */
-            grid-template-columns: 1fr 34mm;
+            grid-template-columns: 1fr 18mm;
             grid-template-rows: auto 1fr;
-            min-height: 48mm;
+            min-height: 32mm;
         }
 
         .isi-fields-top {
             grid-column: 1 / -1;
-            padding: 3mm 4mm 2.2mm 4mm;
+            padding: 1mm 2mm;
             border-bottom: 2px solid #222;
             display: grid;
-            gap: 2.2mm;
-            font-size: 8pt;
+            gap: 1mm;
+            font-size: 7pt;
         }
 
         .isi-fields {
             grid-column: 1 / 2;
-            padding: 3mm 4mm 4mm 4mm;
-            border-right: 2px solid #222;
+            padding: 1mm 2mm;
             display: grid;
-            gap: 2.2mm;
-            font-size: 8pt;
+            gap: 0.5mm;
+            font-size: 7pt;
         }
-        .row { display: grid; grid-template-columns: 20mm 4mm 1fr; align-items: baseline; }
+        .row { display: grid; grid-template-columns: 14mm 3mm 1fr; align-items: baseline; }
         .k { font-weight: 500; }
         .sep { text-align: center; }
         .v { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -84,18 +84,18 @@
             /* QR kecil di pojok kanan bawah */
             align-items: flex-end;
             justify-content: flex-end;
-            padding: 3mm;
+            padding: 1mm;
         }
         .isi-barcode-wrap {
             /* Buat kotak (square) dan lebih kecil seperti referensi */
-            width: 24mm;
-            height: 24mm;
+            width: 18mm;
+            height: 18mm;
             border: 2px solid #222;
-            border-radius: 4mm;
+            border-radius: 2mm;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2mm;
+            padding: 1mm;
             overflow: hidden;
         }
         /* QR harus kotak dan memenuhi area. */
