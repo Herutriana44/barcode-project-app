@@ -38,7 +38,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 10pt;
+            font-size: 8pt;
         }
         .isi-company {
             display: flex;
@@ -62,18 +62,18 @@
             padding: 1mm 2mm;
             border-bottom: 2px solid #222;
             display: grid;
-            gap: 1mm;
-            font-size: 7pt;
+            gap: 0.5mm;
+            font-size: 6pt;
         }
 
         .isi-fields {
             grid-column: 1 / 2;
             padding: 1mm 2mm;
             display: grid;
-            gap: 0.5mm;
-            font-size: 7pt;
+            gap: 0.2mm;
+            font-size: 6pt;
         }
-        .row { display: grid; grid-template-columns: 14mm 3mm 1fr; align-items: baseline; }
+        .row { display: grid; grid-template-columns: 12mm 2mm 1fr; align-items: baseline; }
         .k { font-weight: 500; }
         .sep { text-align: center; }
         .v { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
