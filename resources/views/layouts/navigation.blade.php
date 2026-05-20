@@ -51,9 +51,11 @@
                             </button>
                         </x-slot>
                         <x-slot name="content">
+                            @if(auth()->user()->role !== 'admin')
                             <x-dropdown-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
                                 {{ __('Scan') }}
                             </x-dropdown-link>
+                            @endif
                             @if(auth()->user()->role !== 'admin')
                             <x-dropdown-link :href="route('scan-employee.index')" :active="request()->routeIs('scan-employee.*')">
                                 {{ __('Scan Karyawan') }}
@@ -63,6 +65,9 @@
                     </x-dropdown>
 
                     @if(auth()->user()->role === 'admin')
+                    <x-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
+                        {{ __('Scan') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('employees.index')" :active="request()->routeIs('employees.*')">
                         {{ __('Karyawan') }}
                     </x-nav-link>
