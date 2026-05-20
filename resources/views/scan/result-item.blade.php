@@ -76,6 +76,21 @@
                     <div><span class="font-medium">Jumlah Box Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
                     <!-- <div><span class="font-medium">Tingkat:</span> {{ $itemBarcode->item->tingkat ?? '-' }}</div> -->
                     <div><span class="font-medium">Perusahaan:</span> <!-- {{ $itemBarcode->item->company->name ?? '-' }} --> PT TEKUN ASAS SUMBER MAKMUR</div>
+                    @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->isNotEmpty())
+                        <div class="col-span-2 mt-4">
+                            <span class="font-medium block mb-2">Unique Items:</span>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $unique)
+                                    @php
+                                        $barcodeId = 'IB-'.$itemBarcode->item->id.'-'.($itemBarcode->item_receiving_id ?? 0).'-'.$unique->id;
+                                    @endphp
+                                    <a href="{{ route('scan.show', ['barcode_id' => $barcodeId]) }}" class="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200">
+                                        Unique ID: {{ $unique->id }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                     <!-- <div class="col-span-2 border-t pt-2 mt-2"><span class="font-medium">Transfer Slip:</span> {{ $itemBarcode->itemReceiving->transfer_slip_no ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Terima FG:</span> {{ $itemBarcode->itemReceiving->tanggal_terima_fg?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div>
