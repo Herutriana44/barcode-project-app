@@ -102,4 +102,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     }); // end employee.active
 });
 
+Route::get('/public/scan/{barcode_id}', [ScanController::class, 'show'])->name('public.scan.show')->where('barcode_id', '[^/]+');
+
 require __DIR__.'/auth.php';

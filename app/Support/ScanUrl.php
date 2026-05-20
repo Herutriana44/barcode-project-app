@@ -10,6 +10,10 @@ final class ScanUrl
      */
     public static function forBarcode(string $barcodeId): string
     {
+        if (env('SCAN_MODE') === 'public') {
+            return url('/public/scan/' . $barcodeId);
+        }
+
         return route('scan.show', ['barcode_id' => $barcodeId], absolute: true);
     }
 }
