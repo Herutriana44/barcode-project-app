@@ -1,0 +1,10 @@
+{
+    "APP_NAME": "TASM MIS",
+    "APP_URL": "https://domain-anda.com",
+    "DB_HOST": "localhost",
+    "DB_DATABASE": "u1234567_barcode_db",
+    "DB_USERNAME": "u1234567_user",
+    "DB_PASSWORD": "password_database_hosting",
+    "RUN_NPM_BUILD": true,
+    "RUN_COMPOSER_INSTALL": true
+}
