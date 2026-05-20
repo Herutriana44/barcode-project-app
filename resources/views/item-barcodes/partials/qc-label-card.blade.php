@@ -87,7 +87,7 @@
             <td class="label-side-cell">
                 <table class="side-stack">
                     <tr>
-                        <td>
+                        <td style="border-bottom: var(--label-border);">
                             <span class="side-hdr">Code :</span>
                             <span class="code-big">{{ $item->code ?? '' }}</span>
                         </td>
