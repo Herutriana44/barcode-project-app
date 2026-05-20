@@ -10,8 +10,8 @@
     $beratPcsGram = $item->berat_per_pcs_gram !== null ? (float) $item->berat_per_pcs_gram : 0.0;
     $beratStr = number_format($beratPcsGram, 2, '.', '');
 
-    $qtyInPack = (int) ($item->qty_sub_pack ?? 0);
-    $qtyStr = $qtyInPack > 0 ? (string) (int) $qtyInPack : '';
+    $qtyInPack = (float) ($item->qty_sub_pack ?? 0);
+    $qtyStr = $qtyInPack > 0 ? (string) $qtyInPack : '';
 @endphp
 
 <article class="isi-card">
