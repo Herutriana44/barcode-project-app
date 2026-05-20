@@ -7,11 +7,10 @@
     $prod = $item->tgl_produksi?->format('d/m/Y') ?? '';
 
     // Ambil berat per pcs dalam gram sebagai float
-    $bPcs = (float) ($item->berat_per_pcs_gram ?? 0);
-    $qtyInPack = (float) ($item->qty_sub_pack ?? 0);
-    $beratTotalGram = $bPcs * $qtyInPack;
+    $beratTotalGram = (float) ($item->berat_per_pcs_gram ?? 0);
     $beratStr = number_format($beratTotalGram, 2, '.', '');
 
+    $qtyInPack = (float) ($item->qty_sub_pack ?? 0);
     $qtyStr = $qtyInPack > 0 ? (string) $qtyInPack : '';
 @endphp
 
