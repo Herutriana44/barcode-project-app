@@ -39,6 +39,7 @@
                         </x-slot>
                     </x-dropdown>
 
+                    @if(auth()->user()->role !== 'admin')
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border-b-2 {{ request()->routeIs('scan.*') || request()->routeIs('scan-employee.*') ? 'border-white text-white' : 'border-transparent text-white/85 hover:text-white hover:border-white/40' }} text-sm lg:text-base font-medium whitespace-nowrap transition duration-150 ease-in-out">
@@ -63,6 +64,7 @@
                             @endif
                         </x-slot>
                     </x-dropdown>
+                    @endif
 
                     @if(auth()->user()->role === 'admin')
                     <x-nav-link :href="route('scan.index')" :active="request()->routeIs('scan.*') && !request()->routeIs('scan-employee.*')">
