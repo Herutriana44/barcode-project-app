@@ -48,14 +48,12 @@
                     <div class="flex gap-2 w-full sm:w-auto">
                         <button type="submit" class="btn-egg-secondary text-sm flex-1 sm:flex-none">Cari</button>
                         <a href="{{ route('item-barcodes.index') }}" class="btn-egg-secondary text-sm flex-1 sm:flex-none text-center">Reset</a>
+                        <a href="{{ route('item-barcodes.labels', ['q' => request('q'), 'part_name' => request('part_name'), 'company' => request('company'), 'expired_sort' => request('expired_sort')]) }}"
+                            class="btn-egg-secondary text-sm flex-1 sm:flex-none text-center" target="_blank" rel="noopener">
+                            Cetak Label
+                        </a>
                     </div>
                 </form>
-                <div class="flex justify-end">
-                    <a href="{{ route('item-barcodes.labels', ($q ?? request('q')) ? ['q' => ($q ?? request('q'))] : []) }}"
-                        class="btn-egg-secondary" target="_blank" rel="noopener">
-                        Cetak semua label (PDF)
-                    </a>
-                </div>
             </div>
             <div class="bg-white overflow-hidden shadow-md border border-egg-200 rounded-xl">
                 <div class="p-4">
