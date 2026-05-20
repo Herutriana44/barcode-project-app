@@ -397,6 +397,7 @@ class ItemBarcodeController extends Controller
             'model' => 'nullable|string',
             'berat' => 'nullable|numeric',
             'qty' => 'required|integer|min:0',
+            'qty_sub_pack' => 'nullable|integer|min:0',
             'inspector_name' => 'nullable|string',
             'tgl_produksi' => 'nullable|date',
             'tgl_expired' => 'nullable|date',
@@ -447,6 +448,7 @@ class ItemBarcodeController extends Controller
                 'berat' => $validated['berat'] ?? null,
                 'qty' => $validated['qty'],
                 'static_qty' => $validated['qty'],
+                'qty_sub_pack' => $validated['qty_sub_pack'] ?? null,
                 'inspector_name' => $validated['inspector_name'] ?? null,
                 'tgl_produksi' => $validated['tgl_produksi'] ?? null,
                 // 'tgl_expired' => ($validated['tgl_produksi']) 

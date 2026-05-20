@@ -72,6 +72,10 @@
                                 @error('qty')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
+                                <label class="block text-base font-medium text-egg-800">Qty Sub Pack</label>
+                                <input type="number" name="qty_sub_pack" value="{{ old('qty_sub_pack', $item->qty_sub_pack) }}" class="mt-1 block w-full rounded-md border-egg-300">
+                            </div>
+                            <div>
                                 <label class="block text-base font-medium text-egg-800">Inspector Name</label>
                                 <input type="text" name="inspector_name" value="{{ old('inspector_name', $item->inspector_name) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
