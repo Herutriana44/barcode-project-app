@@ -48,10 +48,10 @@
                             <p class="text-xs text-egg-600 mt-2 text-center">QR</p>
                             <a href="{{ route('employees.download-qr', $employee) }}" class="btn-egg-secondary mt-2 text-xs">Download QR (PNG)</a>
                         </div>
-                        <div class="bg-white p-3 rounded-lg border border-egg-200 shadow-sm overflow-x-auto max-w-full">
+                        <!-- <div class="bg-white p-3 rounded-lg border border-egg-200 shadow-sm overflow-x-auto max-w-full">
                             {!! $barcodeSvg !!}
                             <p class="text-xs text-egg-600 mt-2 text-center">Code 128</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
