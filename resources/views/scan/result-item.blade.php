@@ -71,7 +71,7 @@
                         $uniquePecahanCount = $itemBarcode->item->uniqueItems->where('status_keluar', false)->where('jenis', 'pecahan')->count();
                         $totalBox = ($itemBarcode->itemReceiving->jumlah_box ?? 0) + $uniqueUmumCount;
                     @endphp
-                    <div><span class="font-medium">Jumlah Box:</span> {{ totalBox }}</div>
+                    <div><span class="font-medium">Jumlah Box:</span> {{ $totalBox }}</div>
                     <div><span class="font-medium">Inspector:</span> {{ $scanItem->inspector_name ?? '-' }}</div>
                     <div><span class="font-medium">Checker:</span> {{ $scanItem->checker_name ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
