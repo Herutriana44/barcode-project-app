@@ -69,7 +69,7 @@ class ScanController extends Controller
             
             // Logika Scan Unique Item
             if (count($parts) === 4) {
-                $uniqueItemId = $parts[3];
+                $uniqueItemId = strtoupper($parts[3]);
                 
                 // Handle new 'ISI' format
                 if ($uniqueItemId === 'ISI') {
@@ -79,7 +79,7 @@ class ScanController extends Controller
                         ->first();
                         
                     if (!$itemBarcode) {
-                        return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
+                        return redirect()->route('scan.index')->with('error', 'Barcode barang (ID: ' . $parts[1] . ', Rec: ' . $parts[2] . ') tidak ditemukan.');
                     }
                     
                     return view('scan.result-isi', compact('itemBarcode'));
