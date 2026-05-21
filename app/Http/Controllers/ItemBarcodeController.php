@@ -279,8 +279,6 @@ class ItemBarcodeController extends Controller
 
     public function store(Request $request)
     {
-        $warehouseCompany = self::warehouseCompanyOrFail();
-
         $validated = $request->validate([
             'customer' => 'nullable|string',
             'part_name' => 'nullable|string',
@@ -330,7 +328,7 @@ class ItemBarcodeController extends Controller
         if ($customerName !== '') {
             $company = Company::query()->firstOrCreate(['name' => $customerName]);
         } else {
-            $company = $warehouseCompany;
+            $company = self::warehouseCompanyOrFail();
         }
 
         $item = Item::create([
