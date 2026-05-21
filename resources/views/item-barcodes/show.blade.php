@@ -202,16 +202,12 @@
 
                     <!-- List Unique Items -->
                     @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->count() > 0)
-                        <div class="flex gap-2 mb-4">
-                            <form method="POST" action="{{ route('item-barcodes.unique-items.bulk-print', $itemBarcode) }}" target="_blank">
-                                @csrf
-                                <button type="submit" class="btn-egg-primary text-sm">Print Terpilih</button>
-                                <!-- checkbox elements will be moved inside these forms -->
-                            </form>
-                            <form method="POST" action="{{ route('item-barcodes.unique-items.bulk-destroy', $itemBarcode) }}">
-                                @csrf
-                                <button type="submit" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50" onclick="return confirm('Hapus item terpilih?');">Hapus Terpilih</button>
-                            </form>
+                        <form id="bulk-action-form" method="POST">
+                            @csrf
+                            <div class="flex gap-2 mb-4">
+                                <button type="submit" formaction="{{ route("item-barcodes.unique-items.bulk-print", $itemBarcode) }}" target="_blank" class="btn-egg-primary text-sm">Print Terpilih</button>
+                                <button type="submit" formaction="{{ route("item-barcodes.unique-items.bulk-destroy", $itemBarcode) }}" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50" onclick="return confirm('Hapus item terpilih?');">Hapus Terpilih</button>
+                            </div>
                         </div>
                         <form id="unique-items-list-form">
                             @csrf
