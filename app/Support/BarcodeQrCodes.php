@@ -23,14 +23,13 @@ final class BarcodeQrCodes
     }
 
     /**
-     * QR khusus unique label dengan kode format IB-{item_id}-{receiving_id}-{unique_id}.
-     * Payload QR adalah URL scan ke halaman unique item.
+     * QR khusus label per isi dengan format IB-{item_id}-{receiving_id}-ISI.
      */
-    public static function qrSvgForUniqueItem(string $itemId, string $receivingId, string $uniqueItemId, int $size = 180, int $margin = 8): string
+    public static function qrSvgForIsiItem(string $itemId, string $receivingId, int $size = 180, int $margin = 8): string
     {
-        $uniqueBarcodeId = 'IB-'.$itemId.'-'.$receivingId.'-'.$uniqueItemId;
+        $isiBarcodeId = 'IB-'.$itemId.'-'.$receivingId.'-ISI';
 
-        return self::qrSvg(ScanUrl::forBarcode($uniqueBarcodeId), $size, $margin);
+        return self::qrSvg(ScanUrl::forBarcode($isiBarcodeId), $size, $margin);
     }
 
     /** Code 128 berisi kode unique item (IB-{item_id}-{receiving_id}-{unique_id}), bukan URL. */

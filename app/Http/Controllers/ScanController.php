@@ -70,6 +70,21 @@ class ScanController extends Controller
             // Logika Scan Unique Item
             if (count($parts) === 4) {
                 $uniqueItemId = $parts[3];
+                
+                // Handle new 'ISI' format
+                if ($uniqueItemId === 'ISI') {
+                    $itemBarcode = ItemBarcode::with(['item.company', 'itemReceiving'])
+                        ->where('item_id', $parts[1])
+                        ->where('item_receiving_id', $parts[2])
+                        ->first();
+                        
+                    if (!$itemBarcode) {
+                        return redirect()->route('scan.index')->with('error', 'Barcode barang tidak ditemukan.');
+                    }
+                    
+                    return view('scan.result-isi', compact('itemBarcode'));
+                }
+                
                 $uniqueItem = \App\Models\UniqueItem::with('item')->find($uniqueItemId);
                 if (!$uniqueItem) {
                     return redirect()->route('scan.index')->with('error', 'Unique Item tidak ditemukan.');
