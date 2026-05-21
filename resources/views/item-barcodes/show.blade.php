@@ -255,7 +255,29 @@
                                     
                                     <!-- Form Edit (Hidden by default) -->
                                     <div id="edit-form-{{ $uniqueItem->id }}" class="hidden p-4 bg-egg-50 rounded-lg border border-egg-200 -mt-3">
-                                        <!-- ... form remains same as before ... -->
+                                        <form action="{{ route('item-barcodes.unique-items.update', [$itemBarcode, $uniqueItem]) }}" method="POST" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                                            @csrf
+                                            @method('PATCH')
+                                            <div>
+                                                <label class="block text-sm font-medium text-egg-800 mb-1">Qty (pcs)</label>
+                                                <input type="number" name="qty" min="1" value="{{ $uniqueItem->qty }}" required
+                                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Produksi</label>
+                                                <input type="date" name="production_date" value="{{ $uniqueItem->production_date?->format('Y-m-d') }}"
+                                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Expired</label>
+                                                <input type="date" name="expired_date" value="{{ $uniqueItem->expired_date?->format('Y-m-d') }}"
+                                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
+                                            </div>
+                                            <div class="col-span-1 sm:col-span-3 flex gap-2 justify-end">
+                                                <button type="submit" class="btn-egg-primary text-sm">Update</button>
+                                                <button type="button" onclick="toggleEditForm({{ $uniqueItem->id }})" class="btn-egg-secondary text-sm">Batal</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 @endforeach
                             </div>
