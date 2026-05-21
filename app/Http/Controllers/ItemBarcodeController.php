@@ -670,6 +670,7 @@ class ItemBarcodeController extends Controller
             'rows' => $rows,
             'item' => $itemBarcode->item,
             'itemBarcode' => $itemBarcode,
+            'labelHeaderCompanyName' => self::WAREHOUSE_COMPANY_NAME,
         ]);
     }
 
