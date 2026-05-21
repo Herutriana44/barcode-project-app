@@ -304,12 +304,13 @@
             function submitBulkAction(url, target) {
                 const checked = document.querySelectorAll('.unique-item-checkbox:checked');
                 if (checked.length === 0) { alert('Pilih minimal satu item'); return; }
+                
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = url;
                 form.target = target;
-                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
                 
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
                 const hiddenToken = document.createElement('input');
                 hiddenToken.type = 'hidden';
                 hiddenToken.name = '_token';
@@ -323,6 +324,8 @@
                     input.value = cb.value;
                     form.appendChild(input);
                 });
+                
+                console.log('Submitting to:', url, 'with', checked.length, 'items');
                 document.body.appendChild(form);
                 form.submit();
                 form.remove();
