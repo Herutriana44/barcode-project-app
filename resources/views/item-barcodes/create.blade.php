@@ -25,13 +25,13 @@
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Customer</label>
-                                <select name="customer" id="customer_company" class="mt-1 block w-full rounded-md border-egg-300 bg-white">
+                                <select name="company_id" id="customer_company" class="mt-1 block w-full rounded-md border-egg-300 bg-white">
                                     <option value="">—</option>
                                     @foreach($customers as $c)
-                                        <option value="{{ $c->name }}" {{ old('customer') == $c->name ? 'selected' : '' }}>{{ $c->name }}</option>
+                                        <option value="{{ $c->id }}" {{ old('company_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('customer')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                @error('company_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Part Name</label>

@@ -280,7 +280,7 @@ class ItemBarcodeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer' => 'nullable|string',
+            'company_id' => 'nullable|exists:companies,id',
             'part_name' => 'nullable|string',
             'part_number' => 'nullable|string',
             'model' => 'nullable|string',
@@ -305,41 +305,16 @@ class ItemBarcodeController extends Controller
             'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
-        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
-        $allowedRak = [];
-        if ($customerName !== '') {
-            $allowedRak = Rak::query()
-                ->whereRaw('LOWER(TRIM(company_name)) = ?', [mb_strtolower($customerName)])
-                ->pluck('code')
-                ->map(fn ($v) => (string) $v)
-                ->all();
-        }
-        if (count($allowedRak) > 0) {
-            $rak = isset($validated['posisi_rak']) ? trim((string) $validated['posisi_rak']) : '';
-            if ($rak !== '' && ! in_array($rak, $allowedRak, true)) {
-                return back()->withInput()->withErrors([
-                    'posisi_rak' => "Rak \"{$rak}\" tidak valid untuk customer \"{$customerName}\".",
-                ]);
-            }
-        }
-
-        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
-        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
-        $company = null;
-        if ($customerName !== '') {
-            $company = Company::query()->where('name', 'LIKE', $customerName)->first() 
-                       ?? Company::create(['name' => $customerName]);
-        } else {
-            $company = self::warehouseCompanyOrFail();
-        }
+        $companyId = $validated['company_id'] ?? self::warehouseCompanyOrFail()->id;
+        $customerName = Company::find($companyId)?->name;
 
         $item = Item::create([
-            'company_id' => $company->id,
+            'company_id' => $companyId,
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
             'pengirim_id' => $validated['pengirim_id'] ?? null,
             'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
             'scanned_by_employee_id' => session('active_employee_id'),
-            'customer' => $validated['customer'] ?? null,
+            'customer' => $customerName,
             'part_name' => $validated['part_name'] ?? null,
             'part_number' => $validated['part_number'] ?? null,
             'model' => $validated['model'] ?? null,
