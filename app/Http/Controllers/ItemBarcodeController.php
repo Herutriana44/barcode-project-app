@@ -308,6 +308,9 @@ class ItemBarcodeController extends Controller
         $companyId = $validated['company_id'];
         $customerName = Company::find($companyId)?->name;
 
+        // Forced cleanup: Ensure the default warehouse company does not exist
+        Company::where('name', 'PT TEKUN ASAS SUMBER MAKMUR')->delete();
+
         $item = Item::create([
             'company_id' => $companyId,
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
