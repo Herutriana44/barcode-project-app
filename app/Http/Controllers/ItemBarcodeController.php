@@ -324,9 +324,11 @@ class ItemBarcodeController extends Controller
         }
 
         $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
+        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
         $company = null;
         if ($customerName !== '') {
-            $company = Company::query()->firstOrCreate(['name' => $customerName]);
+            $company = Company::query()->where('name', 'LIKE', $customerName)->first() 
+                       ?? Company::create(['name' => $customerName]);
         } else {
             $company = self::warehouseCompanyOrFail();
         }
