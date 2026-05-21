@@ -65,10 +65,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Unique Items
         Route::post('item-barcodes/{itemBarcode}/unique-items', [ItemBarcodeController::class, 'storeUniqueItem'])->name('item-barcodes.unique-items.store');
         Route::post('item-barcodes/{itemBarcode}/unique-items/generate-bulk', [ItemBarcodeController::class, 'generateBulkUniqueItems'])->name('item-barcodes.unique-items.generate-bulk');
+        Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-print', [ItemBarcodeController::class, 'bulkPrintUniqueItems'])->name('item-barcodes.unique-items.bulk-print');
+        Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-destroy', [ItemBarcodeController::class, 'bulkDestroyUniqueItems'])->name('item-barcodes.unique-items.bulk-destroy');
         Route::patch('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'updateUniqueItem'])->name('item-barcodes.unique-items.update');
         Route::delete('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'destroyUniqueItem'])->name('item-barcodes.unique-items.destroy');
         Route::get('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}/print', [ItemBarcodeController::class, 'printUniqueItemLabel'])->name('item-barcodes.unique-items.print');
         Route::get('item-barcodes/{itemBarcode}/unique-items/print-all', [ItemBarcodeController::class, 'printAllUniqueItemLabels'])->name('item-barcodes.unique-items.print-all');
+
 
         Route::resource('item-barcodes', ItemBarcodeController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 

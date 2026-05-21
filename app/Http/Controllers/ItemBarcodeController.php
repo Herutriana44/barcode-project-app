@@ -640,6 +640,49 @@ class ItemBarcodeController extends Controller
             ->with('success', 'Unique item berhasil diperbarui.');
     }
 
+    public function bulkPrintUniqueItems(Request $request, ItemBarcode $itemBarcode)
+    {
+        $ids = $request->input('unique_item_ids', []);
+        if (empty($ids)) return back()->with('error', 'Pilih minimal satu item.');
+
+        $itemBarcode->load('item');
+        $itemId = $itemBarcode->item->id;
+        $receivingId = $itemBarcode->item_receiving_id ?? 0;
+
+        $uniqueItems = UniqueItem::whereIn('id', $ids)->get();
+
+        $rows = $uniqueItems->map(function ($uniqueItem) use ($itemBarcode, $itemId, $receivingId) {
+            $uniqueId = (string) $uniqueItem->id;
+            return [
+                'labelBarcodeSvg' => BarcodeQrCodes::code128SvgForUniqueItem($itemId, $receivingId, $uniqueId, 1, 28),
+                'qrSvg' => BarcodeQrCodes::qrSvgForUniqueItem($itemId, $receivingId, $uniqueId, 88, 2),
+                'labelQtyPcs' => $uniqueItem->qty,
+                'uniqueItemId' => $uniqueId,
+                'productionDate' => $uniqueItem->production_date ? \Carbon\Carbon::parse($uniqueItem->production_date) : null,
+                'expiryDate' => $uniqueItem->expired_date ? \Carbon\Carbon::parse($uniqueItem->expired_date) : null,
+            ];
+        });
+
+        return view('item-barcodes.unique-item-label', [
+            'rows' => $rows,
+            'item' => $itemBarcode->item,
+            'itemBarcode' => $itemBarcode,
+        ]);
+    }
+
+    public function bulkDestroyUniqueItems(Request $request, ItemBarcode $itemBarcode)
+    {
+        $ids = $request->input('unique_item_ids', []);
+        if (empty($ids)) return back()->with('error', 'Pilih minimal satu item.');
+
+        UniqueItem::whereIn('id', $ids)->delete();
+
+        ActivityLogger::log('Item Pecahan', 'Hapus Massal', 'Menghapus ' . count($ids) . ' box pecahan.');
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', count($ids) . ' Unique items berhasil dihapus.');
+    }
+
     public function destroyUniqueItem(ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
     {
         $id = $uniqueItem->id;
