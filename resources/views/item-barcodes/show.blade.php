@@ -216,6 +216,15 @@
                                            class="btn-egg-primary text-sm">
                                             Cetak
                                         </a>
+                                        @php
+                                            $barcodeId = 'IB-'.$itemBarcode->item->id.'-'.($itemBarcode->item_receiving_id ?? 0).'-'.$uniqueItem->id;
+                                            $scanUrl = route('scan.show', ['barcode_id' => $barcodeId]);
+                                        @endphp
+                                        <button type="button" 
+                                                onclick="navigator.clipboard.writeText('{{ $scanUrl }}'); alert('URL berhasil disalin!');" 
+                                                class="btn-egg-secondary text-sm">
+                                            Copy
+                                        </button>
                                         <button type="button" 
                                                 onclick="toggleEditForm({{ $uniqueItem->id }})" 
                                                 class="btn-egg-secondary text-sm">

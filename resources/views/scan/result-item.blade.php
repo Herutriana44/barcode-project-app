@@ -83,10 +83,16 @@
                                 @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $unique)
                                     @php
                                         $barcodeId = 'IB-'.$itemBarcode->item->id.'-'.($itemBarcode->item_receiving_id ?? 0).'-'.$unique->id;
+                                        $scanUrl = route('scan.show', ['barcode_id' => $barcodeId]);
                                     @endphp
-                                    <a href="{{ route('scan.show', ['barcode_id' => $barcodeId]) }}" class="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200">
-                                        Unique ID: {{ $unique->id }}
-                                    </a>
+                                    <div class="flex items-center gap-1">
+                                        <a href="{{ $scanUrl }}" class="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200">
+                                            Unique ID: {{ $unique->id }}
+                                        </a>
+                                        <button type="button" onclick="navigator.clipboard.writeText('{{ $scanUrl }}'); alert('URL berhasil disalin!');" class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300">
+                                            Copy
+                                        </button>
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
