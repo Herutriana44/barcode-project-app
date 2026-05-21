@@ -212,7 +212,7 @@
                         <form id="unique-items-list-form">
                             @csrf
                             <div class="space-y-3">
-                                @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $uniqueItem)
+                                @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false)->sortByDesc('production_date') as $uniqueItem)
                                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
                                         <div class="flex items-center gap-3">
                                             <input type="checkbox" name="unique_item_ids[]" value="{{ $uniqueItem->id }}" class="rounded border-egg-300 text-egg-600 focus:ring-egg-500">
