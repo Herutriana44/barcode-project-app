@@ -591,6 +591,8 @@ class ItemBarcodeController extends Controller
             ]);
         }
 
+        ActivityLogger::log('Item Pecahan', 'Buat', 'Membuat ' . $count . ' box pecahan untuk: ' . $item->part_name);
+
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', $count . ' Unique items berhasil dibuat.');
     }
@@ -605,12 +607,14 @@ class ItemBarcodeController extends Controller
 
         $itemBarcode->load('item');
 
-        UniqueItem::create([
+        $uniqueItem = UniqueItem::create([
             'item_id' => $itemBarcode->item->id,
             'qty' => $validated['qty'],
             'production_date' => $validated['production_date'] ?? null,
             'expired_date' => $validated['expired_date'] ?? null,
         ]);
+
+        ActivityLogger::log('Item Pecahan', 'Buat', 'Menambahkan box pecahan baru: ' . $itemBarcode->item->part_name . ' (Qty: ' . $validated['qty'] . ')');
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Unique item berhasil ditambahkan.');
@@ -630,13 +634,20 @@ class ItemBarcodeController extends Controller
             'expired_date' => $validated['expired_date'] ?? null,
         ]);
 
+        ActivityLogger::log('Item Pecahan', 'Edit', 'Mengubah box pecahan: ' . $itemBarcode->item->part_name . ' (ID: ' . $uniqueItem->id . ')');
+
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Unique item berhasil diperbarui.');
     }
 
     public function destroyUniqueItem(ItemBarcode $itemBarcode, UniqueItem $uniqueItem)
     {
+        $id = $uniqueItem->id;
+        $partName = $itemBarcode->item->part_name;
+        
         $uniqueItem->delete();
+
+        ActivityLogger::log('Item Pecahan', 'Hapus', 'Menghapus box pecahan: ' . $partName . ' (ID: ' . $id . ')');
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
             ->with('success', 'Unique item berhasil dihapus.');

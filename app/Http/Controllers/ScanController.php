@@ -6,6 +6,7 @@ use App\Models\CompanyBarcode;
 use App\Models\ItemBarcode;
 use App\Models\Employee;
 use App\Models\EmployeeScanSession;
+use App\Services\ActivityLogger;
 use App\Services\FifoStockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -186,12 +187,18 @@ class ScanController extends Controller
             
             if ($validated['direction'] === 'out') {
                 $uniqueItem->update(['status_keluar' => true]);
+                
+                ActivityLogger::log('Stok', 'Keluar', 'Box Pecahan Keluar: ' . ($uniqueItem->item->part_name ?? 'Unknown') . ' (Qty: ' . ($uniqueItem->qty ?? 0) . ')');
+
                 return redirect()->route('scan.index')->with('success', $warningMessage . 'Barang berhasil keluar.');
             } else {
                 // Duplikasi
                 $newUniqueItem = $uniqueItem->replicate(['status_keluar']);
                 $newUniqueItem->status_keluar = false;
                 $newUniqueItem->save();
+
+                ActivityLogger::log('Stok', 'Masuk', 'Box Pecahan Masuk (Replikasi): ' . ($uniqueItem->item->part_name ?? 'Unknown') . ' (Qty: ' . ($newUniqueItem->qty ?? 0) . ')');
+
                 return redirect()->route('scan.index')->with('success', $warningMessage . 'Barang masuk, unique item baru dibuat.');
             }
         }
