@@ -280,7 +280,7 @@ class ItemBarcodeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'company_id' => 'nullable|exists:companies,id',
+            'company_id' => 'required|exists:companies,id',
             'part_name' => 'nullable|string',
             'part_number' => 'nullable|string',
             'model' => 'nullable|string',
@@ -305,7 +305,7 @@ class ItemBarcodeController extends Controller
             'operator_forklift_id' => 'nullable|exists:employees,id',
         ]);
 
-        $companyId = $validated['company_id'] ?? self::warehouseCompanyOrFail()->id;
+        $companyId = $validated['company_id'];
         $customerName = Company::find($companyId)?->name;
 
         $item = Item::create([
