@@ -96,13 +96,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('raks/all-options', [RakController::class, 'allOptions'])->name('raks.all-options');
 
         // Scan barang / perusahaan / karyawan lain
-        Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
-        Route::post('/scan/{barcode_id}/movement', [ScanController::class, 'storeMovement'])->name('scan.movement')->where('barcode_id', '[^/]+');
-        Route::get('/scan/{barcode_id}', [ScanController::class, 'show'])->name('scan.show')->where('barcode_id', '[^/]+');
+        $scanPrefix = env('SCAN_URL_MODE') === 'public' ? 'public/scan' : 'scan';
+        Route::get('/'.$scanPrefix, [ScanController::class, 'index'])->name('scan.index');
+        Route::post('/'.$scanPrefix.'/{barcode_id}/movement', [ScanController::class, 'storeMovement'])->name('scan.movement')->where('barcode_id', '[^/]+');
+        Route::get('/'.$scanPrefix.'/{barcode_id}', [ScanController::class, 'show'])->name('scan.show')->where('barcode_id', '[^/]+');
 
     }); // end employee.active
 });
-
-Route::get('/public/scan/{barcode_id}', [ScanController::class, 'show'])->name('public.scan.show')->where('barcode_id', '[^/]+');
 
 require __DIR__.'/auth.php';

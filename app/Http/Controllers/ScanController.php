@@ -77,7 +77,7 @@ class ScanController extends Controller
                 $expiredWarning = $uniqueItem->expired_date?->isPast() ?? false;
                 $approachingExpiry = $uniqueItem->expired_date && $uniqueItem->expired_date->isBetween(Carbon::now(), Carbon::now()->addDays(30));
 
-                return view('scan.result-unique', compact('uniqueItem', 'expiredWarning', 'approachingExpiry', 'expiringList'));
+                return view('scan.result-unique', compact('uniqueItem', 'expiredWarning', 'approachingExpiry', 'expiringList', 'barcodeId'));
             }
 
             // Logika Scan Item Umum
@@ -155,8 +155,10 @@ class ScanController extends Controller
         if ($uniqueItem) {
             $validated = $request->validate([
                 'direction' => 'required|in:in,out',
-                'qty' => 'required|integer|min:1',
+                'qty' => 'nullable|integer|min:1',
             ]);
+            
+            $qty = $validated['qty'] ?? 1;
             
             // Cek expiry date dari unique item, jika kosong cek dari parent item
             $expiryDate = $uniqueItem->expired_date;

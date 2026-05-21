@@ -53,7 +53,39 @@
                     <div><span class="font-medium">Code:</span> {{ $item->code ?? '-' }}</div>
                     <div><span class="font-medium">Posisi Rak:</span> {{ $item->posisi_rak ?? '-' }}</div>
                     <div><span class="font-medium">Perusahaan:</span> PT TEKUN ASAS SUMBER MAKMUR</div>
+                    <div><span class="font-medium">Status:</span> {{ $uniqueItem->status_keluar ? 'Sudah Keluar' : 'Tersedia' }}</div>
                 </div>
+
+                @if (!($expiredWarning ?? false))
+                <div class="mt-8 pt-6 border-t-2 border-egg-200">
+                    <h3 class="text-lg font-bold text-egg-900 mb-3 uppercase tracking-wider">Mutasi stok (setelah scan)</h3>
+                    <p class="text-sm text-egg-600 mb-4">Pilih arah mutasi (keluar/masuk).</p>
+
+                    <form action="{{ route('scan.movement', ['barcode_id' => $barcodeId]) }}" method="POST" class="bg-egg-50 p-6 rounded-xl border border-egg-200 space-y-4 max-w-lg">
+                        @csrf
+                        <fieldset>
+                            <legend class="text-sm font-bold text-egg-800 mb-2 uppercase">Arah Mutasi</legend>
+                            <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 flex-wrap">
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
+                                    <input type="radio" name="direction" value="out" class="text-red-600 focus:ring-red-500" @checked(old('direction') === 'out' || !$uniqueItem->status_keluar) required />
+                                    <span class="font-medium whitespace-nowrap">Barang Keluar</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 cursor-pointer p-3 bg-white border border-egg-200 rounded-lg hover:border-egg-400">
+                                    <input type="radio" name="direction" value="in" class="text-green-600 focus:ring-green-500" @checked(old('direction') === 'in' || $uniqueItem->status_keluar) />
+                                    <span class="font-medium whitespace-nowrap">Barang Masuk</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <button type="submit" class="w-full py-3 px-6 bg-egg-900 text-white font-bold rounded-lg hover:bg-egg-800 transition shadow">Simpan mutasi</button>
+                    </form>
+                </div>
+                @else
+                    <div class="mt-8 pt-6 border-t-2 border-egg-200">
+                        <p class="text-red-600 font-bold p-4 bg-red-50 border border-red-200 rounded text-center">
+                            Barang sudah expired, mutasi dinonaktifkan.
+                        </p>
+                    </div>
+                @endif
 
                 <div class="mt-6">
                     <a href="{{ route('scan.index') }}" class="link-egg inline-flex items-center text-base lg:text-lg">← Scan lagi</a>
