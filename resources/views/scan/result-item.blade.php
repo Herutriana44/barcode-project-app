@@ -66,14 +66,19 @@
                     <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailQtyPcsStatic }}</div>
                     <div><span class="font-medium">Qty sub pack:</span> {{ $subPackPcs > 0 ? $subPackPcs : '-' }}</div>
                     <!-- <div><span class="font-medium">jumlah box:</span> {{ $boxApprox !== null ? $boxApprox.' box' : '-' }}</div> -->
-                     <div><span class="font-medium">Jumlah Box:</span> {{ ($itemBarcode->itemReceiving->jumlah_box ?? 0) + ($itemBarcode->item->uniqueItems->where('status_keluar', false)->count()) }}</div>
+                    @php
+                        $uniqueUmumCount = $itemBarcode->item->uniqueItems->where('status_keluar', false)->where('jenis', 'umum')->count();
+                        $uniquePecahanCount = $itemBarcode->item->uniqueItems->where('status_keluar', false)->where('jenis', 'pecahan')->count();
+                        $totalBox = ($itemBarcode->itemReceiving->jumlah_box ?? 0) + $uniqueUmumCount;
+                    @endphp
+                    <div><span class="font-medium">Jumlah Box:</span> {{ totalBox }}</div>
                     <div><span class="font-medium">Inspector:</span> {{ $scanItem->inspector_name ?? '-' }}</div>
                     <div><span class="font-medium">Checker:</span> {{ $scanItem->checker_name ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Produksi:</span> {{ $itemBarcode->item->tgl_produksi?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Tgl Expired:</span> {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') ?? '-' }}</div>
                     <div><span class="font-medium">Code:</span> {{ $itemBarcode->item->code ?? '-' }}</div>
                     <div><span class="font-medium">Posisi Rak:</span> {{ $itemBarcode->item->posisi_rak ?? '-' }}</div>
-                    <div><span class="font-medium">Jumlah Box Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
+                    <div><span class="font-medium">Jumlah Box Pecahan:</span>{{$uniquePecahanCount}}</div>
                     <!-- <div><span class="font-medium">Tingkat:</span> {{ $itemBarcode->item->tingkat ?? '-' }}</div> -->
                     <div><span class="font-medium">Perusahaan:</span> <!-- {{ $itemBarcode->item->company->name ?? '-' }} --> PT TEKUN ASAS SUMBER MAKMUR</div>
                     @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->isNotEmpty())
