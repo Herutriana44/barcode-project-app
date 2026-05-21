@@ -585,6 +585,7 @@ class ItemBarcodeController extends Controller
         for ($i = 0; $i < $count; $i++) {
             UniqueItem::create([
                 'item_id' => $item->id,
+                'jenis' => 'umum',
                 'qty' => $item->qty, // Assuming item->qty is the default
                 'production_date' => $item->tgl_produksi,
                 'expired_date' => $item->tgl_expired,
@@ -609,6 +610,7 @@ class ItemBarcodeController extends Controller
 
         $uniqueItem = UniqueItem::create([
             'item_id' => $itemBarcode->item->id,
+            'jenis' => 'pecahan',
             'qty' => $validated['qty'],
             'production_date' => $validated['production_date'] ?? null,
             'expired_date' => $validated['expired_date'] ?? null,

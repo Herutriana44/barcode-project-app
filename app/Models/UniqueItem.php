@@ -11,6 +11,7 @@ class UniqueItem extends Model
 
     protected $fillable = [
         'item_id',
+        'jenis',
         'qty',
         'status_keluar',
         'production_date',

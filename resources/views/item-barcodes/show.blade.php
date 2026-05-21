@@ -97,14 +97,19 @@
                         <!-- <div><span class="font-medium">Qty total (pcs, stok):</span> {{ $detailQtyPcs }}</div> -->
                         <div><span class="font-medium">Qty sub pack (pcs):</span> {{ $detailSubPack > 0 ? $detailSubPack : '-' }}</div>
                         <!-- <div><span class="font-medium">Jumlah Box:</span> {{ $itemBarcode->itemReceiving->jumlah_box ?? '-' }}</div> -->
-                        <div><span class="font-medium">Jumlah Box:</span> {{ ($itemBarcode->itemReceiving->jumlah_box ?? 0) }}</div>
+                        @php
+                            $uniqueUmumCount = $itemBarcode->item->uniqueItems->where('status_keluar', false)->where('jenis', 'umum')->count();
+                            $uniquePecahanCount = $itemBarcode->item->uniqueItems->where('status_keluar', false)->where('jenis', 'pecahan')->count();
+                            $totalBox = ($itemBarcode->itemReceiving->jumlah_box ?? 0) + $uniqueUmumCount;
+                        @endphp
+                        <div><span class="font-medium">Jumlah Box:</span> {{ $totalBox }}</div>
                         <div><span class="font-medium">Qty (label / static pack):</span> {{ $detailItem->static_qty ?? '-' }}</div>
                         <div><span class="font-medium">Berat total (Kg):</span> {{ $detailItem->berat !== null ? $detailItem->berat : '-' }}</div>
                         <div><span class="font-medium">Berat packaging (gram):</span> {{ $detailItem->berat_packaging_gram !== null ? $detailItem->berat_packaging_gram : '-' }}</div>
                         <div><span class="font-medium">Berat per pcs (gram):</span> {{ $detailItem->berat_per_pcs_gram !== null ? number_format((float)$detailItem->berat_per_pcs_gram, 2, '.', '') : '-' }}</div>
                         <div><span class="font-medium">Inspector:</span> {{ $detailItem->inspector_name ?? '-' }}</div>
                         <div><span class="font-medium">Checker:</span> {{ $detailItem->checker_name ?? '-' }}</div>
-                        <div><span class="font-medium">Jumlah Box Pecahan:</span>{{($itemBarcode->item->uniqueItems->where('status_keluar', false)->count())}}</div>
+                        <div><span class="font-medium">Jumlah Box Pecahan:</span>{{ $uniquePecahanCount }}</div>
                         <div class="col-span-2">
                             <form action="{{ route('item-barcodes.checker', $itemBarcode) }}" method="POST" class="flex flex-col sm:flex-row gap-2 items-start sm:items-end">
                                 @csrf
