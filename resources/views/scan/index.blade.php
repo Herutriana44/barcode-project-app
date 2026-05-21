@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-8 w-full">
+    <div class="py-8 w-full" id="scan-config" data-mode="{{ env('SCAN_URL_MODE', 'default') }}">
         <div class="max-w-6xl mx-auto w-full">
             @if (session('error'))
                 <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">

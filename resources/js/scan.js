@@ -5,39 +5,31 @@ import { Html5Qrcode } from 'html5-qrcode';
  * @returns {string|null} URL absolut atau path /scan/... untuk navigasi; null jika tidak dikenali
  */
 function resolveScanNavigation(raw) {
-    const trimmed = (raw || '').trim();
-    if (!trimmed) {
-        return null;
-    }
+    const scanConfig = document.getElementById('scan-config');
+    const scanMode = scanConfig ? scanConfig.dataset.mode : 'default';
+    const scanPrefix = scanMode === 'public' ? '/public/scan/' : '/scan/';
 
-    // Handle full URL input
+    const trimmed = (raw || '').trim();
+    if (!trimmed) return null;
+
     if (/^https?:\/\//i.test(trimmed)) {
         try {
             const u = new URL(trimmed);
-            // Check if URL matches /scan/{id}
-            const m = u.pathname.match(/\/scan\/([^/]+)\/?$/);
-            if (m) {
-                const id = decodeURIComponent(m[1]);
-                return '/scan/' + encodeURIComponent(id);
+            const pathParts = u.pathname.split('/').filter(p => p);
+            const scanIndex = pathParts.findIndex((p, i) => p === 'scan' && (i === 0 || pathParts[i-1] === 'public'));
+            if (scanIndex !== -1 && pathParts[scanIndex + 1]) {
+                return scanPrefix + encodeURIComponent(pathParts[scanIndex + 1]);
             }
-        } catch (e) {
-            return null;
-        }
-        return null; // Not a scan URL
+        } catch (e) { return null; }
+        return null;
     }
 
-    // Handle /scan/{id} path
-    const pathOnly = trimmed.match(/^\/?scan\/([^/?#]+)\/?$/i);
-    if (pathOnly) {
-        const id = decodeURIComponent(pathOnly[1]);
-        return '/scan/' + encodeURIComponent(id);
-    }
+    const pathMatch = trimmed.match(/^\/?(public\/)?scan\/([^/?#]+)\/?$/i);
+    if (pathMatch) return scanPrefix + encodeURIComponent(pathMatch[2]);
 
-    // Handle direct ID input
     if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
-        return '/scan/' + encodeURIComponent(trimmed);
+        return scanPrefix + encodeURIComponent(trimmed);
     }
-
     return null;
 }
 
