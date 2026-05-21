@@ -325,8 +325,16 @@ class ItemBarcodeController extends Controller
             }
         }
 
+        $customerName = isset($validated['customer']) ? trim((string) $validated['customer']) : '';
+        $company = null;
+        if ($customerName !== '') {
+            $company = Company::query()->firstOrCreate(['name' => $customerName]);
+        } else {
+            $company = $warehouseCompany;
+        }
+
         $item = Item::create([
-            'company_id' => $warehouseCompany->id,
+            'company_id' => $company->id,
             'operator_mobil_id' => $validated['operator_mobil_id'] ?? null,
             'pengirim_id' => $validated['pengirim_id'] ?? null,
             'operator_forklift_id' => $validated['operator_forklift_id'] ?? null,
@@ -341,9 +349,6 @@ class ItemBarcodeController extends Controller
             'dynamic_qty' => $validated['qty'],
             'inspector_name' => $validated['inspector_name'] ?? null,
             'tgl_produksi' => $validated['tgl_produksi'] ?? null,
-            // 'tgl_expired' => ($validated['tgl_produksi']) 
-            //     ? Carbon::parse($validated['tgl_produksi'])->addMonths(3)->format('Y-m-d') 
-            //     : Carbon::now()->addMonths(3)->format('Y-m-d'),
             'tgl_expired' => $validated['tgl_expired'] ?? null,
             'code' => $validated['code'],
             'posisi_rak' => $validated['posisi_rak'] ?? null,
