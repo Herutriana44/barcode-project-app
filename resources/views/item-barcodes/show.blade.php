@@ -202,12 +202,19 @@
 
                     <!-- List Unique Items -->
                     @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->count() > 0)
-                        <form id="bulk-action-form" method="POST" action="{{ route('item-barcodes.show', $itemBarcode) }}">
+                        <div class="flex gap-2 mb-4">
+                            <form method="POST" action="{{ route('item-barcodes.unique-items.bulk-print', $itemBarcode) }}" target="_blank">
+                                @csrf
+                                <button type="submit" class="btn-egg-primary text-sm">Print Terpilih</button>
+                                <!-- checkbox elements will be moved inside these forms -->
+                            </form>
+                            <form method="POST" action="{{ route('item-barcodes.unique-items.bulk-destroy', $itemBarcode) }}">
+                                @csrf
+                                <button type="submit" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50" onclick="return confirm('Hapus item terpilih?');">Hapus Terpilih</button>
+                            </form>
+                        </div>
+                        <form id="unique-items-list-form">
                             @csrf
-                            <div class="flex gap-2 mb-4">
-                                <button type="submit" formaction="{{ route('item-barcodes.unique-items.bulk-print', $itemBarcode) }}" target="_blank" class="btn-egg-primary text-sm">Print Terpilih</button>
-                                <button type="submit" formaction="{{ route('item-barcodes.unique-items.bulk-destroy', $itemBarcode) }}" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50" onclick="return confirm('Hapus item terpilih?');">Hapus Terpilih</button>
-                            </div>
                             <div class="space-y-3">
                                 @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false) as $uniqueItem)
                                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
@@ -294,6 +301,39 @@
     </div>
     @push('scripts')
         <script>
+            function submitBulkAction(url, target) {
+                const checked = document.querySelectorAll('.unique-item-checkbox:checked');
+                if (checked.length === 0) { alert('Pilih minimal satu item'); return; }
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+                form.target = target;
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+                
+                const hiddenToken = document.createElement('input');
+                hiddenToken.type = 'hidden';
+                hiddenToken.name = '_token';
+                hiddenToken.value = csrf;
+                form.appendChild(hiddenToken);
+
+                checked.forEach(cb => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'unique_item_ids[]';
+                    input.value = cb.value;
+                    form.appendChild(input);
+                });
+                document.body.appendChild(form);
+                form.submit();
+                form.remove();
+            }
+
+            function confirmBulkAction(url) {
+                if (confirm('Hapus item terpilih?')) {
+                    submitBulkAction(url, '_self');
+                }
+            }
+
             document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var id = btn.getAttribute('data-copy-target');
