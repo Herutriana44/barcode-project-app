@@ -202,7 +202,7 @@
 
                     <!-- List Unique Items -->
                     @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->count() > 0)
-                        <form id="bulk-action-form" method="POST" action="">
+                        <form id="bulk-action-form" method="POST" action="{{ route('item-barcodes.show', $itemBarcode) }}">
                             @csrf
                             <div class="flex gap-2 mb-4">
                                 <button type="submit" formaction="{{ route('item-barcodes.unique-items.bulk-print', $itemBarcode) }}" target="_blank" class="btn-egg-primary text-sm">Print Terpilih</button>
