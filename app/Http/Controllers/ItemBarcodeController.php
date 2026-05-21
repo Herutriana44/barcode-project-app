@@ -656,6 +656,7 @@ class ItemBarcodeController extends Controller
         $rows = $uniqueItems->map(function ($uniqueItem) use ($itemBarcode, $itemId, $receivingId) {
             $uniqueId = (string) $uniqueItem->id;
             return [
+                'itemBarcode' => $itemBarcode,
                 'labelBarcodeSvg' => BarcodeQrCodes::code128SvgForUniqueItem($itemId, $receivingId, $uniqueId, 1, 28),
                 'qrSvg' => BarcodeQrCodes::qrSvgForUniqueItem($itemId, $receivingId, $uniqueId, 88, 2),
                 'labelQtyPcs' => $uniqueItem->qty,
