@@ -1,33 +1,19 @@
 {
-  "_chunk-Dk7t3yRR.js": {
-    "file": "assets/chunk-Dk7t3yRR.js",
-    "name": "chunk"
-  },
   "resources/css/app.css": {
-    "file": "assets/app-b10zISN3.css",
-    "name": "app",
-    "names": [
-      "app.css"
-    ],
+    "file": "assets/app-CAKD94LQ.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Di0k0LMH.js",
+    "file": "assets/app-C6cLCP43.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true,
-    "imports": [
-      "_chunk-Dk7t3yRR.js"
-    ]
+    "isEntry": true
   },
   "resources/js/scan.js": {
-    "file": "assets/scan-BCejoa8U.js",
+    "file": "assets/scan-tvOJ-Ld2.js",
     "name": "scan",
     "src": "resources/js/scan.js",
-    "isEntry": true,
-    "imports": [
-      "_chunk-Dk7t3yRR.js"
-    ]
+    "isEntry": true
   }
 }
