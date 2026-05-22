@@ -9,7 +9,7 @@ function resolveScanNavigation(raw) {
     if (!trimmed) return null;
 
     let targetPath = null;
-    const baseUrl = 'https://tasm-mis-management-information-system.com/scan';
+    const baseUrl = 'https://tasm-mis-management-information-system.com/public/scan';
 
     // 1. Jika URL lengkap, ambil ID-nya
     if (/^https?:\/\//i.test(trimmed)) {
