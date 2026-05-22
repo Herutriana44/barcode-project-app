@@ -7,10 +7,14 @@ import { Html5Qrcode } from 'html5-qrcode';
 function resolveScanNavigation(raw) {
     const scanConfig = document.getElementById('scan-config');
     const scanMode = scanConfig ? scanConfig.dataset.mode : 'default';
-    const scanPrefix = scanMode === 'public' ? '/public/scan/' : '/scan/';
+    
+    // Construct base prefix, ensuring consistent format without trailing slash
+    const basePrefix = scanMode === 'public' ? '/public/scan' : '/scan';
 
     const trimmed = (raw || '').trim();
     if (!trimmed) return null;
+
+    let targetPath = null;
 
     if (/^https?:\/\//i.test(trimmed)) {
         try {
@@ -18,19 +22,22 @@ function resolveScanNavigation(raw) {
             const pathParts = u.pathname.split('/').filter(p => p);
             const scanIndex = pathParts.findIndex((p, i) => p === 'scan' && (i === 0 || pathParts[i-1] === 'public'));
             if (scanIndex !== -1 && pathParts[scanIndex + 1]) {
-                return scanPrefix + encodeURIComponent(pathParts[scanIndex + 1]);
+                targetPath = basePrefix + '/' + encodeURIComponent(pathParts[scanIndex + 1]);
             }
         } catch (e) { return null; }
-        return null;
+    } else {
+        const pathMatch = trimmed.match(/^\/?(public\/)?scan\/([^/?#]+)\/?$/i);
+        if (pathMatch) {
+            targetPath = basePrefix + '/' + encodeURIComponent(pathMatch[2]);
+        } else if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
+            targetPath = basePrefix + '/' + encodeURIComponent(trimmed);
+        }
     }
 
-    const pathMatch = trimmed.match(/^\/?(public\/)?scan\/([^/?#]+)\/?$/i);
-    if (pathMatch) return scanPrefix + encodeURIComponent(pathMatch[2]);
-
-    if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
-        return scanPrefix + encodeURIComponent(trimmed);
+    if (targetPath) {
+        console.log('Navigating to scan URL:', targetPath);
     }
-    return null;
+    return targetPath;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
