@@ -5,37 +5,38 @@ import { Html5Qrcode } from 'html5-qrcode';
  * @returns {string|null} URL absolut atau path /scan/... untuk navigasi; null jika tidak dikenali
  */
 function resolveScanNavigation(raw) {
-    const scanConfig = document.getElementById('scan-config');
-    const scanMode = scanConfig ? scanConfig.dataset.mode : 'default';
-    
-    // Construct base prefix, ensuring consistent format without trailing slash
-    const basePrefix = scanMode === 'public' ? '/public/scan' : '/scan';
-
     const trimmed = (raw || '').trim();
     if (!trimmed) return null;
 
     let targetPath = null;
+    const baseUrl = 'https://tasm-mis-management-information-system.com/scan';
 
+    // 1. Jika URL lengkap, ambil ID-nya
     if (/^https?:\/\//i.test(trimmed)) {
         try {
             const u = new URL(trimmed);
             const pathParts = u.pathname.split('/').filter(p => p);
-            const scanIndex = pathParts.findIndex((p, i) => p === 'scan' && (i === 0 || pathParts[i-1] === 'public'));
+            const scanIndex = pathParts.findIndex(p => p === 'scan');
             if (scanIndex !== -1 && pathParts[scanIndex + 1]) {
-                targetPath = basePrefix + '/' + encodeURIComponent(pathParts[scanIndex + 1]);
+                targetPath = baseUrl + '/' + encodeURIComponent(pathParts[scanIndex + 1]);
             }
         } catch (e) { return null; }
-    } else {
-        const pathMatch = trimmed.match(/^\/?(public\/)?scan\/([^/?#]+)\/?$/i);
-        if (pathMatch) {
-            targetPath = basePrefix + '/' + encodeURIComponent(pathMatch[2]);
-        } else if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
-            targetPath = basePrefix + '/' + encodeURIComponent(trimmed);
+    } 
+    // 2. Jika Input Manual ID (IB-..., CB-..., EMP-...)
+    else if (trimmed.startsWith('IB-') || trimmed.startsWith('CB-') || trimmed.startsWith('EMP-')) {
+        targetPath = baseUrl + '/' + encodeURIComponent(trimmed);
+    }
+    // 3. Jika input adalah path parsial (misal: scan/IB-...)
+    else {
+        const parts = trimmed.split('/').filter(p => p);
+        const lastPart = parts[parts.length - 1];
+        if (lastPart && (lastPart.startsWith('IB-') || lastPart.startsWith('CB-') || lastPart.startsWith('EMP-'))) {
+            targetPath = baseUrl + '/' + encodeURIComponent(lastPart);
         }
     }
 
     if (targetPath) {
-        console.log('Navigating to scan URL:', targetPath);
+        console.log('Navigating to forced URL:', targetPath);
     }
     return targetPath;
 }
