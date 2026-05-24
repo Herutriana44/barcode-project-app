@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class ItemBarcodeController extends Controller
 {
+    private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
     public function index()
     {
         $q = trim((string) request()->query('q', ''));
