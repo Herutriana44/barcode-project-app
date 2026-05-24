@@ -93,28 +93,6 @@
             </div>
 
             @if(isset($expiringList) && ($expiringList['items']->isNotEmpty() || $expiringList['uniqueItems']->isNotEmpty()))
-                <div class="bg-white overflow-hidden shadow-md border border-orange-200 sm:rounded-xl p-8">
-                    <h3 class="text-lg font-bold text-orange-900 mb-4">Peringatan Expired Lainnya:</h3>
-                    <ul class="list-disc list-inside space-y-2">
-                        @foreach($expiringList['items'] as $expItem)
-                            <li>
-                                <a href="{{ route('scan.show', ['barcode_id' => $expItem->itemBarcodes->first()?->barcode_id ?? '']) }}" class="text-blue-600 hover:underline">
-                                    <span class="font-medium">{{ $expItem->part_name }}</span> ({{ $expItem->tgl_expired->format('d/m/Y') }})
-                                </a>
-                            </li>
-                        @endforeach
-                        @foreach($expiringList['uniqueItems'] as $expUnique)
-                            @php
-                                $barcodeId = 'IB-'.$expUnique->item->id.'-'.($expUnique->item->itemReceivings()->first()?->id ?? 0).'-'.$expUnique->id;
-                            @endphp
-                            <li>
-                                <a href="{{ route('scan.show', ['barcode_id' => $barcodeId]) }}" class="text-blue-600 hover:underline">
-                                    <span class="font-medium">{{ $expUnique->item->part_name ?? 'Unique Item' }}</span> ({{ $expUnique->expired_date?->format('d/m/Y') ?? '-' }})
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
             @endif
         </div>
     </div>
