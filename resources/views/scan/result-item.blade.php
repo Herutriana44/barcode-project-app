@@ -38,6 +38,11 @@
                     <p class="font-semibold">Peringatan: Barang Hampir Expired!</p>
                     <p class="mt-1">Barang ini akan expired pada tanggal {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') }}. Disarankan untuk segera dikeluarkan (FIFO).</p>
                 </div>
+            @elseif ($approachingUniqueExpiry ?? null)
+                <div class="p-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-900 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Unique Item Hampir Expired!</p>
+                    <p class="mt-1">Terdapat unique item terkait yang akan expired pada tanggal {{ $approachingUniqueExpiry->expired_date?->format('d/m/Y') }}. Disarankan untuk segera diperiksa.</p>
+                </div>
             @endif
 
             @php

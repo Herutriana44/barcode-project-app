@@ -99,6 +99,7 @@ class ScanController extends Controller
             // Logika Scan Item Umum
             $itemBarcode = ItemBarcode::with([
                 'item.company',
+                'item.uniqueItems' => fn($q) => $q->where('status_keluar', false),
                 'itemReceiving',
             ])
                 ->where('barcode_id', $barcodeId)
@@ -112,7 +113,12 @@ class ScanController extends Controller
             $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
             $approachingExpiry = $itemBarcode->item->tgl_expired && $itemBarcode->item->tgl_expired->isBetween(Carbon::now(), Carbon::now()->addDays(30));
 
-            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry', 'expiringList'));
+            // Cek apakah ada unique item yang mendekati expired
+            $approachingUniqueExpiry = $itemBarcode->item->uniqueItems
+                ->filter(fn($ui) => $ui->expired_date && $ui->expired_date->isBetween(Carbon::now(), Carbon::now()->addDays(30)))
+                ->first();
+
+            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry', 'approachingUniqueExpiry', 'expiringList'));
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {
