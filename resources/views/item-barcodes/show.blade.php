@@ -159,6 +159,18 @@
                         </div>
                     </div>
 
+                    @if ($expiredWarning ?? false)
+                        <div class="mb-4 p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
+                            <p class="font-semibold">Peringatan: Barang Expired!</p>
+                            <p class="mt-1">Barang ini sudah melewati masa expired. Harap lakukan pemeriksaan lebih lanjut.</p>
+                        </div>
+                    @elseif ($approachingExpiry ?? false)
+                        <div class="mb-4 p-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-900 text-base leading-snug" role="alert">
+                            <p class="font-semibold">Peringatan: Barang Hampir Expired!</p>
+                            <p class="mt-1">Barang ini akan expired pada tanggal {{ $itemBarcode->item->tgl_expired?->format('d/m/Y') }}. Disarankan untuk segera dikeluarkan (FIFO).</p>
+                        </div>
+                    @endif
+
                     <!-- Generate Bulk Section -->
                     <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <form action="{{ route('item-barcodes.unique-items.generate-bulk', $itemBarcode) }}" method="POST" class="flex flex-wrap items-end gap-3">

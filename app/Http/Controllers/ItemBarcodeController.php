@@ -553,12 +553,16 @@ class ItemBarcodeController extends Controller
             'item.pengirim',
             'item.operatorForklift',
             'itemReceiving',
+            'item.uniqueItems',
         ]);
         
         $uniqueItems = $itemBarcode->item->uniqueItems()
             ->where('status_keluar', false)
             ->orderByDesc('production_date')
             ->paginate(10);
+
+        $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
+        $approachingExpiry = $itemBarcode->item->tgl_expired && $itemBarcode->item->tgl_expired->isBetween(Carbon::now(), Carbon::now()->addDays(30));
 
         $scanUrl = ScanUrl::forBarcode($itemBarcode->barcode_id);
         $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id);
@@ -568,7 +572,7 @@ class ItemBarcodeController extends Controller
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
-        return view('item-barcodes.show', compact('itemBarcode', 'uniqueItems', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
+        return view('item-barcodes.show', compact('itemBarcode', 'uniqueItems', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName', 'expiredWarning', 'approachingExpiry'));
     }
 
     public function generateBulkUniqueItems(Request $request, ItemBarcode $itemBarcode)
