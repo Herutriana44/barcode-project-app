@@ -160,12 +160,11 @@
                         <form action="{{ route('item-barcodes.unique-items.generate-bulk', $itemBarcode) }}" method="POST" class="flex flex-wrap items-end gap-3">
                             @csrf
                             <div>
-                                <label class="block text-sm font-medium text-egg-800 mb-1">Multiplier (n * 10 items)</label>
+                                <label class="block text-sm font-medium text-egg-800 mb-1">Jumlah Item</label>
                                 <input type="number" name="n" min="1" required
-                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" 
-                                    placeholder="Masukkan n" />
-                            </div>
-                            <button type="submit" class="btn-egg-primary text-sm">Generate Bulk</button>
+                                    class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900"
+                                    placeholder="Masukkan jumlah" />
+                            </div>                            <button type="submit" class="btn-egg-primary text-sm">Generate Bulk</button>
                         </form>
                     </div>
 

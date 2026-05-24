@@ -579,7 +579,7 @@ class ItemBarcodeController extends Controller
         $itemBarcode->load('item');
         $item = $itemBarcode->item;
         
-        $count = (int) $validated['n'] * 10;
+        $count = (int) $validated['n'];
 
         for ($i = 0; $i < $count; $i++) {
             UniqueItem::create([
