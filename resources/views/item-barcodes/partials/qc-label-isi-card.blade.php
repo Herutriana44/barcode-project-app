@@ -26,7 +26,15 @@
             <div class="row"><span class="k">Part Name</span><span class="sep">:</span><span class="v">{{ $partName }}</span></div>
         </div>
         <div class="isi-fields">
-            <div class="row"><span class="k">QTY</span><span class="sep">:</span><span class="v">{{ $qtyStr }}{{ $qtyStr !== '' ? ' Pcs' : '' }}</span></div>
+            <div class="row">
+                <span class="k">QTY</span>
+                <span class="sep">:</span>
+                <span class="v" 
+                      ondblclick="enableEdit(this)"
+                      onkeydown="handleKeydown(event, this)">
+                    {{ $qtyStr }}{{ $qtyStr !== '' ? ' Pcs' : '' }}
+                </span>
+            </div>
             <div class="row"><span class="k">Berat</span><span class="sep">:</span><span class="v">{{ $beratStr }}{{ $beratStr !== '' ? ' gram' : '' }}</span></div>
             <div class="row"><span class="k">Tgl prod</span><span class="sep">:</span><span class="v">{{ $prod }}</span></div>
             <div class="row"><span class="k">Checker</span><span class="sep">:</span><span class="v">{{ $checker }}</span></div>

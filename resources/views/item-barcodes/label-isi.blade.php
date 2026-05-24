@@ -118,6 +118,34 @@
             ])
         @endforeach
     </div>
+    <script>
+        function enableEdit(el) {
+            const originalValue = el.textContent.replace(' Pcs', '').trim();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = originalValue;
+            input.style.width = '100%';
+            input.style.fontSize = 'inherit';
+            input.style.fontFamily = 'inherit';
+            input.style.fontWeight = 'inherit';
+            
+            el.innerHTML = '';
+            el.appendChild(input);
+            input.focus();
+            
+            input.onkeydown = function(e) {
+                if (e.key === 'Enter') {
+                    const newVal = input.value.trim();
+                    el.textContent = newVal + (newVal ? ' Pcs' : '');
+                }
+            };
+            
+            input.onblur = function() {
+                const newVal = input.value.trim();
+                el.textContent = newVal + (newVal ? ' Pcs' : '');
+            };
+        }
+    </script>
 </body>
 </html>
 
