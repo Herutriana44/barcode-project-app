@@ -24,7 +24,7 @@ class ItemBarcodeController extends Controller
     {
         $company = Company::where('name', self::WAREHOUSE_COMPANY_NAME)->first();
         if (! $company) {
-            throw new \Exception('Warehouse company not found: ' . self::WAREHOUSE_COMPANY_NAME);
+            return (object)['name' => self::WAREHOUSE_COMPANY_NAME];
         }
         return $company;
     }
