@@ -635,20 +635,32 @@ class ItemBarcodeController extends Controller
             ->with('success', 'Unique item berhasil diperbarui.');
     }
 
-    public function bulkUpdateStatusUniqueItems(Request $request, ItemBarcode $itemBarcode)
+    public function bulkDuplicateUniqueItems(Request $request, ItemBarcode $itemBarcode)
     {
         $ids = $request->input('unique_item_ids', []);
-        $status = (bool) $request->input('status_keluar', false);
-        
         if (empty($ids)) return back()->with('error', 'Pilih minimal satu item.');
 
-        UniqueItem::whereIn('id', $ids)->update(['status_keluar' => $status]);
+        $items = UniqueItem::whereIn('id', $ids)->get();
+        $count = 0;
 
-        $statusLabel = $status ? 'keluar' : 'masuk';
-        ActivityLogger::log('Item Pecahan', 'Status Massal', 'Mengubah status ' . count($ids) . ' item menjadi: ' . $statusLabel);
+        DB::transaction(function () use ($items, &$count) {
+            foreach ($items as $item) {
+                UniqueItem::create([
+                    'item_id' => $item->item_id,
+                    'jenis' => $item->jenis,
+                    'qty' => $item->qty,
+                    'status_keluar' => false, // Default ke masuk
+                    'production_date' => $item->production_date,
+                    'expired_date' => $item->expired_date,
+                ]);
+                $count++;
+            }
+        });
+
+        ActivityLogger::log('Item Pecahan', 'Duplikasi Massal', 'Menduplikasi ' . $count . ' box pecahan.');
 
         return redirect()->route('item-barcodes.show', $itemBarcode)
-            ->with('success', count($ids) . ' Unique items berhasil diperbarui menjadi barang ' . $statusLabel . '.');
+            ->with('success', $count . ' Unique items berhasil diduplikasi sebagai barang masuk.');
     }
 
     public function bulkPrintUniqueItems(Request $request, ItemBarcode $itemBarcode)
