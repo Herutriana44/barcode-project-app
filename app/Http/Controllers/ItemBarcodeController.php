@@ -19,6 +19,16 @@ use Illuminate\Support\Facades\DB;
 class ItemBarcodeController extends Controller
 {
     private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
+
+    private static function warehouseCompanyOrFail()
+    {
+        $company = Company::where('name', self::WAREHOUSE_COMPANY_NAME)->first();
+        if (! $company) {
+            throw new \Exception('Warehouse company not found: ' . self::WAREHOUSE_COMPANY_NAME);
+        }
+        return $company;
+    }
+
     public function index()
     {
         $q = trim((string) request()->query('q', ''));
@@ -262,7 +272,11 @@ class ItemBarcodeController extends Controller
 
     public function create()
     {
-        $customers = Company::query()->orderBy('name')->get();
+        $customers = Company::query()
+            ->where('name', '!=', self::WAREHOUSE_COMPANY_NAME)
+            ->where('name', 'not like', 'PT ASAS%')
+            ->orderBy('name')
+            ->get();
         $warehouseCompany = Company::where('name', self::WAREHOUSE_COMPANY_NAME)->first() ?: (object)['name' => self::WAREHOUSE_COMPANY_NAME];
 
         return view('item-barcodes.create', compact('customers', 'warehouseCompany'));
@@ -351,7 +365,11 @@ class ItemBarcodeController extends Controller
     {
         $itemBarcode->load(['item', 'itemReceiving']);
         $warehouseCompany = self::warehouseCompanyOrFail();
-        $customers = Company::query()->orderBy('name')->get();
+        $customers = Company::query()
+            ->where('name', '!=', self::WAREHOUSE_COMPANY_NAME)
+            ->where('name', 'not like', 'PT ASAS%')
+            ->orderBy('name')
+            ->get();
 
         return view('item-barcodes.edit', compact('itemBarcode', 'warehouseCompany', 'customers'));
     }
