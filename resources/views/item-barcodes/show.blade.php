@@ -40,15 +40,19 @@
                         'headerCompanyName' => $labelHeaderCompanyName,
                     ])
                 </div>
-                <div class="mt-4 no-print flex gap-2">
-                    <a href="{{ route('item-barcodes.label-isi', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Label Per Isi</a>
-                    <!-- <a href="{{ route('item-barcodes.label-per-box', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-primary">Cetak Label Per Box</a> -->
-                    <div class="flex items-center gap-2">
-                        <label for="a4-pages" class="text-sm font-medium text-egg-700">Jumlah Halaman (x10 label):</label>
-                        <input type="number" id="a4-pages" value="1" min="1" class="w-16 rounded border-egg-300 py-1 px-2 text-sm">
-                        <a href="#" onclick="this.href='{{ route('item-barcodes.label-print-a4', $itemBarcode) }}?pages=' + document.getElementById('a4-pages').value;" target="_blank" rel="noopener" class="btn-egg-primary">Cetak A4</a>
+                    <div class="mt-4 no-print flex flex-wrap gap-2">
+                        <div class="flex items-center gap-2">
+                            <label for="isi-pages" class="text-sm font-medium text-egg-700">Jumlah Label:</label>
+                            <input type="number" id="isi-pages" value="1" min="1" class="w-16 rounded border-egg-300 py-1 px-2 text-sm">
+                            <a href="#" onclick="this.href='{{ route('item-barcodes.label-isi', $itemBarcode) }}?box_count=' + document.getElementById('isi-pages').value;" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Label Per Isi</a>
+                        </div>
+                        <!-- <a href="{{ route('item-barcodes.label-per-box', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-primary">Cetak Label Per Box</a> -->
+                        <div class="flex items-center gap-2">
+                            <label for="a4-pages" class="text-sm font-medium text-egg-700">Jumlah Halaman (x10 label):</label>
+                            <input type="number" id="a4-pages" value="1" min="1" class="w-16 rounded border-egg-300 py-1 px-2 text-sm">
+                            <a href="#" onclick="this.href='{{ route('item-barcodes.label-print-a4', $itemBarcode) }}?pages=' + document.getElementById('a4-pages').value;" target="_blank" rel="noopener" class="btn-egg-primary">Cetak A4</a>
+                        </div>
                     </div>
-                </div>
             </section>
 
             <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">

@@ -222,7 +222,7 @@ class ItemBarcodeController extends Controller
     /**
      * Label per isi/sub-pack untuk satu barcode box.
      */
-    public function labelIsi(ItemBarcode $itemBarcode)
+    public function labelIsi(Request $request, ItemBarcode $itemBarcode)
     {
         $itemBarcode->load(['item.company', 'itemReceiving']);
 
@@ -234,22 +234,23 @@ class ItemBarcodeController extends Controller
         $sub = (int) ($item->qty_sub_pack ?? 0);
         $qtyPerLabel = $sub > 0 ? $sub : $staticQty;
 
-        $labelCount = ($qtyPerLabel > 0) ? (int) ceil($staticQty / $qtyPerLabel) : 1;
-        $labelCount = min($labelCount, 500);
+        // Default count, but allow override from input
+        $defaultLabelCount = ($qtyPerLabel > 0) ? (int) ceil($staticQty / $qtyPerLabel) : 1;
+        $labelCount = (int) $request->query('box_count', $defaultLabelCount);
+        $labelCount = max(1, min($labelCount, 500));
 
         $labels = [];
         $remaining = $staticQty;
         for ($i = 0; $i < $labelCount; $i++) {
-            $q = ($sub > 0) ? min($qtyPerLabel, $remaining) : $staticQty;
+            $q = ($sub > 0) ? min($qtyPerLabel, $remaining) : ($remaining > 0 ? $staticQty : 0);
             $remaining -= $q;
 
             $qrSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id, 140, 2);
 
             $labels[] = [
-                'qtyInPack' => $staticQty,
+                'qtyInPack' => $q > 0 ? $q : $staticQty, // Display the actual q per label
                 'qrSvg' => $qrSvg,
             ];
-            if ($remaining <= 0) break;
         }
 
         return view('item-barcodes.label-isi', compact('itemBarcode', 'labels'));
