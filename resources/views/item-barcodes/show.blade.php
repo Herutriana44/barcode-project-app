@@ -207,6 +207,7 @@
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <button type="button" onclick="submitBulkAction('{{ route("item-barcodes.unique-items.bulk-print", $itemBarcode) }}', '_blank')" class="btn-egg-primary text-sm">Print Terpilih</button>
                                 <button type="button" onclick="confirmBulkAction('{{ route("item-barcodes.unique-items.bulk-duplicate", $itemBarcode) }}')" class="btn-egg-secondary text-sm bg-green-50 text-green-800 border-green-200 hover:bg-green-100">Barang Masuk (Duplikasi)</button>
+                                <button type="button" onclick="confirmBulkAction('{{ route("item-barcodes.unique-items.bulk-keluar", $itemBarcode) }}')" class="btn-egg-secondary text-sm bg-orange-50 text-orange-800 border-orange-200 hover:bg-orange-100">Barang Keluar</button>
                                 <button type="button" onclick="confirmBulkAction('{{ route("item-barcodes.unique-items.bulk-destroy", $itemBarcode) }}')" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50">Hapus Terpilih</button>
                             </div>
                             <div class="space-y-3">

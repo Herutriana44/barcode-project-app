@@ -635,6 +635,19 @@ class ItemBarcodeController extends Controller
             ->with('success', 'Unique item berhasil diperbarui.');
     }
 
+    public function bulkUpdateStatusKeluar(Request $request, ItemBarcode $itemBarcode)
+    {
+        $ids = $request->input('unique_item_ids', []);
+        if (empty($ids)) return back()->with('error', 'Pilih minimal satu item.');
+
+        $count = UniqueItem::whereIn('id', $ids)->update(['status_keluar' => true]);
+
+        ActivityLogger::log('Item Pecahan', 'Status Keluar', 'Mengubah status ' . $count . ' box pecahan menjadi keluar.');
+
+        return redirect()->route('item-barcodes.show', $itemBarcode)
+            ->with('success', $count . ' Unique items berhasil ditandai sebagai barang keluar.');
+    }
+
     public function bulkDuplicateUniqueItems(Request $request, ItemBarcode $itemBarcode)
     {
         $ids = $request->input('unique_item_ids', []);

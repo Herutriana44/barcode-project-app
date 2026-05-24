@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-print', [ItemBarcodeController::class, 'bulkPrintUniqueItems'])->name('item-barcodes.unique-items.bulk-print');
         Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-destroy', [ItemBarcodeController::class, 'bulkDestroyUniqueItems'])->name('item-barcodes.unique-items.bulk-destroy');
         Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-duplicate', [ItemBarcodeController::class, 'bulkDuplicateUniqueItems'])->name('item-barcodes.unique-items.bulk-duplicate');
+        Route::post('item-barcodes/{itemBarcode}/unique-items/bulk-keluar', [ItemBarcodeController::class, 'bulkUpdateStatusKeluar'])->name('item-barcodes.unique-items.bulk-keluar');
         Route::patch('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'updateUniqueItem'])->name('item-barcodes.unique-items.update');
         Route::delete('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}', [ItemBarcodeController::class, 'destroyUniqueItem'])->name('item-barcodes.unique-items.destroy');
         Route::get('item-barcodes/{itemBarcode}/unique-items/{uniqueItem}/print', [ItemBarcodeController::class, 'printUniqueItemLabel'])->name('item-barcodes.unique-items.print');
