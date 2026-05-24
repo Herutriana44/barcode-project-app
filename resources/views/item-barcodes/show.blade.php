@@ -211,23 +211,23 @@
                             <div class="space-y-3">
                                 @foreach($uniqueItems as $uniqueItem)
                                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
-                                        <div class="flex items-center gap-3">
-                                            <input type="checkbox" name="unique_item_ids[]" value="{{ $uniqueItem->id }}" class="unique-item-checkbox rounded border-egg-300 text-egg-600 focus:ring-egg-500">
-                                            <div class="flex-1">
-                                                <div class="flex gap-4">
-                                                    <div><span class="text-sm font-medium text-egg-700">Qty:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->qty }}</span></div>
-                                                    <div><span class="text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
-                                                    <div><span class="text-sm font-medium text-egg-700">Exp:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span></div>
+                                        <div class="flex items-start gap-3 w-full sm:w-auto">
+                                            <input type="checkbox" name="unique_item_ids[]" value="{{ $uniqueItem->id }}" class="mt-1 unique-item-checkbox rounded border-egg-300 text-egg-600 focus:ring-egg-500">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="grid grid-cols-2 sm:flex sm:gap-4 gap-y-1">
+                                                    <div><span class="text-xs sm:text-sm font-medium text-egg-700">Qty:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->qty }}</span></div>
+                                                    <div><span class="text-xs sm:text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
+                                                    <div><span class="text-xs sm:text-sm font-medium text-egg-700">Exp:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span></div>
                                                 </div>
-                                                <div class="text-xs text-egg-500 mt-1">
+                                                <div class="text-xs text-egg-500 mt-1 truncate">
                                                     Dibuat: {{ $uniqueItem->created_at->format('d/m/Y H:i') }}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="flex gap-2">
+                                        <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
                                             <a href="{{ route('item-barcodes.unique-items.print', [$itemBarcode, $uniqueItem]) }}" 
                                                target="_blank" 
-                                               class="btn-egg-primary text-sm">
+                                               class="btn-egg-primary text-xs sm:text-sm">
                                                 Cetak
                                             </a>
                                             @php
@@ -236,19 +236,19 @@
                                             @endphp
                                             <button type="button" 
                                                     onclick="navigator.clipboard.writeText('{{ $scanUrl }}'); alert('URL berhasil disalin!');" 
-                                                    class="btn-egg-secondary text-sm">
+                                                    class="btn-egg-secondary text-xs sm:text-sm">
                                                 Copy
                                             </button>
                                             <button type="button" 
                                                     onclick="toggleEditForm({{ $uniqueItem->id }})" 
-                                                    class="btn-egg-secondary text-sm">
+                                                    class="btn-egg-secondary text-xs sm:text-sm">
                                                 Edit
                                             </button>
                                             <form action="{{ route('item-barcodes.unique-items.destroy', [$itemBarcode, $uniqueItem]) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" 
-                                                        class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50"
+                                                        class="btn-egg-secondary text-xs sm:text-sm text-red-700 border-red-200 hover:bg-red-50"
                                                         onclick="return confirm('Hapus unique item ini?');">
                                                     Hapus
                                                 </button>
