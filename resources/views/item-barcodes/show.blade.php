@@ -201,7 +201,7 @@
                     </div>
 
                     <!-- List Unique Items -->
-                    @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->count() > 0)
+                    @if($uniqueItems->count() > 0)
                         <form id="bulk-action-form" method="POST">
                             @csrf
                             <div class="flex gap-2 mb-4">
@@ -209,7 +209,7 @@
                                 <button type="button" onclick="confirmBulkAction('{{ route("item-barcodes.unique-items.bulk-destroy", $itemBarcode) }}')" class="btn-egg-secondary text-sm text-red-700 border-red-200 hover:bg-red-50">Hapus Terpilih</button>
                             </div>
                             <div class="space-y-3">
-                                @foreach($itemBarcode->item->uniqueItems->where('status_keluar', false)->sortByDesc('production_date') as $uniqueItem)
+                                @foreach($uniqueItems as $uniqueItem)
                                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 bg-white border border-egg-200 rounded-lg">
                                         <div class="flex items-center gap-3">
                                             <input type="checkbox" name="unique_item_ids[]" value="{{ $uniqueItem->id }}" class="unique-item-checkbox rounded border-egg-300 text-egg-600 focus:ring-egg-500">
@@ -285,6 +285,9 @@
                                 @endforeach
                             </div>
                         </form>
+                        <div class="mt-4">
+                            {{ $uniqueItems->links() }}
+                        </div>
                     @else
 
                         <div class="text-center py-8 text-egg-500">

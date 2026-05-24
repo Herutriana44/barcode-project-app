@@ -545,9 +545,14 @@ class ItemBarcodeController extends Controller
             'item.operatorMobil',
             'item.pengirim',
             'item.operatorForklift',
-            'item.uniqueItems',
             'itemReceiving',
         ]);
+        
+        $uniqueItems = $itemBarcode->item->uniqueItems()
+            ->where('status_keluar', false)
+            ->orderByDesc('production_date')
+            ->paginate(10);
+
         $scanUrl = ScanUrl::forBarcode($itemBarcode->barcode_id);
         $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id);
         $qrCodeSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id);
@@ -556,7 +561,7 @@ class ItemBarcodeController extends Controller
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
-        return view('item-barcodes.show', compact('itemBarcode', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
+        return view('item-barcodes.show', compact('itemBarcode', 'uniqueItems', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName'));
     }
 
     public function generateBulkUniqueItems(Request $request, ItemBarcode $itemBarcode)
