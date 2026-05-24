@@ -52,7 +52,7 @@
                     <div><span class="font-medium">Tgl Expired:</span> {{ $uniqueItem->expired_date?->format('d/m/Y') ?? ($item->tgl_expired?->format('d/m/Y') ?? '-') }}</div>
                     <div><span class="font-medium">Code:</span> {{ $item->code ?? '-' }}</div>
                     <div><span class="font-medium">Posisi Rak:</span> {{ $item->posisi_rak ?? '-' }}</div>
-                    <div><span class="font-medium">Perusahaan:</span> PT TEKUN ASAS SUMBER MAKMUR</div>
+                    <div><span class="font-medium">Perusahaan:</span> {{ $item->company->name ?? '-' }}</div>
                     <div><span class="font-medium">Status:</span> {{ $uniqueItem->status_keluar ? 'Sudah Keluar' : 'Tersedia' }}</div>
                 </div>
 

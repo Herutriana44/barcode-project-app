@@ -26,8 +26,6 @@ final class Fqc038CleanListPartSeeder extends Seeder
      */
     private const FALLBACK_HEADER_ROW_INDEX = 4;
 
-    private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
-
     public function run(): void
     {
         $path = base_path('database/seeders/data/'.self::FILE_NAME);
@@ -38,8 +36,6 @@ final class Fqc038CleanListPartSeeder extends Seeder
             return;
         }
 
-        $warehouse = Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
-
         $reader = new Reader;
         $reader->open($path);
 
@@ -48,20 +44,17 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 continue;
             }
 
-            $this->seedSheet($sheet->getRowIterator(), $warehouse);
+            $this->seedSheet($sheet->getRowIterator());
             break;
         }
 
         $reader->close();
-
-        // Hapus perusahaan "PT TEKUN ASAS SUMBER MAKMUR" setelah selesai import
-        Company::query()->where('name', self::WAREHOUSE_COMPANY_NAME)->delete();
     }
 
     /**
      * @param  \Iterator<\OpenSpout\Common\Entity\Row>  $rows
      */
-    private function seedSheet(\Iterator $rows, Company $warehouse): void
+    private function seedSheet(\Iterator $rows): void
     {
         $header = null;
         $headerRowIndex = null;
@@ -177,10 +170,6 @@ final class Fqc038CleanListPartSeeder extends Seeder
             ->unique()
             ->values();
 
-        // Sertakan warehouse agar ikut punya barcode perusahaan.
-        $companyNames->prepend($warehouse->name);
-        $companyNames = $companyNames->unique()->values();
-
         /** @var array<string, \App\Models\Company> $companiesByName */
         $companiesByName = [];
 
@@ -196,12 +185,16 @@ final class Fqc038CleanListPartSeeder extends Seeder
         });
 
         // 2) Baru buat barcode semua barang + relasi ke perusahaan (CompanyItem).
-        DB::transaction(function () use ($parsedRows, $warehouse, $companiesByName, &$imported) {
+        DB::transaction(function () use ($parsedRows, $companiesByName, &$imported) {
             foreach ($parsedRows as $r) {
                 $customerName = is_string($r['customer_name'] ?? null) ? trim((string) $r['customer_name']) : null;
                 $company = ($customerName !== null && $customerName !== '' && isset($companiesByName[$customerName]))
                     ? $companiesByName[$customerName]
-                    : $warehouse;
+                    : null;
+
+                if (!$company) {
+                    continue; // Skip items without a valid company in this specific import context
+                }
 
                 $qtyPack = $r['qty_pack'] ?? null;
                 $qtyForItem = is_int($qtyPack) ? $qtyPack : 0;
@@ -209,10 +202,6 @@ final class Fqc038CleanListPartSeeder extends Seeder
                 $prodDate = $r['prod_date'] instanceof Carbon ? $r['prod_date'] : Carbon::today();
                 $expDate = $r['exp_date'] instanceof Carbon ? $r['exp_date'] : (clone $prodDate)->addMonths(3);
 
-                // Konsisten dengan modul barcode perusahaan:
-                // - item.company_id = perusahaan (customer)
-                // - qty disimpan di company_items
-                // - static_qty / dynamic_qty disamakan dengan qty pack agar label & FIFO konsisten
                 $item = Item::query()->create([
                     'company_id' => $company->id,
                     'customer' => ($customerName !== null && $customerName !== '') ? $customerName : null,

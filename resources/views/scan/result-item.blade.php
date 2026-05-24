@@ -85,7 +85,7 @@
                     <div><span class="font-medium">Posisi Rak:</span> {{ $itemBarcode->item->posisi_rak ?? '-' }}</div>
                     <div><span class="font-medium">Jumlah Box Pecahan:</span>{{$uniquePecahanCount}}</div>
                     <!-- <div><span class="font-medium">Tingkat:</span> {{ $itemBarcode->item->tingkat ?? '-' }}</div> -->
-                    <div><span class="font-medium">Perusahaan:</span> <!-- {{ $itemBarcode->item->company->name ?? '-' }} --> PT TEKUN ASAS SUMBER MAKMUR</div>
+                    <div><span class="font-medium">Perusahaan:</span> {{ $itemBarcode->item->company->name ?? '-' }}</div>
                     @if($itemBarcode->item->uniqueItems->where('status_keluar', false)->isNotEmpty())
                         <div class="col-span-2 mt-4">
                             <span class="font-medium block mb-2">Unique Items:</span>

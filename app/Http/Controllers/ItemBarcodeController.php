@@ -18,12 +18,6 @@ use Illuminate\Support\Facades\DB;
 
 class ItemBarcodeController extends Controller
 {
-    private const WAREHOUSE_COMPANY_NAME = 'PT TEKUN ASAS SUMBER MAKMUR';
-
-    private static function warehouseCompanyOrFail(): Company
-    {
-        return Company::query()->firstOrCreate(['name' => self::WAREHOUSE_COMPANY_NAME]);
-    }
     public function index()
     {
         $q = trim((string) request()->query('q', ''));
@@ -97,8 +91,7 @@ class ItemBarcodeController extends Controller
             if ($remaining <= 0) break;
         }
 
-        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
-        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
+        return view('item-barcodes.labels', compact('rows'));
     }
     public function labelPrintA4(Request $request, ItemBarcode $itemBarcode)
     {
@@ -127,8 +120,7 @@ class ItemBarcodeController extends Controller
             ]);
         }
 
-        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
-        return view('item-barcodes.labels-a4', compact('rows', 'labelHeaderCompanyName'));
+        return view('item-barcodes.labels-a4', compact('rows'));
     }
 
     /**
@@ -213,9 +205,7 @@ class ItemBarcodeController extends Controller
             }
         }
 
-        $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
-
-        return view('item-barcodes.labels', compact('rows', 'labelHeaderCompanyName'));
+        return view('item-barcodes.labels', compact('rows'));
     }
 
     /**
@@ -271,10 +261,9 @@ class ItemBarcodeController extends Controller
 
     public function create()
     {
-        $warehouseCompany = self::warehouseCompanyOrFail();
         $customers = Company::query()->orderBy('name')->get();
 
-        return view('item-barcodes.create', compact('warehouseCompany', 'customers'));
+        return view('item-barcodes.create', compact('customers'));
     }
 
     public function store(Request $request)
@@ -307,9 +296,6 @@ class ItemBarcodeController extends Controller
 
         $companyId = $validated['company_id'];
         $customerName = Company::find($companyId)?->name;
-
-        // Forced cleanup: Ensure the default warehouse company does not exist
-        Company::where('name', 'PT TEKUN ASAS SUMBER MAKMUR')->delete();
 
         $item = Item::create([
             'company_id' => $companyId,
