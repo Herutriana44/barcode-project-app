@@ -263,8 +263,9 @@ class ItemBarcodeController extends Controller
     public function create()
     {
         $customers = Company::query()->orderBy('name')->get();
+        $warehouseCompany = Company::where('name', self::WAREHOUSE_COMPANY_NAME)->first() ?: (object)['name' => self::WAREHOUSE_COMPANY_NAME];
 
-        return view('item-barcodes.create', compact('customers'));
+        return view('item-barcodes.create', compact('customers', 'warehouseCompany'));
     }
 
     public function store(Request $request)
