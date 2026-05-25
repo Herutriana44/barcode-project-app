@@ -149,11 +149,11 @@
             <!-- Unique Items Section -->
             <div class="no-print bg-white overflow-hidden shadow-md sm:rounded-xl p-6">
                 <div class="border border-egg-200 p-6 rounded-xl">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                         <h3 class="text-xl font-bold text-egg-900">Unique Items</h3>
-                        <div class="flex gap-2">
-                            <a href="{{ route('item-barcodes.unique-items.print-all', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary">Cetak Semua Label</a>
-                            <button type="button" onclick="document.getElementById('add-unique-item-form').classList.toggle('hidden')" class="btn-egg-primary text-sm">
+                        <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                            <a href="{{ route('item-barcodes.unique-items.print-all', $itemBarcode) }}" target="_blank" rel="noopener" class="btn-egg-secondary text-center">Cetak Semua Label</a>
+                            <button type="button" onclick="document.getElementById('add-unique-item-form').classList.toggle('hidden')" class="btn-egg-primary text-sm text-center">
                                 + Tambah Unique Item
                             </button>
                         </div>
