@@ -97,7 +97,7 @@ class CompanyBarcodeController extends Controller
             }
         }
 
-        return DB::transaction(function () use ($request, $rows) {
+        return DB::transaction(function () use ($request, $rows, $companyName) {
             if ($request->filled('company_id')) {
                 $company = Company::query()->findOrFail((int) $request->company_id);
                 if ($company->name !== $request->company_name) {
@@ -242,6 +242,8 @@ class CompanyBarcodeController extends Controller
                 ->with('error', 'Tidak dapat menghapus perusahaan: masih ada barcode barang (FG) yang menggunakan perusahaan ini.');
         }
 
+        $companyName = $company->name;
+
         DB::transaction(function () use ($company) {
             $itemIds = Item::where('company_id', $company->id)->pluck('id');
             ItemBarcode::whereIn('item_id', $itemIds)->delete();
@@ -268,6 +270,8 @@ class CompanyBarcodeController extends Controller
                 ->with('error', 'Tidak dapat menghapus perusahaan: masih ada barcode barang (FG) yang menggunakan perusahaan ini.');
         }
 
+        $companyName = $company->name;
+
         DB::transaction(function () use ($company) {
             $itemIds = Item::where('company_id', $company->id)->pluck('id');
             ItemBarcode::whereIn('item_id', $itemIds)->delete();
@@ -278,7 +282,7 @@ class CompanyBarcodeController extends Controller
             $company->delete();
         });
 
-        ActivityLogger::log('Perusahaan', 'Hapus', 'Menghapus perusahaan: ' . $name);
+        ActivityLogger::log('Perusahaan', 'Hapus', 'Menghapus perusahaan: ' . $companyName);
 
         return redirect()->route('company-barcodes.index')
             ->with('success', 'Data perusahaan dihapus.');
