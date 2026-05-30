@@ -92,9 +92,9 @@
                             <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
                                 class="mt-1 block w-full rounded-md border-egg-300 bg-white max-w-full whitespace-normal break-words">
                                 <option value="" class="whitespace-normal break-words">—</option>
-                                {{-- Saat opsi di-render lewat JavaScript/Looping, pastikan kelas ini juga ikut: --}}
-                                {{-- <option value="1" class="whitespace-normal break-words">Nama Rak Yang Sangat Panjang Sekali Sampai Turun Ke Bawah</option> --}}
                             </select>
+                            <input type="text" name="posisi_rak_manual" id="posisi_rak_manual" value="{{ old('posisi_rak', $item->posisi_rak) }}"
+                                class="mt-1 block w-full rounded-md border-egg-300 hidden" placeholder="Masukkan nama rak manual">
                         </div>
                             <!-- <div>
                                 <label class="block text-base font-medium text-egg-800">Tingkat</label>
@@ -257,53 +257,38 @@
             function applyOptions(codes) {
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
                 const keep = rakSelect.value || current;
-                rakSelect.innerHTML = '<option value="">—</option>';
+                const manualInput = document.getElementById('posisi_rak_manual');
 
-                // keep variable string to list string
-                list_keep = keep.split(',').map(s => s.trim()).filter(s => s);
-                list_keep.forEach(function(k) {
-                    if (!codes.includes(k)) {
+                if (codes.length === 0) {
+                    rakSelect.classList.add('hidden');
+                    manualInput.classList.remove('hidden');
+                    manualInput.name = 'posisi_rak';
+                    rakSelect.name = 'posisi_rak_old';
+                } else {
+                    rakSelect.classList.remove('hidden');
+                    manualInput.classList.add('hidden');
+                    manualInput.name = 'posisi_rak_manual';
+                    rakSelect.name = 'posisi_rak';
+                    
+                    rakSelect.innerHTML = '<option value="">—</option>';
+                    codes.forEach(function (c) {
                         const opt = document.createElement('option');
-                        opt.value = k;
-                        opt.textContent = k;
+                        opt.value = c;
+                        opt.textContent = c;
                         rakSelect.appendChild(opt);
+                    });
+
+                    if (keep) {
+                        rakSelect.value = keep;
+                        if (rakSelect.value !== keep) {
+                            const opt = document.createElement('option');
+                            opt.value = keep;
+                            opt.textContent = keep;
+                            rakSelect.appendChild(opt);
+                            rakSelect.value = keep;
+                        }
                     }
-                });
-// Filter dan tambahkan opsi dari JSON
-codes.forEach(function (c) {
-    const opt = document.createElement('option');
-    
-    opt.value = c;
-    opt.textContent = c;
-
-    keep1 = formatTextWithNewline(keep);
-    
-    if (c === keep) opt.selected = true;
-    console.log("rak : ", keep1);
-    rakSelect.appendChild(opt);
-});
-
-function formatTextWithNewline(text, maxItems = 6) {
-        if (!text.includes(',')) return text;
-        const items = text.split(',');
-        let result = [];
-        for (let i = 0; i < items.length; i += maxItems) {
-            let chunk = items.slice(i, i + maxItems).join(', ');
-            result.push(chunk);
-        }
-        return result.join(',\n   '); // \n untuk baris baru, spasi untuk indentasi agar rapi
-    }
-
-keep1 = formatTextWithNewline(keep);
-
-// Pastikan nilai database yang tersimpan tetap ada meskipun tidak di JSON
-if (keep && !codes.includes(keep)) {
-    const opt = document.createElement('option');
-    opt.value = keep;
-    opt.textContent = keep1;
-    opt.selected = true;
-    rakSelect.appendChild(opt);
-}
+                }
             }
 
             let last = '';

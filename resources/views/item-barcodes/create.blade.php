@@ -72,6 +72,8 @@
                                     class="mt-1 block w-full rounded-md border-egg-300 bg-white">
                                     <option value="">—</option>
                                 </select>
+                                <input type="text" name="posisi_rak_manual" id="posisi_rak_manual" value="{{ old('posisi_rak') }}"
+                                    class="mt-1 block w-full rounded-md border-egg-300 hidden" placeholder="Masukkan nama rak manual">
                             </div>
                             <!-- <div>
                                 <label class="block text-base font-medium text-egg-800">Tingkat</label>
@@ -242,33 +244,36 @@
             function applyOptions(codes) {
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
                 const keep = rakSelect.value || current;
-                rakSelect.innerHTML = '<option value="">—</option>';
-                // keep variable string to list string
-                list_keep = keep.split(',').map(s => s.trim()).filter(s => s);
-                list_keep.forEach(function(k) {
-                    if (!codes.includes(k)) {
-                        const opt = document.createElement('option');
-                        opt.value = k;
-                        opt.textContent = k;
-                        rakSelect.appendChild(opt);
-                    }
-                });
+                const manualInput = document.getElementById('posisi_rak_manual');
 
-                codes.forEach(function (c) {
-                    const opt = document.createElement('option');
-                    opt.value = c;
-                    opt.textContent = c;
-                    rakSelect.appendChild(opt);
-                });
-
-                if (keep) {
-                    rakSelect.value = keep;
-                    if (rakSelect.value !== keep) {
+                if (codes.length === 0) {
+                    rakSelect.classList.add('hidden');
+                    manualInput.classList.remove('hidden');
+                    manualInput.name = 'posisi_rak';
+                    rakSelect.name = 'posisi_rak_old';
+                } else {
+                    rakSelect.classList.remove('hidden');
+                    manualInput.classList.add('hidden');
+                    manualInput.name = 'posisi_rak_manual';
+                    rakSelect.name = 'posisi_rak';
+                    
+                    rakSelect.innerHTML = '<option value="">—</option>';
+                    codes.forEach(function (c) {
                         const opt = document.createElement('option');
-                        opt.value = keep;
-                        opt.textContent = keep;
+                        opt.value = c;
+                        opt.textContent = c;
                         rakSelect.appendChild(opt);
+                    });
+
+                    if (keep) {
                         rakSelect.value = keep;
+                        if (rakSelect.value !== keep) {
+                            const opt = document.createElement('option');
+                            opt.value = keep;
+                            opt.textContent = keep;
+                            rakSelect.appendChild(opt);
+                            rakSelect.value = keep;
+                        }
                     }
                 }
             }
