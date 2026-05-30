@@ -118,7 +118,37 @@ class ScanController extends Controller
                 ->filter(fn($ui) => $ui->expired_date && $ui->expired_date->isBetween(Carbon::now(), Carbon::now()->addDays(30)))
                 ->first();
 
-            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry', 'approachingUniqueExpiry', 'expiringList'));
+            // Date validation: Check for "newer" items or old production/expiry
+            $item = $itemBarcode->item;
+            $otherBatches = \App\Models\Item::where('part_number', $item->part_number)
+                ->where('id', '!=', $item->id)
+                ->where('qty', '>', 0)
+                ->get();
+            
+            $isNewerBatch = false;
+            $isVeryOldStock = false;
+            
+            if ($item->tgl_produksi || $item->tgl_expired) {
+                // Check if current item is newer than existing batches
+                $oldestProdDate = $otherBatches->min('tgl_produksi');
+                $oldestExpDate = $otherBatches->min('tgl_expired');
+                
+                if (($item->tgl_produksi && $oldestProdDate && $item->tgl_produksi->gt($oldestProdDate)) ||
+                    ($item->tgl_expired && $oldestExpDate && $item->tgl_expired->gt($oldestExpDate))) {
+                    $isNewerBatch = true;
+                }
+                
+                // Very old: e.g., > 1 year production OR < 1 month to expiry
+                $oneYearAgo = Carbon::now()->subYear();
+                $oneMonthFromNow = Carbon::now()->addMonth();
+                
+                if (($item->tgl_produksi && $item->tgl_produksi->lt($oneYearAgo)) ||
+                    ($item->tgl_expired && $item->tgl_expired->lt($oneMonthFromNow))) {
+                    $isVeryOldStock = true;
+                }
+            }
+
+            return view('scan.result-item', compact('itemBarcode', 'fifoOlderStockWarning', 'expiredWarning', 'approachingExpiry', 'approachingUniqueExpiry', 'expiringList', 'isNewerBatch', 'isVeryOldStock'));
         }
 
         if (str_starts_with($barcodeId, 'CB-')) {

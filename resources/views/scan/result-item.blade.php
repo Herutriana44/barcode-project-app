@@ -28,6 +28,20 @@
                 </div>
             @endif
 
+            @if ($isNewerBatch ?? false)
+                <div class="p-4 rounded-lg border border-amber-400 bg-amber-50 text-amber-950 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Batch Barang Baru</p>
+                    <p class="mt-1">Barang yang discan memiliki tanggal produksi atau expired <span class="font-medium">setelah</span> batch stok yang ada. Periksa apakah stok lama sudah habis.</p>
+                </div>
+            @endif
+
+            @if ($isVeryOldStock ?? false)
+                <div class="p-4 rounded-lg border border-amber-400 bg-amber-50 text-amber-950 text-base leading-snug" role="alert">
+                    <p class="font-semibold">Peringatan: Stok Kondisi Lama</p>
+                    <p class="mt-1">Barang ini memiliki tanggal produksi lebih dari 1 tahun yang lalu ATAU masa expired kurang dari 1 bulan. Periksa kondisi barang.</p>
+                </div>
+            @endif
+
             @if ($expiredWarning ?? false)
                 <div class="p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
                     <p class="font-semibold">Peringatan: Barang Expired!</p>
