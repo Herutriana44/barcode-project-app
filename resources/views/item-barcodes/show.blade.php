@@ -200,12 +200,12 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Produksi</label>
-                                <input type="date" name="production_date"
+                                <input type="date" name="production_date" id="add-prod"
                                     class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Expired</label>
-                                <input type="date" name="expired_date"
+                                <input type="date" name="expired_date" id="add-exp"
                                     class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                             </div>
                             <div class="col-span-1 sm:col-span-3 flex gap-2 justify-end">
@@ -372,6 +372,38 @@
                     form.classList.toggle('hidden');
                 }
             }
+
+            // Logic for auto-setting expiry date
+            function setupDateAutoCalc(prodInputId, expInputId) {
+                const prodInput = document.getElementById(prodInputId);
+                const expInput = document.getElementById(expInputId);
+                if (!prodInput || !expInput) return;
+
+                function addMonthsSafe(date, months) {
+                    const d = new Date(date.getTime());
+                    d.setMonth(d.getMonth() + months);
+                    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+                }
+
+                function toYmd(d) {
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                }
+
+                prodInput.addEventListener('input', function() {
+                    if (!prodInput.value) return;
+                    const date = new Date(prodInput.value);
+                    if (isNaN(date.getTime())) return;
+                    expInput.value = toYmd(addMonthsSafe(date, 3));
+                });
+            }
+
+            setupDateAutoCalc('add-prod', 'add-exp');
+            @foreach($uniqueItems as $uniqueItem)
+                setupDateAutoCalc('edit-prod-{{ $uniqueItem->id }}', 'edit-exp-{{ $uniqueItem->id }}');
+            @endforeach
         </script>
     @endpush
 </x-app-layout>
