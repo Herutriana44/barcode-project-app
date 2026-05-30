@@ -39,6 +39,18 @@ class ActivityLogController extends Controller
         return redirect()->route('activity-logs.index')->with('success', 'Log aktivitas berhasil dihapus.');
     }
 
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:activity_logs,id',
+        ]);
+
+        ActivityLog::whereIn('id', $request->ids)->delete();
+
+        return redirect()->route('activity-logs.index')->with('success', 'Log aktivitas yang dipilih berhasil dihapus.');
+    }
+
     public function export(): StreamedResponse
     {
         $fileName = 'activity_logs_' . date('Y-m-d_His') . '.xlsx';

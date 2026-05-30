@@ -4,9 +4,17 @@
             <h2 class="font-bold text-3xl text-egg-900 leading-tight">
                 {{ __('Log Aktivitas Karyawan') }}
             </h2>
-            <a href="{{ route('activity-logs.export') }}" class="btn-egg-primary px-4 py-2 text-sm">
-                {{ __('Export ke Excel') }}
-            </a>
+            <div class="flex gap-2">
+                <form id="bulk-delete-form" action="{{ route('activity-logs.bulk-destroy') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus log yang dipilih?')">
+                    @csrf
+                    <button type="submit" id="bulk-delete-btn" class="btn-egg-danger px-4 py-2 text-sm hidden">
+                        {{ __('Hapus Terpilih') }}
+                    </button>
+                </form>
+                <a href="{{ route('activity-logs.export') }}" class="btn-egg-primary px-4 py-2 text-sm">
+                    {{ __('Export ke Excel') }}
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -16,6 +24,7 @@
                 <table class="w-full text-sm text-left min-w-[800px]">
                     <thead class="text-xs text-egg-700 uppercase bg-egg-50">
                         <tr>
+                            <th class="px-6 py-4"><input type="checkbox" id="select-all"></th>
                             <th class="px-6 py-4">Waktu</th>
                             <th class="px-6 py-4">NIP</th>
                             <th class="px-6 py-4">Nama</th>
@@ -30,6 +39,7 @@
                     <tbody class="divide-y divide-egg-200">
                         @forelse ($logs as $log)
                             <tr>
+                                <td class="px-6 py-4"><input type="checkbox" name="ids[]" value="{{ $log->id }}" class="log-checkbox"></td>
                                 <td class="px-6 py-4 text-egg-600">
                                     {{ $log->created_at->format('d/m/Y H:i:s') }}
                                 </td>
@@ -65,7 +75,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
+                                <td colspan="10" class="px-6 py-4 text-center text-egg-500">Belum ada log aktivitas.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -76,4 +86,39 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.log-checkbox');
+        const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
+        const bulkDeleteForm = document.getElementById('bulk-delete-form');
+
+        function toggleBulkDeleteBtn() {
+            const checked = document.querySelectorAll('.log-checkbox:checked');
+            if (checked.length > 0) {
+                bulkDeleteBtn.classList.remove('hidden');
+
+                // Add hidden inputs for checked logs to the form
+                bulkDeleteForm.querySelectorAll('input[name="ids[]"]').forEach(input => input.remove());
+                checked.forEach(checkbox => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'ids[]';
+                    input.value = checkbox.value;
+                    bulkDeleteForm.appendChild(input);
+                });
+            } else {
+                bulkDeleteBtn.classList.add('hidden');
+            }
+        }
+
+        selectAll.addEventListener('change', (e) => {
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+            toggleBulkDeleteBtn();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', toggleBulkDeleteBtn);
+        });
+    </script>
 </x-app-layout>
