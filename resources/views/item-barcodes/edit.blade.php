@@ -81,12 +81,38 @@
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Tgl Produksi</label>
-                                <input type="date" name="tgl_produksi" value="{{ old('tgl_produksi', $item->tgl_produksi?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
+                                <input type="date" id="prod-date" name="tgl_produksi" value="{{ old('tgl_produksi', $item->tgl_produksi?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
                             <div>
                                 <label class="block text-base font-medium text-egg-800">Tgl Expired</label>
-                                <input type="date" name="tgl_expired" value="{{ old('tgl_expired', $item->tgl_expired?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
+                                <input type="date" id="exp-date" name="tgl_expired" value="{{ old('tgl_expired', $item->tgl_expired?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
+
+    @push('scripts')
+    <script>
+        (function() {
+            const prodInput = document.getElementById('prod-date');
+            const expInput = document.getElementById('exp-date');
+
+            if (prodInput && expInput) {
+                prodInput.addEventListener('input', function() {
+                    if (!this.value) return;
+                    const date = new Date(this.value);
+                    if (isNaN(date.getTime())) return;
+                    
+                    // Add 3 months
+                    date.setMonth(date.getMonth() + 3);
+                    
+                    // Format as YYYY-MM-DD
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    expInput.value = `${yyyy}-${mm}-${dd}`;
+                });
+            }
+        })();
+    </script>
+    @endpush
                             <div>
                             <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
                             <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
@@ -256,16 +282,13 @@
                 const keep = rakSelect.value || current;
                 const manualInput = document.getElementById('posisi_rak_manual');
 
-                if (codes.length === 0) {
-                    rakSelect.classList.add('hidden');
-                    manualInput.classList.remove('hidden');
-                    manualInput.name = 'posisi_rak';
-                    rakSelect.name = 'posisi_rak_old';
-                } else {
+                // Always populate the dropdown if codes exist
+                if (codes.length > 0) {
                     rakSelect.classList.remove('hidden');
                     manualInput.classList.add('hidden');
-                    manualInput.name = 'posisi_rak_manual';
+                    
                     rakSelect.name = 'posisi_rak';
+                    manualInput.name = 'posisi_rak_manual';
                     
                     rakSelect.innerHTML = '<option value="">—</option>';
                     codes.forEach(function (c) {
@@ -285,6 +308,13 @@
                             rakSelect.value = keep;
                         }
                     }
+                } else {
+                    // Fallback to manual input if no codes found
+                    rakSelect.classList.add('hidden');
+                    manualInput.classList.remove('hidden');
+                    
+                    rakSelect.name = 'posisi_rak_old';
+                    manualInput.name = 'posisi_rak';
                 }
             }
 

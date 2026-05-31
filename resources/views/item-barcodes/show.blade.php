@@ -285,12 +285,12 @@
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Produksi</label>
-                                                <input type="date" name="production_date" value="{{ $uniqueItem->production_date?->format('Y-m-d') }}"
+                                                <input type="date" id="edit-prod-{{ $uniqueItem->id }}" name="production_date" value="{{ $uniqueItem->production_date?->format('Y-m-d') }}"
                                                     class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                                             </div>
                                             <div>
                                                 <label class="block text-sm font-medium text-egg-800 mb-1">Tgl Expired</label>
-                                                <input type="date" name="expired_date" value="{{ $uniqueItem->expired_date?->format('Y-m-d') }}"
+                                                <input type="date" id="edit-exp-{{ $uniqueItem->id }}" name="expired_date" value="{{ $uniqueItem->expired_date?->format('Y-m-d') }}"
                                                     class="block w-full rounded-lg border-egg-300 py-2 px-3 text-sm bg-white text-egg-900" />
                                             </div>
                                             <div class="col-span-1 sm:col-span-3 flex gap-2 justify-end">

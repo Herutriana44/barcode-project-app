@@ -586,7 +586,7 @@ final class InventorySpreadsheet
      */
     private static function parseDateOptional(mixed $v, string $label, array &$rowErrors): ?string
     {
-        if ($v === null || $v === '') {
+        if ($v === null || (is_string($v) && trim($v) === '')) {
             return null;
         }
         try {
