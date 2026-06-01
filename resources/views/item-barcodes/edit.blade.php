@@ -190,19 +190,13 @@
             }
 
             // Initialize auto state
-            function initAutoState() {
-                if (!produksi.value) return;
-                const base = parseYmd(produksi.value);
+            produksi.addEventListener('change', function (e) {
+                const base = parseYmd(e.target.value);
                 if (!base) return;
                 
-                const expected = toYmd(addMonthsSafe(base, 3));
-                if (!expired.value) {
-                    expired.value = expected;
-                    expired.dataset.auto = '1';
-                } else if (expired.value === expected) {
-                    expired.dataset.auto = '1';
-                }
-            }
+                expired.value = toYmd(addMonthsSafe(base, 3));
+                });
+            })
             initAutoState();
 
             expired.addEventListener('input', function () {
