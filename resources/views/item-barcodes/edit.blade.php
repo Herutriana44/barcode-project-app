@@ -173,49 +173,20 @@
                 return `${yyyy}-${mm}-${dd}`;
             }
 
-            function parseYmd(s) {
-                if (!s) return null;
-                const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
-                if (!m) return null;
-                const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-                return Number.isNaN(d.getTime()) ? null : d;
-            }
-
             function addMonthsSafe(date, months) {
                 const targetYear = date.getFullYear();
                 const targetMonth = date.getMonth() + months;
-                    
                 // Ambil hari terakhir bulan target
                 return new Date(targetYear, targetMonth + 1, 0);
             }
 
-            // Initialize auto state
             produksi.addEventListener('change', function (e) {
-                const base = parseYmd(e.target.value);
-                if (!base) return;
+                if (!e.target.value) return;
+                
+                const base = new Date(e.target.value);
+                if (isNaN(base.getTime())) return;
                 
                 expired.value = toYmd(addMonthsSafe(base, 3));
-                });
-            })
-            initAutoState();
-
-            expired.addEventListener('input', function () {
-                expired.dataset.auto = '0';
-            });
-
-            produksi.addEventListener('input', function (e) {
-                console.log('Produksi date changed:', e.target.value);
-                const base = parseYmd(e.target.value);
-                console.log('Parsed base date:', base);
-                if (!base) return;
-                
-                const newExpired = toYmd(addMonthsSafe(base, 3));
-                console.log('Calculated expired:', newExpired);
-
-                if (!expired.value || expired.dataset.auto === '1') {
-                    expired.value = newExpired;
-                    expired.dataset.auto = '1';
-                }
             });
         })();
     </script>
