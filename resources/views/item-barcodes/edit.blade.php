@@ -198,14 +198,15 @@
             const manualInput = document.getElementById('posisi_rak_manual');
             if (!customerSelect || !rakSelect || !manualInput) return;
 
-            async function fetchRakOptions(companyName) {
-                const name = (companyName || '').trim();
+            async function fetchRakOptions(customerName) {
+                const name = (customerName || '').trim();
                 if (!name) return null;
                 
                 try {
                     const response = await fetch('/perusahaan-rak.json');
                     const data = await response.json();
                     
+                    // Mencari key berdasarkan nama customer yang dipilih
                     const foundKey = Object.keys(data).find(k => k.toLowerCase() === name.toLowerCase());
                     return foundKey ? data[foundKey] : null;
                 } catch (e) {
@@ -220,7 +221,7 @@
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
 
                 if (codes !== null) {
-                    // Perusahaan ada di JSON -> Tampilkan Dropdown
+                    // Customer ada di JSON -> Tampilkan Dropdown
                     rakSelect.classList.remove('hidden');
                     manualInput.classList.add('hidden');
                     
@@ -236,7 +237,7 @@
                         rakSelect.appendChild(opt);
                     });
                 } else {
-                    // Perusahaan tidak ada di JSON -> Gunakan Input Manual
+                    // Customer tidak ada di JSON -> Gunakan Input Manual
                     rakSelect.classList.add('hidden');
                     manualInput.classList.remove('hidden');
                     
