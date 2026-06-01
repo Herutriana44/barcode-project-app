@@ -200,14 +200,17 @@
 
             async function fetchRakOptions(customerName) {
                 const name = (customerName || '').trim();
+                console.log('Searching for customer:', name);
                 if (!name) return null;
                 
                 try {
                     const response = await fetch('/perusahaan-rak.json');
                     const data = await response.json();
+                    console.log('JSON Data loaded:', data);
                     
                     // Mencari key berdasarkan nama customer yang dipilih
                     const foundKey = Object.keys(data).find(k => k.toLowerCase() === name.toLowerCase());
+                    console.log('Match found:', foundKey);
                     return foundKey ? data[foundKey] : null;
                 } catch (e) {
                     console.error('Failed to fetch rak data:', e);
