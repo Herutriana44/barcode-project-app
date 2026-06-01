@@ -87,32 +87,6 @@
                                 <label class="block text-base font-medium text-egg-800">Tgl Expired</label>
                                 <input type="date" id="exp-date" name="tgl_expired" value="{{ old('tgl_expired', $item->tgl_expired?->format('Y-m-d')) }}" class="mt-1 block w-full rounded-md border-egg-300">
                             </div>
-
-    @push('scripts')
-    <script>
-        (function() {
-            const prodInput = document.getElementById('prod-date');
-            const expInput = document.getElementById('exp-date');
-
-            if (prodInput && expInput) {
-                prodInput.addEventListener('input', function() {
-                    if (!this.value) return;
-                    const date = new Date(this.value);
-                    if (isNaN(date.getTime())) return;
-                    
-                    // Add 3 months
-                    date.setMonth(date.getMonth() + 3);
-                    
-                    // Format as YYYY-MM-DD
-                    const yyyy = date.getFullYear();
-                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                    const dd = String(date.getDate()).padStart(2, '0');
-                    expInput.value = `${yyyy}-${mm}-${dd}`;
-                });
-            }
-        })();
-    </script>
-    @endpush
                             <div>
                             <label class="block text-base font-medium text-egg-800">Posisi Rak</label>
                             <select name="posisi_rak" id="posisi_rak" data-rak-select data-current="{{ old('posisi_rak', $item->posisi_rak) }}"
@@ -208,10 +182,11 @@
             }
 
             function addMonthsSafe(date, months) {
-                const d = new Date(date.getTime());
-                d.setMonth(d.getMonth() + months);
-                // Set to the last day of that month
-                return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+                const targetYear = date.getFullYear();
+                const targetMonth = date.getMonth() + months;
+                    
+                // Ambil hari terakhir bulan target
+                return new Date(targetYear, targetMonth + 1, 0);
             }
 
             // Initialize auto state
