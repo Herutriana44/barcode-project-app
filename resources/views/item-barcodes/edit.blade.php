@@ -204,7 +204,8 @@
                 if (!name) return null;
                 
                 try {
-                    const response = await fetch('/perusahaan-rak.json');
+                    const response = await fetch('{{ asset("perusahaan-rak.json") }}');
+                    if (!response.ok) throw new Error('Network response was not ok');
                     const data = await response.json();
                     console.log('JSON Data loaded:', data);
                     
