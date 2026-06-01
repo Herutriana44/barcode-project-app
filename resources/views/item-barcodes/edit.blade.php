@@ -195,76 +195,57 @@
         (function () {
             const customerSelect = document.getElementById('customer_company');
             const rakSelect = document.getElementById('posisi_rak');
-            if (!customerSelect || !rakSelect) return;
+            const manualInput = document.getElementById('posisi_rak_manual');
+            if (!customerSelect || !rakSelect || !manualInput) return;
 
             async function fetchRakOptions(companyName) {
                 const name = (companyName || '').trim();
-                if (!name) return [];
+                if (!name) return null;
                 
                 try {
                     const response = await fetch('/perusahaan-rak.json');
                     const data = await response.json();
                     
-                    for (const key in data) {
-                        if (key.toLowerCase() === name.toLowerCase()) {
-                            return data[key];
-                        }
-                    }
-                    return [];
+                    const foundKey = Object.keys(data).find(k => k.toLowerCase() === name.toLowerCase());
+                    return foundKey ? data[foundKey] : null;
                 } catch (e) {
                     console.error('Failed to fetch rak data:', e);
-                    return [];
+                    return null;
                 }
             }
 
-            function applyOptions(codes) {
+            async function refresh() {
+                const name = (customerSelect.value || '').trim();
+                const codes = await fetchRakOptions(name);
                 const current = (rakSelect.getAttribute('data-current') || '').trim();
-                const keep = rakSelect.value || current;
-                const manualInput = document.getElementById('posisi_rak_manual');
 
-                // Always populate the dropdown if codes exist
-                if (codes.length > 0) {
+                if (codes !== null) {
+                    // Perusahaan ada di JSON -> Tampilkan Dropdown
                     rakSelect.classList.remove('hidden');
                     manualInput.classList.add('hidden');
                     
                     rakSelect.name = 'posisi_rak';
-                    manualInput.name = 'posisi_rak_manual';
+                    manualInput.name = 'posisi_rak_old';
                     
                     rakSelect.innerHTML = '<option value="">—</option>';
                     codes.forEach(function (c) {
                         const opt = document.createElement('option');
                         opt.value = c;
                         opt.textContent = c;
+                        if (c === current) opt.selected = true;
                         rakSelect.appendChild(opt);
                     });
-
-                    if (keep) {
-                        rakSelect.value = keep;
-                        if (rakSelect.value !== keep) {
-                            const opt = document.createElement('option');
-                            opt.value = keep;
-                            opt.textContent = keep;
-                            rakSelect.appendChild(opt);
-                            rakSelect.value = keep;
-                        }
-                    }
                 } else {
-                    // Fallback to manual input if no codes found
+                    // Perusahaan tidak ada di JSON -> Gunakan Input Manual
                     rakSelect.classList.add('hidden');
                     manualInput.classList.remove('hidden');
                     
                     rakSelect.name = 'posisi_rak_old';
                     manualInput.name = 'posisi_rak';
+                    
+                    // Set nilai manual dari data lama jika ada
+                    if (current) manualInput.value = current;
                 }
-            }
-
-            let last = '';
-            async function refresh() {
-                const name = (customerSelect.value || '').trim();
-                if (name === last) return;
-                last = name;
-                const codes = await fetchRakOptions(name);
-                applyOptions(codes);
             }
 
             customerSelect.addEventListener('change', refresh);
