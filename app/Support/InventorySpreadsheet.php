@@ -592,7 +592,16 @@ final class InventorySpreadsheet
             }
 
             if (is_string($v)) {
-                // Try to parse string directly first
+                // Try specific formats first
+                $dateFormats = ['d/m/Y', 'd-m-Y', 'd.m.Y'];
+                foreach ($dateFormats as $format) {
+                    try {
+                        return Carbon::createFromFormat($format, $v)->format('Y-m-d');
+                    } catch (Throwable) {
+                        continue;
+                    }
+                }
+                // Fallback to general parsing
                 return Carbon::parse($v)->format('Y-m-d');
             }
 
