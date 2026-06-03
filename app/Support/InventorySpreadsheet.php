@@ -231,9 +231,15 @@ final class InventorySpreadsheet
         $errors = [];
         $payloads = [];
 
-        // Helper to get index by header name
+        // Helper to get index by header name (fuzzy matching)
         $getIdx = function(string $name) use ($headers) {
-            return array_search($name, $headers);
+            foreach ($headers as $index => $header) {
+                // Remove extra spaces and compare normalized strings
+                if (str_contains($header, mb_strtolower($name)) || str_contains(mb_strtolower($name), $header)) {
+                    return $index;
+                }
+            }
+            return null;
         };
 
         foreach ($dataRows as $i => $row) {
