@@ -280,8 +280,8 @@ final class InventorySpreadsheet
 
             $dProd = self::parseDateOptional($row[$getIdx('tgl_produksi')] ?? null, "Baris {$lineNum}: tgl_produksi", $rowErrors);
             $dExp = self::parseDateOptional($row[$getIdx('tgl_expired')] ?? null, "Baris {$lineNum}: tgl_expired", $rowErrors);
-            $dMat = self::parseDateOptional($row[$getIdx('tanggal_terima_material')] ?? null, "Baris {$lineNum}: tanggal_terima_material", $rowErrors);
-            $dFg = self::parseDateOptional($row[$getIdx('tanggal_terima_fg')] ?? null, "Baris {$lineNum}: tanggal_terima_fg", $rowErrors);
+            $dMat = self::parseDateOptional($row[$getIdx('tanggal_terima_material')] ?? null, "Baris {$lineNum}: tanggal_terima_material", $rowErrors) ?? date('Y-m-d');
+            $dFg = self::parseDateOptional($row[$getIdx('tanggal_terima_fg')] ?? null, "Baris {$lineNum}: tanggal_terima_fg", $rowErrors) ?? date('Y-m-d');
 
             if (count($rowErrors) > 0) {
                 array_push($errors, ...$rowErrors);
@@ -308,13 +308,13 @@ final class InventorySpreadsheet
                 'jenis_bahan' => $jb ?? null,
                 'quantity_material' => self::toNullableInt($row[$getIdx('quantity_material')] ?? 0),
                 'no_surat_jalan_material' => self::nullableStr($row[$getIdx('no_surat_jalan_material')] ?? '-'),
-                'tanggal_terima_material' => $dMat ?? date('Y-m-d'),
-                'transfer_slip_no' => self::nullableStr($row[18] ?? '-'),
-                'tanggal_terima_fg' => $dFg ?? date('Y-m-d'),
-                'jumlah_box' => self::toInt($row[20] ?? 0),
-                'operator_mobil_id' => self::resolveEmployeeIdByName($opMobName),
-                'pengirim_id' => self::resolveEmployeeIdByName($opPengName),
-                'operator_forklift_id' => self::resolveEmployeeIdByName($opForkName),
+                'tanggal_terima_material' => $dMat,
+                'transfer_slip_no' => self::nullableStr($row[$getIdx('transfer_slip_no')] ?? '-'),
+                'tanggal_terima_fg' => $dFg,
+                'jumlah_box' => self::toInt($row[$getIdx('jumlah_box')] ?? 0),
+                'operator_mobil_id' => $opMobName !== '' ? self::resolveEmployeeIdByName($opMobName) : null,
+                'pengirim_id' => $opPengName !== '' ? self::resolveEmployeeIdByName($opPengName) : null,
+                'operator_forklift_id' => $opForkName !== '' ? self::resolveEmployeeIdByName($opForkName) : null,
                 'qty_sub_pack' => $qtySubPack !== null && $qtySubPack > 0 ? $qtySubPack : 1,
                 'berat_packaging_gram' => $beratPackagingG ?? 0,
                 'berat_per_pcs_gram' => $beratPerPcsG ?? 0,
