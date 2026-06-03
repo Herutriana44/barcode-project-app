@@ -590,6 +590,12 @@ final class InventorySpreadsheet
             if ($v instanceof \DateTimeInterface) {
                 return $v->format('Y-m-d');
             }
+
+            if (is_string($v)) {
+                // Try to parse string directly first
+                return Carbon::parse($v)->format('Y-m-d');
+            }
+
             if (is_numeric($v)) {
                 $excelEpoch = Carbon::create(1899, 12, 30);
                 $days = (float) $v;
@@ -597,9 +603,9 @@ final class InventorySpreadsheet
                 return $excelEpoch->copy()->addDays((int) round($days))->format('Y-m-d');
             }
 
-            return Carbon::parse((string) $v)->format('Y-m-d');
+            return null;
         } catch (Throwable) {
-            $rowErrors[] = "{$label} tidak valid.";
+            $rowErrors[] = "{$label} tidak valid (format tanggal tidak dikenali).";
 
             return null;
         }
