@@ -586,14 +586,22 @@ final class InventorySpreadsheet
         if ($v === null || (is_string($v) && trim($v) === '')) {
             return null;
         }
+
         try {
             if ($v instanceof \DateTimeInterface) {
                 return $v->format('Y-m-d');
             }
 
+            if (is_numeric($v)) {
+                $excelEpoch = Carbon::create(1899, 12, 30);
+                return $excelEpoch->copy()->addDays((int) round((float) $v))->format('Y-m-d');
+            }
+
             if (is_string($v)) {
-                // Try specific formats first
-                $dateFormats = ['d/m/Y', 'd-m-Y', 'd.m.Y'];
+                $v = trim($v);
+                
+                // Try specific formats
+                $dateFormats = ['d/m/Y', 'd-m-Y', 'd.m.Y', 'Y-m-d', 'Y/m/d'];
                 foreach ($dateFormats as $format) {
                     try {
                         return Carbon::createFromFormat($format, $v)->format('Y-m-d');
@@ -601,23 +609,19 @@ final class InventorySpreadsheet
                         continue;
                     }
                 }
-                // Fallback to general parsing
+
+                // Final attempt with general parse
                 return Carbon::parse($v)->format('Y-m-d');
             }
-
-            if (is_numeric($v)) {
-                $excelEpoch = Carbon::create(1899, 12, 30);
-                $days = (float) $v;
-
-                return $excelEpoch->copy()->addDays((int) round($days))->format('Y-m-d');
-            }
-
-            return null;
-        } catch (Throwable) {
-            $rowErrors[] = "{$label} tidak valid (format tanggal tidak dikenali).";
-
+        } catch (Throwable $e) {
+            \Log::error("Date parsing failed for label: {$label}. Input value: " . var_export($v, true) . ". Error: " . $e->getMessage());
+            $rowErrors[] = "{$label} tidak valid (input: '{$v}', error: {$e->getMessage()}).";
             return null;
         }
+
+        \Log::error("Date parsing failed for label: {$label}. Input type not recognized. Input value: " . var_export($v, true));
+        $rowErrors[] = "{$label} tidak valid (tipe data tidak dikenali).";
+        return null;
     }
 
     private static function resolveEmployeeIdByName(string $name): ?int
