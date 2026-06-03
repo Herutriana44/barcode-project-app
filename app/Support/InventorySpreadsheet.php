@@ -226,50 +226,44 @@ final class InventorySpreadsheet
             return ['errors' => ['Berkas kosong atau hanya berisi header.'], 'imported' => 0];
         }
 
+        $headers = array_map(fn($h) => trim(mb_strtolower((string) $h)), $matrix[0]);
         $dataRows = array_slice($matrix, 1);
         $errors = [];
         $payloads = [];
 
+        // Helper to get index by header name
+        $getIdx = function(string $name) use ($headers) {
+            return array_search($name, $headers);
+        };
+
         foreach ($dataRows as $i => $row) {
             $lineNum = $i + 2;
-            $row = self::padRow($row, self::FG_COLS);
             $rowErrors = [];
 
-            $companyName = self::str($row[0] ?? null);
-            $code = self::str($row[1] ?? null);
+            $companyName = self::str($row[$getIdx('nama_perusahaan')] ?? '');
+            $code = self::str($row[$getIdx('code')] ?? '');
 
-            if ($companyName === '' && $code === '') {
-                continue;
-            }
-
-            if ($companyName === '') {
-                $errors[] = "Baris {$lineNum}: nama_perusahaan wajib diisi.";
-
-                continue;
-            }
-
-            if ($code === '') {
-                $errors[] = "Baris {$lineNum}: code wajib diisi.";
-
-                continue;
-            }
+            if ($companyName === '' && $code === '') continue;
+            if ($companyName === '') { $errors[] = "Baris {$lineNum}: nama_perusahaan wajib diisi."; continue; }
+            if ($code === '') { $errors[] = "Baris {$lineNum}: code wajib diisi."; continue; }
 
             $company = Company::query()
                 ->whereRaw('LOWER(TRIM(name)) = ?', [mb_strtolower($companyName)])
                 ->first();
 
             if ($company === null) {
-                $errors[] = "Baris {$lineNum}: perusahaan \"{$companyName}\" tidak ditemukan. Buat dulu atau samakan ejaan dengan data master.";
-
+                $errors[] = "Baris {$lineNum}: perusahaan \"{$companyName}\" tidak ditemukan.";
                 continue;
             }
 
-            $opMobName = self::str($row[21] ?? '');
-            $opPengName = self::str($row[22] ?? '');
-            $opForkName = self::str($row[23] ?? '');
-            $qtySubPack = self::toNullableInt($row[24] ?? 1);
-            $beratPackagingG = self::toNullableInt($row[25] ?? 0);
-            $beratPerPcsG = self::toNullableInt($row[26] ?? 0);
+            $opMobName = self::str($row[$getIdx('operator_mobil')] ?? '');
+            $opPengName = self::str($row[$getIdx('pengirim')] ?? '');
+            $opForkName = self::str($row[$getIdx('operator_forklift')] ?? '');
+            $qtySubPack = self::toNullableInt($row[$getIdx('qty_sub_pack')] ?? 1);
+            $beratPackagingG = self::toNullableInt($row[$getIdx('berat_packaging_gram')] ?? 0);
+            $beratPerPcsG = self::toNullableInt($row[$getIdx('berat_per_pcs_gram')] ?? 0);
+
+            // ... (rest of logic using $getIdx for all fields)
 
             foreach (['operator_mobil' => $opMobName, 'pengirim' => $opPengName, 'operator_forklift' => $opForkName] as $label => $ename) {
                 if ($ename !== '' && self::resolveEmployeeIdByName($ename) === null) {
@@ -277,17 +271,17 @@ final class InventorySpreadsheet
                 }
             }
 
-            $qty = self::toInt($row[7] ?? 0);
+            $qty = self::toInt($row[$getIdx('qty')] ?? 0);
             if ($qty < 0) {
                 $rowErrors[] = "Baris {$lineNum}: qty tidak valid.";
             }
 
-            $jb = self::normalizeJenisBahan(self::str($row[14] ?? null));
+            $jb = self::normalizeJenisBahan(self::str($row[$getIdx('jenis_bahan')] ?? null));
 
-            $dProd = self::parseDateOptional($row[9] ?? null, "Baris {$lineNum}: tgl_produksi", $rowErrors);
-            $dExp = self::parseDateOptional($row[10] ?? null, "Baris {$lineNum}: tgl_expired", $rowErrors);
-            $dMat = self::parseDateOptional($row[17] ?? null, "Baris {$lineNum}: tanggal_terima_material", $rowErrors);
-            $dFg = self::parseDateOptional($row[19] ?? null, "Baris {$lineNum}: tanggal_terima_fg", $rowErrors);
+            $dProd = self::parseDateOptional($row[$getIdx('tgl_produksi')] ?? null, "Baris {$lineNum}: tgl_produksi", $rowErrors);
+            $dExp = self::parseDateOptional($row[$getIdx('tgl_expired')] ?? null, "Baris {$lineNum}: tgl_expired", $rowErrors);
+            $dMat = self::parseDateOptional($row[$getIdx('tanggal_terima_material')] ?? null, "Baris {$lineNum}: tanggal_terima_material", $rowErrors);
+            $dFg = self::parseDateOptional($row[$getIdx('tanggal_terima_fg')] ?? null, "Baris {$lineNum}: tanggal_terima_fg", $rowErrors);
 
             if (count($rowErrors) > 0) {
                 array_push($errors, ...$rowErrors);
@@ -298,22 +292,22 @@ final class InventorySpreadsheet
             $payloads[] = [
                 'line' => $lineNum,
                 'company_id' => $company->id,
-                'customer' => self::nullableStr($row[2] ?? null),
-                'part_name' => self::nullableStr($row[3] ?? null),
-                'part_number' => self::nullableStr($row[4] ?? null),
-                'model' => self::nullableStr($row[5] ?? null),
-                'berat' => self::toNullableFloat($row[6] ?? null),
+                'customer' => self::nullableStr($row[$getIdx('customer')] ?? null),
+                'part_name' => self::nullableStr($row[$getIdx('part_name')] ?? null),
+                'part_number' => self::nullableStr($row[$getIdx('part_number')] ?? null),
+                'model' => self::nullableStr($row[$getIdx('model')] ?? null),
+                'berat' => self::toNullableFloat($row[$getIdx('berat')] ?? null),
                 'qty' => $qty,
-                'inspector_name' => self::nullableStr($row[8] ?? null),
+                'inspector_name' => self::nullableStr($row[$getIdx('inspector_name')] ?? null),
                 'tgl_produksi' => $dProd,
                 'tgl_expired' => $dExp,
                 'code' => $code,
-                'posisi_rak' => self::nullableStr($row[11] ?? null),
-                'tingkat' => self::nullableStr($row[12] ?? '-'),
-                'ukuran_material' => self::nullableStr($row[13] ?? '-'),
+                'posisi_rak' => self::nullableStr($row[$getIdx('posisi_rak')] ?? null),
+                'tingkat' => self::nullableStr($row[$getIdx('tingkat')] ?? '-'),
+                'ukuran_material' => self::nullableStr($row[$getIdx('ukuran_material')] ?? '-'),
                 'jenis_bahan' => $jb ?? null,
-                'quantity_material' => self::toNullableInt($row[15] ?? 0),
-                'no_surat_jalan_material' => self::nullableStr($row[16] ?? '-'),
+                'quantity_material' => self::toNullableInt($row[$getIdx('quantity_material')] ?? 0),
+                'no_surat_jalan_material' => self::nullableStr($row[$getIdx('no_surat_jalan_material')] ?? '-'),
                 'tanggal_terima_material' => $dMat ?? date('Y-m-d'),
                 'transfer_slip_no' => self::nullableStr($row[18] ?? '-'),
                 'tanggal_terima_fg' => $dFg ?? date('Y-m-d'),
