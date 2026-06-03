@@ -265,12 +265,6 @@ final class InventorySpreadsheet
 
             // ... (rest of logic using $getIdx for all fields)
 
-            foreach (['operator_mobil' => $opMobName, 'pengirim' => $opPengName, 'operator_forklift' => $opForkName] as $label => $ename) {
-                if ($ename !== '' && self::resolveEmployeeIdByName($ename) === null) {
-                    $rowErrors[] = "Baris {$lineNum}: karyawan ({$label}) \"{$ename}\" tidak ditemukan.";
-                }
-            }
-
             $qty = self::toInt($row[$getIdx('qty')] ?? 0);
             if ($qty < 0) {
                 $rowErrors[] = "Baris {$lineNum}: qty tidak valid.";
