@@ -283,9 +283,6 @@ final class InventorySpreadsheet
             }
 
             $jb = self::normalizeJenisBahan(self::str($row[14] ?? null));
-            if ($jb === false) {
-                $rowErrors[] = "Baris {$lineNum}: jenis_bahan harus kosong, SPCC, atau SESE.";
-            }
 
             $dProd = self::parseDateOptional($row[9] ?? null, "Baris {$lineNum}: tgl_produksi", $rowErrors);
             $dExp = self::parseDateOptional($row[10] ?? null, "Baris {$lineNum}: tgl_expired", $rowErrors);
@@ -567,18 +564,18 @@ final class InventorySpreadsheet
         return is_numeric($s) ? (float) $s : null;
     }
 
-    /** @return null|string|false */
-    private static function normalizeJenisBahan(string $v)
+    /** @return null|string */
+    private static function normalizeJenisBahan(?string $v)
     {
-        if ($v === '') {
+        if ($v === null || $v === '') {
             return null;
         }
-        $u = strtoupper($v);
+        $u = strtoupper(trim($v));
         if ($u === 'SPCC' || $u === 'SESE') {
             return $u;
         }
 
-        return false;
+        return null;
     }
 
     /**
