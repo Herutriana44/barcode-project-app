@@ -74,7 +74,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($companyBarcode->company->items as $item)
+                            @foreach($companyBarcode->company->items->filter(function($item) {
+                                return !empty($item->customer) && $item->part_name !== 'barang default';
+                            }) as $item)
                             <tr class="border-b border-egg-100">
                                 <td class="py-3 px-2">{{ $item->customer ?? '-' }}</td>
                                 <td class="py-3 px-2">
