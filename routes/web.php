@@ -32,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::middleware(['admin'])->group(function () {
+        Route::get('/perusahaan-rak', [App\Http\Controllers\PerusahaanRakController::class, 'index'])->name('perusahaan-rak.index');
+        Route::patch('/perusahaan-rak', [App\Http\Controllers\PerusahaanRakController::class, 'update'])->name('perusahaan-rak.update');
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export');
         Route::get('/activity-logs/{activityLog}/edit', [ActivityLogController::class, 'edit'])->name('activity-logs.edit');
