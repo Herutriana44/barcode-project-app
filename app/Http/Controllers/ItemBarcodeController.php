@@ -564,6 +564,19 @@ class ItemBarcodeController extends Controller
         $expiredWarning = $itemBarcode->item->tgl_expired?->isPast() ?? false;
         $approachingExpiry = $itemBarcode->item->tgl_expired && $itemBarcode->item->tgl_expired->isBetween(Carbon::now(), Carbon::now()->addDays(30));
 
+        // Warning flags for unique items based on their own expired_date
+        $now = Carbon::now();
+        $threshold = Carbon::now()->addDays(30);
+        $activeUniqueItems = $itemBarcode->item->uniqueItems->where('status_keluar', false);
+        $uniqueItemsExpiredWarning = $activeUniqueItems->contains(function ($u) use ($now) {
+            $exp = $u->expired_date ?? $itemBarcode->item->tgl_expired;
+            return $exp && $exp->isPast();
+        });
+        $uniqueItemsApproachingExpiry = ! $uniqueItemsExpiredWarning && $activeUniqueItems->contains(function ($u) use ($now, $threshold) {
+            $exp = $u->expired_date ?? $itemBarcode->item->tgl_expired;
+            return $exp && $exp->isBetween($now, $threshold);
+        });
+
         $scanUrl = ScanUrl::forBarcode($itemBarcode->barcode_id);
         $barcodeSvg = BarcodeQrCodes::code128SvgForScan($itemBarcode->barcode_id);
         $qrCodeSvg = BarcodeQrCodes::qrSvgForScan($itemBarcode->barcode_id);
@@ -572,7 +585,7 @@ class ItemBarcodeController extends Controller
 
         $labelHeaderCompanyName = self::WAREHOUSE_COMPANY_NAME;
 
-        return view('item-barcodes.show', compact('itemBarcode', 'uniqueItems', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName', 'expiredWarning', 'approachingExpiry'));
+        return view('item-barcodes.show', compact('itemBarcode', 'uniqueItems', 'barcodeSvg', 'qrCodeSvg', 'qcLabelQrSvg', 'qcLabelBarcodeSvg', 'scanUrl', 'labelHeaderCompanyName', 'expiredWarning', 'approachingExpiry', 'uniqueItemsExpiredWarning', 'uniqueItemsApproachingExpiry'));
     }
 
     public function generateBulkUniqueItems(Request $request, ItemBarcode $itemBarcode)

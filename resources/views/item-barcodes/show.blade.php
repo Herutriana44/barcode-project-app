@@ -171,7 +171,18 @@
                         </div>
                     @endif
 
-                    <!-- Generate Bulk Section -->
+                    @if ($uniqueItemsExpiredWarning ?? false)
+                        <div class="mb-4 p-4 rounded-lg border border-red-300 bg-red-50 text-red-900 text-base leading-snug" role="alert">
+                            <p class="font-semibold">⚠ Peringatan: Ada Unique Item yang Sudah Expired!</p>
+                            <p class="mt-1">Satu atau lebih unique item di bawah sudah melewati masa expired. Harap segera periksa dan keluarkan sesuai FIFO.</p>
+                        </div>
+                    @elseif ($uniqueItemsApproachingExpiry ?? false)
+                        <div class="mb-4 p-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-900 text-base leading-snug" role="alert">
+                            <p class="font-semibold">⚠ Peringatan: Ada Unique Item yang Hampir Expired!</p>
+                            <p class="mt-1">Satu atau lebih unique item di bawah akan expired dalam 30 hari ke depan. Disarankan untuk segera dikeluarkan (FIFO).</p>
+                        </div>
+                    @endif
+
                     <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <form action="{{ route('item-barcodes.unique-items.generate-bulk', $itemBarcode) }}" method="POST" class="flex flex-wrap items-end gap-3">
                             @csrf
@@ -234,7 +245,18 @@
                                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-1">
                                                     <div><span class="text-xs sm:text-sm font-medium text-egg-700">Qty:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->qty }}</span></div>
                                                     <div><span class="text-xs sm:text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
-                                                    <div><span class="text-xs sm:text-sm font-medium text-egg-700">Exp:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span></div>
+                                                    <div>
+                                                        <span class="text-xs sm:text-sm font-medium text-egg-700">Exp:</span>
+                                                        <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span>
+                                                        @php
+                                                            $rowExp = $uniqueItem->expired_date ?? $itemBarcode->item->tgl_expired;
+                                                        @endphp
+                                                        @if ($rowExp && $rowExp->isPast())
+                                                            <span class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs font-semibold bg-red-100 text-red-700 border border-red-300">EXPIRED</span>
+                                                        @elseif ($rowExp && $rowExp->isBetween(\Carbon\Carbon::now(), \Carbon\Carbon::now()->addDays(30)))
+                                                            <span class="ml-1 inline-block rounded px-1.5 py-0.5 text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-300">Hampir Expired</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <div class="text-xs text-egg-500 mt-1 truncate">
                                                     Dibuat: {{ $uniqueItem->created_at->format('d/m/Y H:i') }}
