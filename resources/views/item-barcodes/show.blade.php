@@ -244,8 +244,8 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-y-1">
                                                     <div><span class="text-xs sm:text-sm font-medium text-egg-700">Qty:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->qty }}</span></div>
-                                                    <div><span class="text-xs sm:text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
-                                                    <div>
+                                                    <div class="sm:ml-4"><span class="text-xs sm:text-sm font-medium text-egg-700">Prod:</span> <span class="font-semibold text-egg-900">{{ $uniqueItem->production_date?->format('d/m/Y') ?? '-' }}</span></div>
+                                                    <div class="sm:ml-4">
                                                         <span class="text-xs sm:text-sm font-medium text-egg-700">Exp:</span>
                                                         <span class="font-semibold text-egg-900">{{ $uniqueItem->expired_date?->format('d/m/Y') ?? '-' }}</span>
                                                         @php
