@@ -74,8 +74,8 @@
         }
 
         .card {
-            width: 53mm;
-            height: 90mm;
+            width: 59mm;
+            height: 96mm;
             position: relative;
             overflow: hidden;
             background: #ffffff;
@@ -85,7 +85,7 @@
         .bg-img {
             position: absolute;
             inset: 0;
-            width: 100%;
+            width: 102%;
             height: 100%;
             object-fit: cover;
             object-position: center;
@@ -94,9 +94,9 @@
 
         .photo {
             position: absolute;
-            left: 1.5mm;
-            top: 26.4mm;
-            width: 21.7mm;
+            left: 2.1mm;
+            top: 30mm;
+            width: 22.3mm;
             height: 32.7mm;
             overflow: hidden;
             background: #d9d9d9;
@@ -123,50 +123,50 @@
         }
 
         .text-field {
-    position: absolute;
-    left: 30.3mm;
-    width: 20mm;
-    height: 4.5mm; /* tinggi tetap */
-    overflow: hidden; /* text tidak mendorong element lain */
+            position: absolute;
+            left: 34.5mm;
+            width: 20mm;
+            height: 4.5mm; /* tinggi tetap */
+            overflow: hidden; /* text tidak mendorong element lain */
 
-    font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
-    font-weight: 400;
-    line-height: 1.05;
-    color: #000000;
+            font-family: "Canva Sans", ui-sans-serif, system-ui, sans-serif;
+            font-weight: 400;
+            line-height: 1.05;
+            color: #000000;
 
-    white-space: pre-line;
-    word-break: break-word;
+            white-space: pre-line;
+            word-break: break-word;
 
-    display: block;
-    z-index: 3;
-}
+            display: block;
+            z-index: 3;
+        }
 
         .dept {
-            top: 30mm;
+            top: 32mm;
         }
 
         .jabatan {
-            top: 37mm;
+            top: 39mm;
         }
 
         .status {
-            top: 43mm;
+            top: 46mm;
         }
 
         .name {
-            top: 50mm;
+            top: 53mm;
         }
 
         .nip {
-            top: 57mm;
+            top: 60mm;
         }
 
         .qr {
             position: absolute;
-            left: 35mm;
-            top: 72mm;
-            width: 15.3mm;
-            height: 15.3mm;
+            left: 38mm;
+            top: 76mm;
+            width: 17mm;
+            height: 17mm;
             z-index: 3;
         }
 
